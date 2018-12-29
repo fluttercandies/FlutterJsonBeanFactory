@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.ruiyu.ruiyu</id>
   <name>FlutterJsonBeanFactory</name>
-  <vendor email="157418979@qq.com" url="https://github.com/zhangruiyu/FlutterBeanFactory">和信电商upup</vendor>
+  <vendor email="157418979@qq.com" url="https://github.com/zhangruiyu/FlutterJsonBeanFactory">和信电商upup</vendor>
 
   <description><![CDATA[
     Json to dart beans are provided, and dart files ending in entity are provided to generate dart bean factory for use.<br>
