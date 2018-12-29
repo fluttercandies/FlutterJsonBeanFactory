@@ -13,6 +13,7 @@
   <depends>com.intellij.modules.lang</depends>
   -->
   <change-notes><![CDATA[
+       <br>support android studio</br>
        <br>Make keyword property valid</br>
        <br>Json to dart beans are provided</br>
        <br> Fix bugs </br>
@@ -40,5 +41,5 @@
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
     </action>
   </actions>
-  <version>1.0</version>
+  <version>1.1</version>
 </idea-plugin>
