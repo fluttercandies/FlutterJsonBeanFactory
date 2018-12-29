@@ -1,0 +1,44 @@
+<idea-plugin>
+  <id>com.ruiyu.ruiyu</id>
+  <name>FlutterJsonBeanFactory</name>
+  <vendor email="157418979@qq.com" url="https://github.com/zhangruiyu/FlutterBeanFactory">和信电商upup</vendor>
+
+  <description><![CDATA[
+    Json to dart beans are provided, and dart files ending in entity are provided to generate dart bean factory for use.<br>
+    ]]></description>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+  <change-notes><![CDATA[
+       <br>Make keyword property valid</br>
+       <br>Json to dart beans are provided</br>
+       <br> Fix bugs </br>
+    ]]>
+  </change-notes>
+  <idea-version since-build="173.0"/>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+  <depends>com.intellij.modules.lang</depends>
+  <actions>
+    <!-- Add your actions here -->
+    <action id="FlutterBeanFactory.ID" class="com.ruiyu.beanfactory.FlutterBeanFactoryAction" text="FlutterBeanFactory"
+            description="Dart files ending in entity generate dart bean factory for use">
+      <add-to-group group-id="CodeMenu" anchor="first"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="ctrl QUOTE"/>
+    </action>
+
+    <action id="wu.seal.wu.seal.jsontokotlin.GenerateKotlinFileAction"
+            class="com.ruiyu.jsontodart.JsonToDartBeanAction"
+            text="dart bean class File from JSON"
+            icon="/icons/action.png"
+            description="Generate dart bean class File from JSON">
+      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+    </action>
+  </actions>
+  <version>1.0</version>
+</idea-plugin>
