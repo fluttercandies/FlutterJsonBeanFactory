@@ -68,10 +68,10 @@ class FlutterBeanFactoryAction : AnAction() {
             }
             WriteCommandAction.runWriteCommandAction(project) {
                 generateBeanFactory(factoryFile, content)
-                val notificationGroup = NotificationGroup("dart_bean_factory", NotificationDisplayType.BALLOON, true)
+                val notificationGroup = NotificationGroup("dart_factory", NotificationDisplayType.BALLOON, true)
                 ApplicationManager.getApplication().invokeLater {
                     val notification =
-                        notificationGroup.createNotification("bean_factory is generated", NotificationType.INFORMATION)
+                        notificationGroup.createNotification("factory is generated", NotificationType.INFORMATION)
                     Notifications.Bus.notify(notification, project)
                 }
                 //刷新目录
