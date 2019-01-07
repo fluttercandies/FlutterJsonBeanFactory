@@ -4,6 +4,7 @@ import java.io.File
 
 
 fun generateBeanFactory(
+    name: String,
     factoryFile: File,
     content: List<Pair<String, String>>
 ) {
@@ -20,7 +21,7 @@ fun generateBeanFactory(
             s + acc
         }
         }
-class BeanFactory {
+class ${name}Factory {
   static T generateOBJ<T>(json) {
     if (1 == 0) {
       return null;${

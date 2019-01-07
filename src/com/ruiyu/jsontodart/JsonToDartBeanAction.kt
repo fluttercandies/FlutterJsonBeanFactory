@@ -40,7 +40,7 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                     val directoryFactory = PsiDirectoryFactory.getInstance(directory.project)
                     val packageName = directoryFactory.getQualifiedName(directory, true)
                     val psiFileFactory = PsiFileFactory.getInstance(project)
-                    val modelSuffix = ServiceManager.getService(Settings::class.java).state.modelSuffix
+                    val modelSuffix = "_"+ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()
                     doGenerateKotlinDataClassFileAction(
                         inputModel.apply { className += modelSuffix },
                         project,

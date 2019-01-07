@@ -15,6 +15,7 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.ruiyu.setting.Settings
 import com.ruiyu.utils.ergodicDartFile
+import com.ruiyu.utils.toUpperCaseFirstOne
 import java.io.File
 
 class FlutterBeanFactoryAction : AnAction() {
@@ -67,7 +68,7 @@ class FlutterBeanFactoryAction : AnAction() {
                 generatePackageAndClassName(it.first, File(it.second))
             }
             WriteCommandAction.runWriteCommandAction(project) {
-                generateBeanFactory(factoryFile, content)
+                generateBeanFactory(fileName.toUpperCaseFirstOne(), factoryFile, content)
                 val notificationGroup = NotificationGroup("dart_factory", NotificationDisplayType.BALLOON, true)
                 ApplicationManager.getApplication().invokeLater {
                     val notification =
