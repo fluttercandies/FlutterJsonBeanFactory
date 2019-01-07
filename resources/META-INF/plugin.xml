@@ -48,5 +48,5 @@
                              instance="com.ruiyu.setting.SettingComponent"/>
 
     </extensions>
-    <version>1.1</version>
+    <version>1.2</version>
 </idea-plugin>
