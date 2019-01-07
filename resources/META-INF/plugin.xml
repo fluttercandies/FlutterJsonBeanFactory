@@ -13,6 +13,7 @@
     <depends>com.intellij.modules.lang</depends>
     -->
     <change-notes><![CDATA[
+       <br>support for custom model suffix names</br>
        <br>support android studio</br>
        <br>Make keyword property valid</br>
        <br>Json to dart beans are provided</br>
