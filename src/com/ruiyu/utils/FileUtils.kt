@@ -6,9 +6,9 @@ import java.io.File
 fun ergodicDartFile(
     projectName: String,
     file: File,
-    resultFileName: MutableList<Pair<String, String>>,
+    resultFileName: MutableMap<String, MutableList<Pair<String, String>>>,
     needDartNames: MutableList<String>
-): List<Pair<String, String>> {
+): MutableMap<String, MutableList<Pair<String, String>>> {
     // 判断目录下是不是空的
     val files = file.listFiles() ?: return resultFileName
     for (f in files) {
@@ -18,9 +18,13 @@ fun ergodicDartFile(
             if (f.path.toString().endsWith(".dart")) {
 //                println(f.name)
                 needDartNames.singleOrNull {
-                    f.name.contains(it,true)
+                    f.name.contains("$it.dart", true)
                 }?.run {
-                    resultFileName.add(projectName to f.path)
+                    if (resultFileName[this] == null) {
+                        resultFileName[this] = mutableListOf()
+                    }
+                    resultFileName[this]?.add(projectName to f.path)
+                    0
                 }
             }
     }

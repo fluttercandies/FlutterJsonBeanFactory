@@ -1,4 +1,4 @@
 package com.ruiyu.jsontodart
 
-data class InputModel(val className: String, val json: String, val isRefreshBeanFactory: Boolean) {
+data class InputModel(var className: String, val json: String, val isRefreshBeanFactory: Boolean) {
 }

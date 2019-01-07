@@ -201,10 +201,6 @@ class JsonInputDialog(
             project.showNotify("className must not null or empty")
             return
         }
-        if (inputModel.className.endsWith("entity",true).not()) {
-            project.showNotify("className must end with entity")
-            return
-        }
         if (inputModel.json.isEmpty()) {
             project.showNotify("json must not null or empty")
             return
