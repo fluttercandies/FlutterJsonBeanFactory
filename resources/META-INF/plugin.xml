@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.ruiyu.ruiyu</id>
     <name>FlutterJsonBeanFactory</name>
-    <vendor email="157418979@qq.com" url="https://github.com/zhangruiyu/FlutterJsonBeanFactory">和信电商upup</vendor>
+    <vendor email="157418979@qq.com" url="https://github.com/zhangruiyu/FlutterJsonBeanFactory">ruiyu</vendor>
 
     <description><![CDATA[
     Json to dart beans are provided, and dart files ending in entity are provided to generate dart bean factory for use.<br>
@@ -32,7 +32,7 @@
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl QUOTE"/>
         </action>
 
-        <action id="wu.seal.wu.seal.jsontokotlin.GenerateKotlinFileAction"
+        <action id="FlutterBeanFactory.GenerateDartBeanFileAction"
                 class="com.ruiyu.jsontodart.JsonToDartBeanAction"
                 text="dart bean class File from JSON"
                 icon="/icons/action.png"

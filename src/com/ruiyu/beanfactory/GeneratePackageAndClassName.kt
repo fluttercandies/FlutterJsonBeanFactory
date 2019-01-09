@@ -9,14 +9,22 @@ fun generatePackageAndClassName(projectName: String, file: File): Pair<String, S
         val result = it.firstOrNull { line ->
             line.contains("class")
         }
-        if(result == null){
-            return null
+        return if(result == null){
+            null
         }else{
-            val className = result.trim().removeSuffix("{").removePrefix("class").trim()
+            var className = result.trim().removeSuffix("{").removePrefix("class").trim().split(" ")[0]
+            //去掉基类
+            if(className.contains("base",true)){
+                return null
+            }
+            //去掉泛型
+            if(className.contains("<")){
+                className = className.split("<")[0]
+            }
             val adbPath = file.absolutePath
             val tag = "lib"
-//        println(file.absolutePath.removePrefix())
-            return className to "package:$projectName${adbPath.substring(
+    //        println(file.absolutePath.removePrefix())
+            className to "package:$projectName${adbPath.substring(
                 file.absolutePath.indexOf(tag) + tag.length,
                 adbPath.length
             )}"

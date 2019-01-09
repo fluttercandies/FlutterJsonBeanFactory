@@ -24,7 +24,7 @@ class SettingComponent : Configurable {
         settingLayout?.run {
             getSettings().apply {
                 modelSuffix = getModelSuffix()
-                suffixFiles = getSuffixFiles()
+                scanFileSetting = getSuffixFiles()
             }
         }
     }

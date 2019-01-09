@@ -1,20 +1,23 @@
 package com.ruiyu.setting
 
 import com.intellij.ui.components.JBLabel
+import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
+import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.JBDimension
 import wu.seal.jsontokotlin.utils.addComponentIntoVerticalBoxAlignmentLeft
 import java.awt.BorderLayout
 import javax.swing.BoxLayout
 import javax.swing.JComponent
 import javax.swing.JPanel
+import javax.swing.ListSelectionModel
 import javax.swing.border.EmptyBorder
 
 
 class SettingLayout(settingState: Settings) {
     private val panel: JPanel = JPanel(BorderLayout())
-    private val suffixListTextField: JBTextField
     private val beanNameTextField: JBTextField
+    val configTableModel = ConfigTableModel(settingState)
 
     init {
 
@@ -36,12 +39,17 @@ class SettingLayout(settingState: Settings) {
             label1
         )
 
-        suffixListTextField = JBTextField(settingState.suffixFiles)
-        suffixListTextField.preferredSize = JBDimension(400, 40)
+
+        val jbTable = JBTable(configTableModel)
+        jbTable.rowSelectionAllowed = true
+        jbTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+//        jbTable.preferredSize = JBDimension(400, 400)
+        val jScrollPane = JBScrollPane(jbTable)
+//        jScrollPane.layout = BorderLayout()
         beanNameLayout.addComponentIntoVerticalBoxAlignmentLeft(
-            suffixListTextField
+            jScrollPane
         )
-        beanNameLayout.preferredSize = JBDimension(500, 112)
+//        beanNameLayout.preferredSize = JBDimension(500, 512)
 //        beanNameLayout.preferredSize = JBDimension(500, 56)
 //        panel.add(suffixListTextFieldLayout,BorderLayout.CENTER)
 
@@ -54,8 +62,8 @@ class SettingLayout(settingState: Settings) {
         return this.panel
     }
 
-    fun getSuffixFiles(): String {
-        return suffixListTextField.text
+    fun getSuffixFiles(): List<Array<String>> {
+        return configTableModel.data
     }
 
     fun getModelSuffix(): String {

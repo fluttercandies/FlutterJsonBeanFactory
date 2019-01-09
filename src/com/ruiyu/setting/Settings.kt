@@ -5,10 +5,12 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 
-@State(name = "FlutterJsonBeanSettings", storages = [(Storage("FlutterJsonBeanSettings.xml"))])
-data class Settings(var modelSuffix: String, var suffixFiles: String) : PersistentStateComponent<Settings> {
+@State(name = "FlutterJsonBeanSettings", storages = [(Storage("FlutterJsonBeanSetting.xml"))])
+data class Settings(var modelSuffix: String, var scanFileSetting:List<Array<String>>) : PersistentStateComponent<Settings> {
 
-    constructor() : this("Entity", "entity")
+    constructor() : this("entity",  mutableListOf(arrayOf("entity","static T generateOBJ<T>(json) {",".fromJson(json) as T;"),
+        arrayOf("presenter","",""),
+        arrayOf("","","")))
 
     override fun getState(): Settings {
         return this
@@ -18,3 +20,4 @@ data class Settings(var modelSuffix: String, var suffixFiles: String) : Persiste
         XmlSerializerUtil.copyBean(state, this)
     }
 }
+data class GenerateCode(val scanName:String,val methodLine:String,val classNameLine:String)

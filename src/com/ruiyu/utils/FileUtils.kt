@@ -1,14 +1,15 @@
 package com.ruiyu.utils
 
+import com.ruiyu.setting.GenerateCode
 import java.io.File
 
 
 fun ergodicDartFile(
     projectName: String,
     file: File,
-    resultFileName: MutableMap<String, MutableList<Pair<String, String>>>,
-    needDartNames: MutableList<String>
-): MutableMap<String, MutableList<Pair<String, String>>> {
+    resultFileName: MutableMap<GenerateCode, MutableList<Pair<String, String>>>,
+    needDartNames: List<Array<String>>
+): MutableMap<GenerateCode, MutableList<Pair<String, String>>> {
     // 判断目录下是不是空的
     val files = file.listFiles() ?: return resultFileName
     for (f in files) {
@@ -18,13 +19,13 @@ fun ergodicDartFile(
             if (f.path.toString().endsWith(".dart")) {
 //                println(f.name)
                 needDartNames.singleOrNull {
-                    f.name.contains("$it.dart", true)
+                    f.name.contains("${it[0]}.dart", true)
                 }?.run {
-                    if (resultFileName[this] == null) {
-                        resultFileName[this] = mutableListOf()
+                    val generateCode = GenerateCode(this[0],this[1],this[2])
+                    if (resultFileName[generateCode] == null) {
+                        resultFileName[generateCode] = mutableListOf()
                     }
-                    resultFileName[this]?.add(projectName to f.path)
-                    0
+                    resultFileName[generateCode]?.add(projectName to f.path)
                 }
             }
     }

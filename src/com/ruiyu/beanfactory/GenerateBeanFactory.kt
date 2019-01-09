@@ -1,10 +1,12 @@
 package com.ruiyu.beanfactory
 
+import com.ruiyu.setting.GenerateCode
+import com.ruiyu.utils.toUpperCaseFirstOne
 import java.io.File
 
 
 fun generateBeanFactory(
-    name: String,
+    generateCode: GenerateCode,
     factoryFile: File,
     content: List<Pair<String, String>>
 ) {
@@ -21,13 +23,13 @@ fun generateBeanFactory(
             s + acc
         }
         }
-class ${name}Factory {
-  static T generateOBJ<T>(json) {
+class ${generateCode.scanName.toUpperCaseFirstOne()}Factory {
+  ${generateCode.methodLine}
     if (1 == 0) {
       return null;${
         content.map {
             "${System.lineSeparator()}    } else if (T.toString() == \"${it.first}\") {\n" +
-                    "      return ${it.first}.fromJson(json) as T;"
+                    "      return ${it.first}${generateCode.classNameLine}"
         }.reduceRight { s, acc ->
             s + acc
         }
