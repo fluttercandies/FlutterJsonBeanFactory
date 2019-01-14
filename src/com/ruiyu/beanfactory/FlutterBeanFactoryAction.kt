@@ -1,5 +1,6 @@
 package com.ruiyu.beanfactory
 
+import com.intellij.lang.LanguageParserDefinitions
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationGroup
 import com.intellij.notification.NotificationType
@@ -12,6 +13,10 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.psi.search.PsiShortNamesCache
+import com.jetbrains.lang.dart.DartLanguage
+import com.jetbrains.lang.dart.ide.index.DartIndexUtil
+import com.jetbrains.lang.dart.util.DartPsiImplUtil
 import com.ruiyu.setting.GenerateCode
 import com.ruiyu.setting.Settings
 import com.ruiyu.utils.ergodicDartFile
@@ -37,6 +42,9 @@ class FlutterBeanFactoryAction : AnAction() {
                 it.isNotEmpty() &&it[0].isNotEmpty()
             }
 
+//            val dartLanguage = DartLanguage.INSTANCE
+//            val forLanguage = LanguageParserDefinitions.INSTANCE.forLanguage(dartLanguage)
+//            print(PsiShortNamesCache.getInstance(project).allClassNames)
             //所有符合条件的文件集合 (projectName to file)
             val dartResultFiles = mutableMapOf<GenerateCode, MutableList<Pair<String, String>>>()
             ergodicDartFile(name, File(projectSrcPath), dartResultFiles, suffixFileList)
@@ -52,6 +60,7 @@ class FlutterBeanFactoryAction : AnAction() {
             dartResultFiles.forEach { t, u ->
                 genFactory(GenerateNeedModel(projectBasePath, project, t, u))
             }
+
         }
 
         private fun genFactory(generateNeedModel: GenerateNeedModel) {
@@ -73,6 +82,7 @@ class FlutterBeanFactoryAction : AnAction() {
                     LocalFileSystem.getInstance().refreshAndFindFileByIoFile(factoryFile)?.refresh(false, true)
                 }
             }
+
         }
 
     }
