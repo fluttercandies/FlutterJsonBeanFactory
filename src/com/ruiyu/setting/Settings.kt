@@ -5,7 +5,7 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil
 
-@State(name = "FlutterJsonBeanFactorySettings", storages = [(Storage("FlutterJsonBeanFactorySetting.xml"))])
+@State(name = "FlutterJsonBeanFactorySettings", storages = [(Storage("FlutterJsonBeanFactorySettings.xml"))])
 data class Settings(
     var modelSuffix: String,
     var ignoreContainFieldClass: String,
@@ -15,7 +15,7 @@ data class Settings(
     constructor() : this(
         "entity", "base", mutableListOf(
             arrayOf("entity", "static T generateOBJ<T>(json) {", ".fromJson(json) as T;"),
-            arrayOf("presenter", "", ""),
+            arrayOf("", "", ""),
             arrayOf("", "", "")
         )
     )

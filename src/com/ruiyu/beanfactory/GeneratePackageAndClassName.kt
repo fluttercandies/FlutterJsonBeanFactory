@@ -14,7 +14,7 @@ fun generatePackageAndClassName(projectName: String, file: File,ignoreContainFie
         }else{
             var className = result.trim().removeSuffix("{").removePrefix("class").trim().split(" ")[0]
             //去掉基类
-            if(className.contains(ignoreContainFieldClass,true)){
+            if(ignoreContainFieldClass.isNotEmpty() && className.contains(ignoreContainFieldClass,true)){
                 return null
             }
             //去掉泛型
