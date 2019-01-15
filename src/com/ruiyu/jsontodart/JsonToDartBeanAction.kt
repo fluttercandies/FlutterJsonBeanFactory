@@ -66,7 +66,7 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
         try {
             ModelGenerator(inputModel.className, project, psiFileFactory, directory) {
                 if (inputModel.isRefreshBeanFactory) {
-                    FlutterBeanFactoryAction.genBeanFactory(event)
+                    FlutterBeanFactoryAction.getGenInfos(event)
                 }
             }.generateDartClasses(inputModel.json)
         } catch (e: MessageException) {

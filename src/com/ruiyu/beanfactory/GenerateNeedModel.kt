@@ -7,5 +7,5 @@ data class GenerateNeedModel(
     var projectBasePath: String,
     var project: Project,
     var generateCode: GenerateCode,
-    var dartResultFiles: List<Pair<String, String>>) {
-}
+    var dartResultFiles: List<Pair<String, String>>,
+    var ignoreContainFieldClass:String)

@@ -3,7 +3,7 @@ package com.ruiyu.beanfactory
 import java.io.File
 
 //生成包名信息和类名信息
-fun generatePackageAndClassName(projectName: String, file: File): Pair<String, String>? {
+fun generatePackageAndClassName(projectName: String, file: File,ignoreContainFieldClass:String): Pair<String, String>? {
     file.inputStream().bufferedReader().useLines {
 
         val result = it.firstOrNull { line ->
@@ -14,7 +14,7 @@ fun generatePackageAndClassName(projectName: String, file: File): Pair<String, S
         }else{
             var className = result.trim().removeSuffix("{").removePrefix("class").trim().split(" ")[0]
             //去掉基类
-            if(className.contains("base",true)){
+            if(className.contains(ignoreContainFieldClass,true)){
                 return null
             }
             //去掉泛型

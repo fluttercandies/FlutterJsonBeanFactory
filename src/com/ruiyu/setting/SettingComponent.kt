@@ -13,7 +13,10 @@ class SettingComponent : Configurable {
         if (settingLayout == null) {
             return false
         }
-        return getSettings() != Settings(settingLayout!!.getModelSuffix(), settingLayout!!.getSuffixFiles())
+        return getSettings() != Settings(
+            settingLayout!!.getModelSuffix(),
+            settingLayout!!.getIgnoreContainFieldClassTextField(),
+            settingLayout!!.getSuffixFiles())
     }
 
     override fun getDisplayName(): String {

@@ -1,6 +1,5 @@
 package com.ruiyu.beanfactory
 
-import com.intellij.lang.LanguageParserDefinitions
 import com.intellij.notification.NotificationDisplayType
 import com.intellij.notification.NotificationGroup
 import com.intellij.notification.NotificationType
@@ -13,10 +12,6 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.psi.search.PsiShortNamesCache
-import com.jetbrains.lang.dart.DartLanguage
-import com.jetbrains.lang.dart.ide.index.DartIndexUtil
-import com.jetbrains.lang.dart.util.DartPsiImplUtil
 import com.ruiyu.setting.GenerateCode
 import com.ruiyu.setting.Settings
 import com.ruiyu.utils.ergodicDartFile
@@ -25,12 +20,13 @@ import java.io.File
 class FlutterBeanFactoryAction : AnAction() {
 
     override fun actionPerformed(e: AnActionEvent) {
-        genBeanFactory(e)
+        getGenInfos(e)
 
     }
 
     companion object {
-        fun genBeanFactory(e: AnActionEvent) {
+        //获取信息
+        fun getGenInfos(e: AnActionEvent) {
             val project = e.getData(PlatformDataKeys.PROJECT)!!
             val projectBasePath = project.basePath!!
             val projectSrcPath = project.basePath!! + File.separator + "lib"
@@ -38,13 +34,10 @@ class FlutterBeanFactoryAction : AnAction() {
 
             //获取配置的遍历list
             val settingsState = ServiceManager.getService(Settings::class.java).state
+            //遍历掉不可用参数
             val suffixFileList = settingsState.scanFileSetting.filter {
-                it.isNotEmpty() &&it[0].isNotEmpty()
+                it.isNotEmpty() && it[0].isNotEmpty()
             }
-
-//            val dartLanguage = DartLanguage.INSTANCE
-//            val forLanguage = LanguageParserDefinitions.INSTANCE.forLanguage(dartLanguage)
-//            print(PsiShortNamesCache.getInstance(project).allClassNames)
             //所有符合条件的文件集合 (projectName to file)
             val dartResultFiles = mutableMapOf<GenerateCode, MutableList<Pair<String, String>>>()
             ergodicDartFile(name, File(projectSrcPath), dartResultFiles, suffixFileList)
@@ -58,18 +51,19 @@ class FlutterBeanFactoryAction : AnAction() {
                 return
             }
             dartResultFiles.forEach { t, u ->
-                genFactory(GenerateNeedModel(projectBasePath, project, t, u))
+                genFactory(GenerateNeedModel(projectBasePath, project, t, u,settingsState.ignoreContainFieldClass))
             }
 
         }
 
+        //生成文件
         private fun genFactory(generateNeedModel: GenerateNeedModel) {
             generateNeedModel.run {
+                val content = dartResultFiles.mapNotNull {
+                    generatePackageAndClassName(it.first, File(it.second),generateNeedModel.ignoreContainFieldClass)
+                }
                 val factoryFile =
                     File((projectBasePath + File.separator + "lib" + File.separator + "${generateNeedModel.generateCode.scanName}_factory.dart"))
-                val content = dartResultFiles.mapNotNull {
-                    generatePackageAndClassName(it.first, File(it.second))
-                }
                 WriteCommandAction.runWriteCommandAction(project) {
                     generateBeanFactory(generateNeedModel.generateCode, factoryFile, content)
                     val notificationGroup = NotificationGroup("dart_factory", NotificationDisplayType.BALLOON, true)

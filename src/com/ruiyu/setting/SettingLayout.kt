@@ -17,7 +17,8 @@ import javax.swing.border.EmptyBorder
 class SettingLayout(settingState: Settings) {
     private val panel: JPanel = JPanel(BorderLayout())
     private val beanNameTextField: JBTextField
-    val configTableModel = ConfigTableModel(settingState)
+    private val ignoreContainFieldClassTextField: JBTextField
+    private val configTableModel = ConfigTableModel(settingState)
 
     init {
 
@@ -29,6 +30,14 @@ class SettingLayout(settingState: Settings) {
         beanNameTextField = JBTextField(settingState.modelSuffix)
         beanNameTextField.preferredSize = JBDimension(400, 40)
         beanNameLayout.addComponentIntoVerticalBoxAlignmentLeft(beanNameTextField)
+
+        val ignoreContainFieldClassTextFieldName = JBLabel()
+        ignoreContainFieldClassTextFieldName.border = EmptyBorder(5, 0, 5, 0)
+        ignoreContainFieldClassTextFieldName.text = "ignoreContainFieldClass"
+        beanNameLayout.addComponentIntoVerticalBoxAlignmentLeft(ignoreContainFieldClassTextFieldName)
+        ignoreContainFieldClassTextField = JBTextField(settingState.ignoreContainFieldClass)
+        ignoreContainFieldClassTextField.preferredSize = JBDimension(400, 40)
+        beanNameLayout.addComponentIntoVerticalBoxAlignmentLeft(ignoreContainFieldClassTextField)
 
         panel.add(beanNameLayout, BorderLayout.NORTH)
 
@@ -43,18 +52,10 @@ class SettingLayout(settingState: Settings) {
         val jbTable = JBTable(configTableModel)
         jbTable.rowSelectionAllowed = true
         jbTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
-//        jbTable.preferredSize = JBDimension(400, 400)
         val jScrollPane = JBScrollPane(jbTable)
-//        jScrollPane.layout = BorderLayout()
         beanNameLayout.addComponentIntoVerticalBoxAlignmentLeft(
             jScrollPane
         )
-//        beanNameLayout.preferredSize = JBDimension(500, 512)
-//        beanNameLayout.preferredSize = JBDimension(500, 56)
-//        panel.add(suffixListTextFieldLayout,BorderLayout.CENTER)
-
-
-//        panel.preferredSize = JBDimension(500, 56*2)
         panel.add(createLinearLayoutVertical(), BorderLayout.AFTER_LAST_LINE)
     }
 
@@ -68,6 +69,10 @@ class SettingLayout(settingState: Settings) {
 
     fun getModelSuffix(): String {
         return beanNameTextField.text
+    }
+
+    fun getIgnoreContainFieldClassTextField(): String {
+        return ignoreContainFieldClassTextField.text
     }
 }
 
