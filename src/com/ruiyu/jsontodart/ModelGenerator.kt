@@ -6,6 +6,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFileFactory
 import com.ruiyu.jsontodart.filetype.DartFileType
 import com.ruiyu.jsontodart.utils.camelCase
+import com.ruiyu.utils.JsonUtils
 import com.ruiyu.utils.executeCouldRollBackAction
 import wu.seal.jsontokotlin.utils.showNotify
 
@@ -57,6 +58,7 @@ class ModelGenerator(
 
     private fun generateUnsafeDart(rawJson: String): String {
         val jsonRawData = Gson().fromJson<Map<String, Any>>(rawJson, HashMap::class.java)
+        JsonUtils.jsonMapMCompletion(jsonRawData)
         generateClassDefinition(camelCase(rootClassName), jsonRawData)
         return allClasses.joinToString("\n")
     }
