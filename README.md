@@ -14,7 +14,7 @@ What I do is generate dart beans based on json, as well as generics parameters a
     File --> Settings --> Plugins --> Browse Repositories -->Search FlutterJsonBean
 * Restart your Develop tools 
 * Press shortcut key `command` + `"` for mac  , right click on package -> `New`->`Dart bean clas file from JSON`　And Then you will know how to use
-
+* [中文移步](https://www.jianshu.com/p/14cbcbaa74b7)
 
 ### Others
 * Welcome anyone to raise new issue.
