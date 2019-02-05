@@ -2,23 +2,26 @@ package com.ruiyu.jsontodart
 
 import com.alibaba.fastjson.JSON
 import com.ruiyu.jsontodart.utils.camelCase
+import com.ruiyu.utils.Inflector
 import com.ruiyu.utils.JsonUtils
 
 
 class ModelGenerator(
         val collectInfo: CollectInfo
-
 ) {
 
     var allClasses = mutableListOf<ClassDefinition>()
     private fun generateClassDefinition(className: String, jsonRawData: Any) {
-
+        var newClassName = className
+        if(!className.startsWith(collectInfo.userInputClassName,ignoreCase = true)){
+            newClassName = collectInfo.firstClassName()+newClassName
+        }
         if (jsonRawData is List<*>) {
             // if first element is an array, start in the first element.
-            generateClassDefinition(className, jsonRawData[0]!!)
+            generateClassDefinition(Inflector.getInstance().singularize(newClassName), jsonRawData[0]!!)
         } else if (jsonRawData is Map<*, *>) {
             val keys = jsonRawData.keys
-            val classDefinition = ClassDefinition(className);
+            val classDefinition = ClassDefinition(Inflector.getInstance().singularize(newClassName));
             keys.forEach { key ->
                 val typeDef = TypeDefinition.fromDynamic(jsonRawData[key])
                 if (typeDef.name == "Class") {
