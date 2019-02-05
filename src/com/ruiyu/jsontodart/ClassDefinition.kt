@@ -250,7 +250,7 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
             // class
             return """if ($thisKey != null) {
       data['$key'] = ${_buildToJsonClass(thisKey)};
-    }""";
+    }"""
         }
     }
 

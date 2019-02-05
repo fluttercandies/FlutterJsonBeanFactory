@@ -2,7 +2,9 @@ package com.ruiyu.jsontodart.utils
 
 import com.intellij.ui.MessageException
 import com.ruiyu.jsontodart.TypeDefinition
+import com.ruiyu.utils.Inflector
 import jdk.nashorn.internal.runtime.regexp.RegExp
+import java.math.BigDecimal
 import java.util.regex.Pattern
 
 val PRIMITIVE_TYPES = mapOf(
@@ -17,12 +19,28 @@ val PRIMITIVE_TYPES = mapOf(
     "List<Boolean>" to true,
     "Null" to true
 )
+val dartKeyword = mutableListOf("abstract","dynamic","implements","show",
+"as","else","import ","static",
+"assert","enum","in","super",
+"async","export","interface","switch",
+"await","external","is","sync",
+"break","extends","library","this",
+"case","factory","mixin","throw",
+"catch","false","new","true",
+"class","final","null","try",
+"const","finally","on","typedef",
+"continue",	"for","operator","var",
+"covariant","Function","part","void",
+"default","get","rethrow","while",
+"deferred","hide","return","with",
+"do","if","set","yield ")
 
 fun getTypeName(obj: Any?): String {
     return when (obj) {
         is String -> "String"
         is Int -> "int"
         is Double -> "double"
+        is BigDecimal -> "double"
         is Boolean -> "bool"
         null -> "Null"
         is List<*> -> "List"
@@ -47,9 +65,11 @@ fun camelCase(init: String): String {
         if (ret.length != init.length)
             ret.append(" ")
     }
-    val result = ret.toString().replace(" ", "")
-    if (PRIMITIVE_TYPES[result] != null) {
-        throw MessageException("Please do not use the keyword $result as the key")
+    var result = Inflector.getInstance().singularize(ret.toString().replace(" ", ""))
+
+    if (PRIMITIVE_TYPES[result] != null || dartKeyword.contains(result)) {
+//        throw MessageException("Please do not use the keyword $result as the key")
+        result +="X"
     }
     return result
 }

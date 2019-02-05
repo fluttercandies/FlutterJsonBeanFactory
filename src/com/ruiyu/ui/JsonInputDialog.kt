@@ -9,6 +9,7 @@ import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.JBDimension
 import com.intellij.util.ui.JBEmptyBorder
+import com.ruiyu.jsontodart.CollectInfo
 import com.ruiyu.jsontodart.InputModel
 import wu.seal.jsontokotlin.utils.addComponentIntoVerticalBoxAlignmentLeft
 import wu.seal.jsontokotlin.utils.showNotify
@@ -49,17 +50,16 @@ val myInputValidator = MyInputValidator()
 /**
  * Json input Dialog
  */
-class JsonInputDialog(
-    className: String,
-    val project: Project,
-    val inputModelBlock: (inputModel: InputModel) -> Unit
+open class JsonInputDialog(
+        project: Project,
+        val inputModelBlock: (inputModel: CollectInfo) -> Unit
 ) : Messages.InputDialog(
-    project,
-    "Please input the class name and JSON String for generating dart bean class",
-    "Make Dart bean Class Code",
-    Messages.getInformationIcon(),
-    "",
-    myInputValidator
+        project,
+        "Please input the class name and JSON String for generating dart bean class",
+        "Make Dart bean Class Code",
+        Messages.getInformationIcon(),
+        "",
+        myInputValidator
 ) {
 
     private lateinit var classNameInput: JTextField
@@ -69,7 +69,6 @@ class JsonInputDialog(
 
     init {
         setOKButtonText("Make")
-        classNameInput.text = className
     }
 
     override fun createMessagePanel(): JPanel {
@@ -152,7 +151,7 @@ class JsonInputDialog(
     }
 
 
-    protected fun createMyScrollableTextComponent(): JComponent {
+    private fun createMyScrollableTextComponent(): JComponent {
         val jbScrollPane = JBScrollPane(myField)
         jbScrollPane.preferredSize = JBDimension(700, 350)
         jbScrollPane.autoscrolls = true
@@ -161,18 +160,12 @@ class JsonInputDialog(
         return jbScrollPane
     }
 
-    fun getClassName(): String {
-        if (exitCode == 0) {
-            return classNameInput.text.trim()
-        }
-        return ""
-    }
 
     override fun getPreferredFocusedComponent(): JComponent? {
-        if (classNameInput.text?.isEmpty() ?: true) {
-            return classNameInput
+        return if (classNameInput.text?.isEmpty() == false) {
+            myField
         } else {
-            return myField
+            classNameInput
         }
     }
 
@@ -196,17 +189,21 @@ class JsonInputDialog(
     }
 
     override fun doOKAction() {
-        val inputModel = InputModel(classNameInput.text, myField.text, refreshBeanFactoryButton.isSelected)
-        if (inputModel.className.isEmpty()) {
-            project.showNotify("className must not null or empty")
-            return
+
+        val collectInfo = CollectInfo().apply {
+            userInputClassName = classNameInput.text
+            userInputJson = myField.text
+            userIsSelectedRefresh = refreshBeanFactoryButton.isSelected
         }
-        if (inputModel.json.isEmpty()) {
-            project.showNotify("json must not null or empty")
-            return
+        if (collectInfo.userInputClassName.isEmpty()) {
+            throw Exception("className must not null or empty")
         }
+        if (collectInfo.userInputJson.isEmpty()) {
+            throw Exception("json must not null or empty")
+        }
+
+        inputModelBlock(collectInfo)
         super.doOKAction()
-        inputModelBlock(inputModel)
     }
 }
 
