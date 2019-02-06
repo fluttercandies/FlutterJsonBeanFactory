@@ -33,7 +33,7 @@ val dartKeyword = mutableListOf("abstract","dynamic","implements","show",
 "covariant","Function","part","void",
 "default","get","rethrow","while",
 "deferred","hide","return","with",
-"do","if","set","yield ")
+"do","if","set","yield","list","map")
 
 fun getTypeName(obj: Any?): String {
     return when (obj) {

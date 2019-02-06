@@ -2,6 +2,7 @@ package com.ruiyu.jsontodart
 
 import com.alibaba.fastjson.JSON
 import com.ruiyu.jsontodart.utils.camelCase
+import com.ruiyu.jsontodart.utils.dartKeyword
 import com.ruiyu.utils.Inflector
 import com.ruiyu.utils.JsonUtils
 
@@ -21,16 +22,21 @@ class ModelGenerator(
             generateClassDefinition(Inflector.getInstance().singularize(newClassName), jsonRawData[0]!!)
         } else if (jsonRawData is Map<*, *>) {
             val keys = jsonRawData.keys
-            val classDefinition = ClassDefinition(Inflector.getInstance().singularize(newClassName));
+            val classDefinition = ClassDefinition(Inflector.getInstance().singularize(newClassName))
             keys.forEach { key ->
+                var notKeyWord = key
+                //关键字的修改字段名
+                if(dartKeyword.contains(key.toString().toLowerCase())){
+                    notKeyWord = "x_$key"
+                }
                 val typeDef = TypeDefinition.fromDynamic(jsonRawData[key])
                 if (typeDef.name == "Class") {
-                    typeDef.name = camelCase(key as String)
+                    typeDef.name = camelCase(notKeyWord as String)
                 }
                 if (typeDef.subtype != null && typeDef.subtype == "Class") {
-                    typeDef.subtype = camelCase(key as String)
+                    typeDef.subtype = camelCase(notKeyWord as String)
                 }
-                classDefinition.addField(key as String, typeDef)
+                classDefinition.addField(notKeyWord as String, typeDef)
             }
             if (allClasses.firstOrNull { cd -> cd == classDefinition } == null) {
                 allClasses.add(classDefinition)
