@@ -3,6 +3,7 @@ package com.ruiyu.jsontodart.utils
 import com.intellij.ui.MessageException
 import com.ruiyu.jsontodart.TypeDefinition
 import com.ruiyu.utils.Inflector
+import com.ruiyu.utils.toUpperCaseFirstOne
 import jdk.nashorn.internal.runtime.regexp.RegExp
 import java.math.BigDecimal
 import java.util.regex.Pattern
@@ -67,10 +68,10 @@ fun camelCase(init: String): String {
     }
     var result = Inflector.getInstance().singularize(ret.toString().replace(" ", ""))
 
-    if (PRIMITIVE_TYPES[result] != null || dartKeyword.contains(result)) {
+   /* if (PRIMITIVE_TYPES[result] != null || dartKeyword.contains(result)) {
 //        throw MessageException("Please do not use the keyword $result as the key")
         result +="X"
-    }
+    }*/
     return result
 }
 
@@ -92,7 +93,14 @@ fun fixFieldName(name: String, typeDef: TypeDefinition? = null, privateField: Bo
     if (privateField) {
         return "_$fieldName"
     }
-    return fieldName;
+    return filedKeywordRename(fieldName)
 }
 
-
+fun filedKeywordRename(key:String):String{
+    var notKeyWord = key
+    //关键字的修改字段名
+    if(dartKeyword.contains(key.toLowerCase())){
+        notKeyWord = "x${key.toUpperCaseFirstOne()}"
+    }
+    return notKeyWord
+}

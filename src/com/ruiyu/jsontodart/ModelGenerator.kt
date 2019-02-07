@@ -1,6 +1,11 @@
 package com.ruiyu.jsontodart
 
 import com.alibaba.fastjson.JSON
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
 import com.ruiyu.jsontodart.utils.camelCase
 import com.ruiyu.jsontodart.utils.dartKeyword
 import com.ruiyu.utils.Inflector
@@ -24,19 +29,14 @@ class ModelGenerator(
             val keys = jsonRawData.keys
             val classDefinition = ClassDefinition(Inflector.getInstance().singularize(newClassName))
             keys.forEach { key ->
-                var notKeyWord = key
-                //关键字的修改字段名
-                if(dartKeyword.contains(key.toString().toLowerCase())){
-                    notKeyWord = "x_$key"
-                }
                 val typeDef = TypeDefinition.fromDynamic(jsonRawData[key])
                 if (typeDef.name == "Class") {
-                    typeDef.name = camelCase(notKeyWord as String)
+                    typeDef.name = collectInfo.firstClassName()+ camelCase(key as String)
                 }
                 if (typeDef.subtype != null && typeDef.subtype == "Class") {
-                    typeDef.subtype = camelCase(notKeyWord as String)
+                    typeDef.subtype = collectInfo.firstClassName()+ camelCase(key as String)
                 }
-                classDefinition.addField(notKeyWord as String, typeDef)
+                classDefinition.addField(key as String, typeDef)
             }
             if (allClasses.firstOrNull { cd -> cd == classDefinition } == null) {
                 allClasses.add(classDefinition)
@@ -49,7 +49,7 @@ class ModelGenerator(
                         generateClassDefinition(dependency.className, names[0]!!)
                     }
                 } else {
-                    generateClassDefinition(dependency.className, jsonRawData[dependency.name]!!)
+                    generateClassDefinition(collectInfo.firstClassName()+ dependency.className, jsonRawData[dependency.name]!!)
                 }
             }
         }
@@ -57,7 +57,7 @@ class ModelGenerator(
 
      fun generateDartClassesToString(): String {
         //用阿里的防止int变为double
-        val jsonRawData = JSON.parseObject(collectInfo.userInputJson, HashMap::class.java)
+        val jsonRawData = JSON.parseObject(collectInfo.userInputJson)
         JsonUtils.jsonMapMCompletion(jsonRawData)
         generateClassDefinition(collectInfo.firstClassEntityName(), jsonRawData)
         return allClasses.joinToString("\n")

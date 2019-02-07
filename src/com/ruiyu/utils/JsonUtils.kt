@@ -1,5 +1,7 @@
 package com.ruiyu.utils
 
+import com.alibaba.fastjson.JSONArray
+import com.alibaba.fastjson.JSONObject
 import com.google.gson.internal.LinkedTreeMap
 
 /**
@@ -10,41 +12,46 @@ class JsonUtils {
     companion object {
         fun jsonMapMCompletion(jsonRawData: Map<*, *>) {
             jsonRawData.keys.mapIndexed { index, key ->
+                val any = jsonRawData[key]!!
+                var a = any::class.java
+                val b = jsonRawData[key] is Map<*, *>
                 if (jsonRawData[key] is Map<*, *>) {
                     jsonMapMCompletion(jsonRawData[key] as Map<*, *>)
-                } else if (jsonRawData[key] is ArrayList<*>) {
-                    val list = jsonRawData[key] as ArrayList<*>
+                } else if (jsonRawData[key] is JSONArray) {
+                    val list = jsonRawData[key] as JSONArray
                     listCompletion(list)
                 }
             }
         }
 
-        private fun listCompletion(list: ArrayList<*>) {
+        private fun listCompletion(list: JSONArray) {
             list.mapIndexed { index, any ->
-                if (list.isNotEmpty()) {
-                    if (list.size == 1) {
+
+                val toList = list.toList()
+                if (toList.isNotEmpty()) {
+                    if (toList.size == 1) {
                         if (list[0] is Map<*, *>) {
                             jsonMapMCompletion(list[0] as Map<*, *>)
-                        } else if (list[0] is ArrayList<*>) {
-                            listCompletion(list[0] as ArrayList<*>)
+                        } else if (list[0] is JSONArray) {
+                            listCompletion(list[0] as JSONArray)
                         }
                     } else if (index != 0) {
                         when {
                             any is Map<*, *> -> {
                                 any.forEach { key, value ->
-                                    val firstData = (list[0] as LinkedTreeMap<Any?, Any?>)
+                                    val firstData = (list[0] as JSONObject)
                                     if (firstData.containsKey(key).not() || firstData[key] == null) {//不包含
-                                        firstData[key] = value
+                                        firstData[key as String] = value
                                         if (firstData[key] is Map<*, *>) {
                                             jsonMapMCompletion(firstData[key] as Map<*, *>)
-                                        } else if (firstData[key] is ArrayList<*>) {
-                                            listCompletion(firstData[key] as ArrayList<*>)
+                                        } else if (firstData[key] is JSONArray) {
+                                            listCompletion(firstData[key] as JSONArray)
                                         }
                                     }
                                 }
                                 jsonMapMCompletion(any)
                             }
-                            list[0] is ArrayList<*> -> listCompletion(list[0] as ArrayList<*>)
+                            list[0] is JSONArray -> listCompletion(list[0] as JSONArray)
                             else -> {//不是list,那么就是基础数据类型
 
                             }

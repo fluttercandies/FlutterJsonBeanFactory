@@ -1,11 +1,9 @@
 package com.ruiyu.jsontodart
 
-import com.ruiyu.jsontodart.utils.camelCase
-import com.ruiyu.jsontodart.utils.fixFieldName
-import com.ruiyu.jsontodart.utils.getTypeName
-import com.ruiyu.jsontodart.utils.isPrimitiveType
+import com.ruiyu.jsontodart.utils.*
+import com.ruiyu.utils.toUpperCaseFirstOne
 
- class ClassDefinition(private val name: String, private val privateFields: Boolean = false) {
+class ClassDefinition(private val name: String, private val privateFields: Boolean = false) {
     val fields = mutableMapOf<String, TypeDefinition>()
     val dependencies: List<Dependency>
         get() {
@@ -176,7 +174,7 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
     val isPrimitive: Boolean = if (subtype == null) {
         isPrimitiveType(name)
     } else {
-        isPrimitiveType("$name<$subtype>")
+        isPrimitiveType("$name<${subtype!!.toUpperCaseFirstOne()}>")
     }
     private val isPrimitiveList: Boolean
 
@@ -219,19 +217,19 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
     }
 
     fun jsonParseExpression(key: String, privateField: Boolean): String {
-        val jsonKey = "json['$key']";
+        val jsonKey = "json['$key']"
         val fieldKey = fixFieldName(key, this, privateField)
-        if (isPrimitive) {
-            if (name == "List") {
-                return "$fieldKey = json['$key'].cast<$subtype>();";
+        when {
+            isPrimitive -> {
+                if (name == "List") {
+                    return "$fieldKey = json['$key'].cast<$subtype>();";
+                }
+                return "$fieldKey = json['$key'];"
             }
-            return "$fieldKey = json['$key'];"
-        } else if (name == "List") {
-            // list of class
-            return "if (json['$key'] != null) {\n\t\t\t$fieldKey = new List<$subtype>();\n\t\t\tjson['$key'].forEach((v) { $fieldKey.add(new $subtype.fromJson(v)); });\n\t\t}"
-        } else {
-            // class
-            return "$fieldKey = json['$key'] != null ? ${_buildParseClass(jsonKey)} : null;"
+            name == "List" -> // list of class
+                return "if (json['$key'] != null) {\n\t\t\t$fieldKey = new List<$subtype>();\n\t\t\tjson['$key'].forEach((v) { $fieldKey.add(new $subtype.fromJson(v)); });\n\t\t}"
+            else -> // class
+                return "$fieldKey = json['$key'] != null ? ${_buildParseClass(jsonKey)} : null;"
         }
     }
 
@@ -265,4 +263,6 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
     override fun toString(): String {
         return "TypeDefinition(name='$name', subtype=$subtype, isPrimitive=$isPrimitive, isPrimitiveList=$isPrimitiveList)"
     }
+
+
 }
