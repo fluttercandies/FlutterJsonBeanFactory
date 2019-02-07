@@ -18,10 +18,15 @@ class ModelGenerator(
 
     var allClasses = mutableListOf<ClassDefinition>()
     private fun generateClassDefinition(className: String, jsonRawData: Any) {
+        var firstClassNamePrefix = ""
+        if(collectInfo.modelPrefix()){
+            firstClassNamePrefix =  collectInfo.firstClassName()
+        }
         var newClassName = className
         if(!className.startsWith(collectInfo.userInputClassName,ignoreCase = true)){
-            newClassName = collectInfo.firstClassName()+newClassName
+            newClassName = firstClassNamePrefix+newClassName
         }
+
         if (jsonRawData is List<*>) {
             // if first element is an array, start in the first element.
             generateClassDefinition(Inflector.getInstance().singularize(newClassName), jsonRawData[0]!!)
@@ -31,10 +36,10 @@ class ModelGenerator(
             keys.forEach { key ->
                 val typeDef = TypeDefinition.fromDynamic(jsonRawData[key])
                 if (typeDef.name == "Class") {
-                    typeDef.name = collectInfo.firstClassName()+ camelCase(key as String)
+                    typeDef.name = firstClassNamePrefix+ camelCase(key as String)
                 }
                 if (typeDef.subtype != null && typeDef.subtype == "Class") {
-                    typeDef.subtype = collectInfo.firstClassName()+ camelCase(key as String)
+                    typeDef.subtype = firstClassNamePrefix + camelCase(key as String)
                 }
                 classDefinition.addField(key as String, typeDef)
             }
@@ -49,7 +54,7 @@ class ModelGenerator(
                         generateClassDefinition(dependency.className, names[0]!!)
                     }
                 } else {
-                    generateClassDefinition(collectInfo.firstClassName()+ dependency.className, jsonRawData[dependency.name]!!)
+                    generateClassDefinition(firstClassNamePrefix+ dependency.className, jsonRawData[dependency.name]!!)
                 }
             }
         }

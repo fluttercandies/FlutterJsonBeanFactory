@@ -9,7 +9,8 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 data class Settings(
     var modelSuffix: String,
     var ignoreContainFieldClass: String,
-    var scanFileSetting: List<Array<String>>
+    var scanFileSetting: List<Array<String>>,
+    var addPrefix: Boolean
 ) : PersistentStateComponent<Settings> {
 
     constructor() : this(
@@ -17,7 +18,7 @@ data class Settings(
             arrayOf("entity", "static T generateOBJ<T>(json) {", ".fromJson(json) as T;"),
             arrayOf("", "", ""),
             arrayOf("", "", "")
-        )
+        ),true
     )
 
     override fun getState(): Settings {

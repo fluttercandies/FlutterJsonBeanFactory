@@ -1,12 +1,9 @@
 package com.ruiyu.jsontodart.utils
 
-import com.intellij.ui.MessageException
 import com.ruiyu.jsontodart.TypeDefinition
 import com.ruiyu.utils.Inflector
 import com.ruiyu.utils.toUpperCaseFirstOne
-import jdk.nashorn.internal.runtime.regexp.RegExp
 import java.math.BigDecimal
-import java.util.regex.Pattern
 
 val PRIMITIVE_TYPES = mapOf(
     "int" to true,

@@ -1,5 +1,6 @@
 package com.ruiyu.setting
 
+import com.intellij.ui.components.CheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
@@ -7,15 +8,13 @@ import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.JBDimension
 import wu.seal.jsontokotlin.utils.addComponentIntoVerticalBoxAlignmentLeft
 import java.awt.BorderLayout
-import javax.swing.BoxLayout
-import javax.swing.JComponent
-import javax.swing.JPanel
-import javax.swing.ListSelectionModel
+import javax.swing.*
 import javax.swing.border.EmptyBorder
 
 
 class SettingLayout(settingState: Settings) {
     private val panel: JPanel = JPanel(BorderLayout())
+    private val checkBox: JCheckBox
     private val beanNameTextField: JBTextField
     private val ignoreContainFieldClassTextField: JBTextField
     private val configTableModel = ConfigTableModel(settingState)
@@ -23,6 +22,10 @@ class SettingLayout(settingState: Settings) {
     init {
 
         val beanNameLayout = createLinearLayoutVertical()
+        checkBox = JCheckBox("whether to add a class prefix")
+        checkBox.border = EmptyBorder(5, 0, 5, 0)
+        checkBox.isSelected = settingState.addPrefix
+        beanNameLayout.addComponentIntoVerticalBoxAlignmentLeft(checkBox)
         val beanName = JBLabel()
         beanName.border = EmptyBorder(5, 0, 5, 0)
         beanName.text = "model suffix"
@@ -70,6 +73,11 @@ class SettingLayout(settingState: Settings) {
     fun getModelSuffix(): String {
         return beanNameTextField.text
     }
+
+    fun getModelPrefix(): Boolean {
+        return checkBox.isSelected
+    }
+
 
     fun getIgnoreContainFieldClassTextField(): String {
         return ignoreContainFieldClassTextField.text
