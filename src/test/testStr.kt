@@ -14,12 +14,15 @@ private fun generateUnsafeDart(collectInfo : CollectInfo) {
 }
 
 fun main(args: Array<String>) {
-    generateUnsafeDart("ServerConfigEntity")
+    print(arrayOf("equipment", "information", "rice", "money", "species", "series", "fish", "sheep", "data").firstOrNull {
+          "mmmdata".toLowerCase().endsWith(it) }
+    )
+  /*  generateUnsafeDart("ServerConfigEntity")
     generateUnsafeDart(CollectInfo().apply {
      userInputClassName  = "ServerConfig"
     })
     println("-------")
     generateUnsafeDart(CollectInfo().apply {
      userInputClassName  = "server_config"
-    })
+    })*/
 }
