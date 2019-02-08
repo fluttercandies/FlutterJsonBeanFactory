@@ -13,10 +13,15 @@ import com.intellij.psi.impl.file.PsiDirectoryFactory
 import com.ruiyu.beanfactory.FlutterBeanFactoryAction
 import com.ruiyu.jsontodart.filetype.DartFileType
 import com.ruiyu.ui.JsonInputDialog
+import com.ruiyu.utils.Inflector
 import com.ruiyu.utils.executeCouldRollBackAction
 import wu.seal.jsontokotlin.utils.showNotify
 
 class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
+    init {
+        //"data这个单词不要变单数"
+        Inflector.getInstance().underscore("data")
+    }
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.getData(PlatformDataKeys.PROJECT) ?: return
         val dataContext = event.dataContext

@@ -38,6 +38,7 @@ fun getTypeName(obj: Any?): String {
         is String -> "String"
         is Int -> "int"
         is Double -> "double"
+        is Long -> "int"
         is BigDecimal -> "double"
         is Boolean -> "bool"
         null -> "Null"

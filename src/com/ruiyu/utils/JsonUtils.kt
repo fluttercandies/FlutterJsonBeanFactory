@@ -12,9 +12,6 @@ class JsonUtils {
     companion object {
         fun jsonMapMCompletion(jsonRawData: Map<*, *>) {
             jsonRawData.keys.mapIndexed { index, key ->
-                val any = jsonRawData[key]!!
-                var a = any::class.java
-                val b = jsonRawData[key] is Map<*, *>
                 if (jsonRawData[key] is Map<*, *>) {
                     jsonMapMCompletion(jsonRawData[key] as Map<*, *>)
                 } else if (jsonRawData[key] is JSONArray) {
