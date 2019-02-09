@@ -13,6 +13,7 @@
     <depends>com.intellij.modules.lang</depends>
     -->
     <change-notes><![CDATA[
+       <br>fix import bug under Windows</br>
        <br>fixed the dart keyword problem, fixed the second-level class name problem, and the int automatic double problem</br>
        <br>incomplete support for the first data of the list results in missing fields in the generated dart file</br>
        <br>supports custom scan file names, and factory class customizations</br>
@@ -50,5 +51,5 @@
                              instance="com.ruiyu.setting.SettingComponent"/>
 
     </extensions>
-    <version>1.6</version>
+    <version>1.7</version>
 </idea-plugin>
