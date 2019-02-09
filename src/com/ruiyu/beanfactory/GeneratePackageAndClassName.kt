@@ -22,12 +22,9 @@ fun generatePackageAndClassName(projectName: String, file: File,ignoreContainFie
                 className = className.split("<")[0]
             }
             val adbPath = file.absolutePath
-            val tag = "lib"
+            val tag = "/lib/"
     //        println(file.absolutePath.removePrefix())
-            className to "package:$projectName${adbPath.substring(
-                file.absolutePath.indexOf(tag) + tag.length,
-                adbPath.length
-            )}"
+            className to "package:$projectName/${adbPath.substringAfter(tag)}"
         }
 
     }
