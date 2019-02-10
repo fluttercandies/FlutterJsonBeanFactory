@@ -12,7 +12,8 @@ class ModelGenerator(
 ) {
     var isFirstClass = false
     var allClasses = mutableListOf<ClassDefinition>()
-    private fun generateClassDefinition(className: String, parentName: String, jsonRawData: Any) {
+    //parentType 父类型 是list 或者class
+    private fun generateClassDefinition(className: String, parentName: String, jsonRawData: Any, parentType: String = "") {
         var newClassName = className
         if (collectInfo.modelPrefix()) {
             newClassName = parentName + newClassName
@@ -25,7 +26,10 @@ class ModelGenerator(
             generateClassDefinition(Inflector.getInstance().singularize(newClassName), Inflector.getInstance().singularize(newClassName), jsonRawData[0]!!)
         } else if (jsonRawData is Map<*, *>) {
             val keys = jsonRawData.keys
-            val classDefinition = ClassDefinition(Inflector.getInstance().singularize(newClassName))
+            //如果是list,就把名字修改成单数
+            val classDefinition = ClassDefinition(if ("list" == parentType) {
+                Inflector.getInstance().singularize(newClassName)
+            } else newClassName)
             keys.forEach { key ->
                 val typeDef = TypeDefinition.fromDynamic(jsonRawData[key])
                 if (typeDef.name == "Class") {
@@ -48,7 +52,7 @@ class ModelGenerator(
                 if (dependency.typeDef.name == "List") {
                     if (((jsonRawData[dependency.name]) as? List<*>)?.isNotEmpty() == true) {
                         val names = (jsonRawData[dependency.name] as List<*>)
-                        generateClassDefinition(dependency.className, newClassName, names[0]!!)
+                        generateClassDefinition(dependency.className, newClassName, names[0]!!, "list")
                     }
                 } else {
                     generateClassDefinition(dependency.className, newClassName, jsonRawData[dependency.name]!!)

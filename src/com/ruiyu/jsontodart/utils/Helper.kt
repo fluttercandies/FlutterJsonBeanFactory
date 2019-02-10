@@ -64,7 +64,7 @@ fun camelCase(init: String): String {
         if (ret.length != init.length)
             ret.append(" ")
     }
-    var result = Inflector.getInstance().singularize(ret.toString().replace(" ", ""))
+    var result = ret.toString().replace(" ", "")
 
    /* if (PRIMITIVE_TYPES[result] != null || dartKeyword.contains(result)) {
 //        throw MessageException("Please do not use the keyword $result as the key")

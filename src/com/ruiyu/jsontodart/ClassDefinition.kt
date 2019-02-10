@@ -1,6 +1,7 @@
 package com.ruiyu.jsontodart
 
 import com.ruiyu.jsontodart.utils.*
+import com.ruiyu.utils.Inflector
 import com.ruiyu.utils.toUpperCaseFirstOne
 
 class ClassDefinition(private val name: String, private val privateFields: Boolean = false) {
@@ -42,7 +43,8 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
     fun _addTypeDef(typeDef: TypeDefinition, sb: StringBuffer) {
         sb.append(typeDef.name)
         if (typeDef.subtype != null) {
-            sb.append("<${typeDef.subtype}>")
+            //如果是list,就把名字修改成单数
+            sb.append("<${Inflector.getInstance().singularize(typeDef.subtype!!)}>")
         }
     }
 
@@ -226,8 +228,8 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
                 }
                 return "$fieldKey = json['$key'];"
             }
-            name == "List" -> // list of class
-                return "if (json['$key'] != null) {\n\t\t\t$fieldKey = new List<$subtype>();\n\t\t\tjson['$key'].forEach((v) { $fieldKey.add(new $subtype.fromJson(v)); });\n\t\t}"
+            name == "List" -> // list of class  //如果是list,就把名字修改成单数
+                return "if (json['$key'] != null) {\n\t\t\t$fieldKey = new List<${Inflector.getInstance().singularize(subtype!!)}>();\n\t\t\tjson['$key'].forEach((v) { $fieldKey.add(new ${Inflector.getInstance().singularize(subtype!!)}.fromJson(v)); });\n\t\t}"
             else -> // class
                 return "$fieldKey = json['$key'] != null ? ${_buildParseClass(jsonKey)} : null;"
         }
