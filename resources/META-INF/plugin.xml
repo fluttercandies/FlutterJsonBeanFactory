@@ -13,6 +13,7 @@
     <depends>com.intellij.modules.lang</depends>
     -->
     <change-notes><![CDATA[
+       <br>fixed field forEach method when not converted to list</br>
        <br>fixed the bug of plural to singular</br>
        <br>fixed import bug under Windows</br>
        <br>fixed the dart keyword problem, fixed the second-level class name problem, and the int automatic double problem</br>
@@ -52,5 +53,5 @@
                              instance="com.ruiyu.setting.SettingComponent"/>
 
     </extensions>
-    <version>1.8</version>
+    <version>1.9</version>
 </idea-plugin>

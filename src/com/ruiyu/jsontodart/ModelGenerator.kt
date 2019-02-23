@@ -10,7 +10,7 @@ import com.ruiyu.utils.toUpperCaseFirstOne
 class ModelGenerator(
         val collectInfo: CollectInfo
 ) {
-    var isFirstClass = false
+    var isFirstClass = true
     var allClasses = mutableListOf<ClassDefinition>()
     //parentType 父类型 是list 或者class
     private fun generateClassDefinition(className: String, parentName: String, jsonRawData: Any, parentType: String = "") {
@@ -29,15 +29,16 @@ class ModelGenerator(
             //如果是list,就把名字修改成单数
             val classDefinition = ClassDefinition(if ("list" == parentType) {
                 Inflector.getInstance().singularize(newClassName)
-            } else newClassName)
+            } else if(isFirstClass){//如果是第一个类
+                isFirstClass = false
+                newClassName + collectInfo.modelSuffix().toUpperCaseFirstOne()
+            }else{
+                newClassName
+            })
             keys.forEach { key ->
                 val typeDef = TypeDefinition.fromDynamic(jsonRawData[key])
                 if (typeDef.name == "Class") {
-                    typeDef.name = if (isFirstClass) {
-                        preName + collectInfo.modelSuffix().toUpperCaseFirstOne() + camelCase(key as String)
-                    } else {
-                        preName + camelCase(key as String)
-                    }
+                    typeDef.name = preName + camelCase(key as String)
                 }
                 if (typeDef.subtype != null && typeDef.subtype == "Class") {
                     typeDef.subtype = preName + camelCase(key as String)

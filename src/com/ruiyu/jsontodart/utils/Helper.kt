@@ -2,6 +2,7 @@ package com.ruiyu.jsontodart.utils
 
 import com.ruiyu.jsontodart.TypeDefinition
 import com.ruiyu.utils.Inflector
+import com.ruiyu.utils.LogUtil
 import com.ruiyu.utils.toUpperCaseFirstOne
 import java.math.BigDecimal
 
@@ -74,7 +75,14 @@ fun camelCase(init: String): String {
 }
 
 fun camelCaseFirstLower(text: String): String {
+    LogUtil.w(text)
+    if(text.isEmpty()){
+        return text
+    }
     val camelCaseText = camelCase(text)
+    if(camelCaseText.length == 1){
+        return camelCaseText.toLowerCase()
+    }
     val firstChar = camelCaseText.substring(0, 1).toLowerCase()
     val rest = camelCaseText.substring(1)
     return "$firstChar$rest"
