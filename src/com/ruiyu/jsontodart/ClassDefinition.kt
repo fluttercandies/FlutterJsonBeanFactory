@@ -41,7 +41,12 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
     }
 
     fun _addTypeDef(typeDef: TypeDefinition, sb: StringBuffer) {
-        sb.append(typeDef.name)
+        if(typeDef.name == "Null"){
+            sb.append("dynamic")
+        }else {
+            sb.append(typeDef.name)
+        }
+
         if (typeDef.subtype != null) {
             //如果是list,就把名字修改成单数
             sb.append("<${Inflector.getInstance().singularize(typeDef.subtype!!)}>")
