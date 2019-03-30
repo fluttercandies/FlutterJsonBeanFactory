@@ -52,7 +52,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
             sb.append("<${Inflector.getInstance().singularize(typeDef.subtype!!)}>")
         }
     }
-
+    //字段的集合
     val _fieldList: String
         get () {
             return fields.keys.map { key ->

@@ -13,7 +13,8 @@
     <depends>com.intellij.modules.lang</depends>
     -->
     <change-notes><![CDATA[
-       <br>Change null to dynamic to prevent exception resolution</br>
+       <br>fixed field naming bug</br>
+       <br>change null to dynamic to prevent exception resolution</br>
        <br>fixed field forEach method when not converted to list</br>
        <br>fixed the bug of plural to singular</br>
        <br>fixed import bug under Windows</br>

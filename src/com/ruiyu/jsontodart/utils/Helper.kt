@@ -7,32 +7,32 @@ import com.ruiyu.utils.toUpperCaseFirstOne
 import java.math.BigDecimal
 
 val PRIMITIVE_TYPES = mapOf(
-    "int" to true,
-    "double" to true,
-    "String" to true,
-    "bool" to true,
-    "List" to true,
-    "List<Int>" to true,
-    "List<Double>" to true,
-    "List<String>" to true,
-    "List<Boolean>" to true,
-    "Null" to true
+        "int" to true,
+        "double" to true,
+        "String" to true,
+        "bool" to true,
+        "List" to true,
+        "List<Int>" to true,
+        "List<Double>" to true,
+        "List<String>" to true,
+        "List<Boolean>" to true,
+        "Null" to true
 )
-val dartKeyword = mutableListOf("abstract","dynamic","implements","show",
-"as","else","import ","static",
-"assert","enum","in","super",
-"async","export","interface","switch",
-"await","external","is","sync",
-"break","extends","library","this",
-"case","factory","mixin","throw",
-"catch","false","new","true",
-"class","final","null","try",
-"const","finally","on","typedef",
-"continue",	"for","operator","var",
-"covariant","Function","part","void",
-"default","get","rethrow","while",
-"deferred","hide","return","with",
-"do","if","set","yield","list","map")
+val dartKeyword = mutableListOf("abstract", "dynamic", "implements", "show",
+        "as", "else", "import ", "static",
+        "assert", "enum", "in", "super",
+        "async", "export", "interface", "switch",
+        "await", "external", "is", "sync",
+        "break", "extends", "library", "this",
+        "case", "factory", "mixin", "throw",
+        "catch", "false", "new", "true",
+        "class", "final", "null", "try",
+        "const", "finally", "on", "typedef",
+        "continue", "for", "operator", "var",
+        "covariant", "Function", "part", "void",
+        "default", "get", "rethrow", "while",
+        "deferred", "hide", "return", "with",
+        "do", "if", "set", "yield", "list", "map")
 
 fun getTypeName(obj: Any?): String {
     return when (obj) {
@@ -67,20 +67,24 @@ fun camelCase(init: String): String {
     }
     var result = ret.toString().replace(" ", "")
 
-   /* if (PRIMITIVE_TYPES[result] != null || dartKeyword.contains(result)) {
-//        throw MessageException("Please do not use the keyword $result as the key")
-        result +="X"
-    }*/
+    /* if (PRIMITIVE_TYPES[result] != null || dartKeyword.contains(result)) {
+ //        throw MessageException("Please do not use the keyword $result as the key")
+         result +="X"
+     }*/
     return result
 }
 
 fun camelCaseFirstLower(text: String): String {
     LogUtil.w(text)
-    if(text.isEmpty()){
+    if (text.isEmpty()) {
         return text
     }
-    val camelCaseText = camelCase(text)
-    if(camelCaseText.length == 1){
+    val camelCaseText = if (text.contains("_")) {
+        camelCase(text)
+    } else {
+        text
+    }
+    if (camelCaseText.length == 1) {
         return camelCaseText.toLowerCase()
     }
     val firstChar = camelCaseText.substring(0, 1).toLowerCase()
@@ -102,10 +106,10 @@ fun fixFieldName(name: String, typeDef: TypeDefinition? = null, privateField: Bo
     return filedKeywordRename(fieldName)
 }
 
-fun filedKeywordRename(key:String):String{
+fun filedKeywordRename(key: String): String {
     var notKeyWord = key
     //关键字的修改字段名
-    if(dartKeyword.contains(key.toLowerCase())){
+    if (dartKeyword.contains(key.toLowerCase())) {
         notKeyWord = "x${key.toUpperCaseFirstOne()}"
     }
     return notKeyWord
