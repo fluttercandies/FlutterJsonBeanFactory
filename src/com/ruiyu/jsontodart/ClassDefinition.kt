@@ -233,8 +233,12 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
                 }
                 return "$fieldKey = json['$key'];"
             }
-            name == "List" -> // list of class  //如果是list,就把名字修改成单数
-                return "if (json['$key'] != null) {\n\t\t\t$fieldKey = new List<${Inflector.getInstance().singularize(subtype!!)}>();\n\t\t\t(json['$key'] as List).forEach((v) { $fieldKey.add(new ${Inflector.getInstance().singularize(subtype!!)}.fromJson(v)); });\n\t\t}"
+            name == "List" ->{ // list of class  //如果是list,就把名字修改成单数
+                val value = if(subtype == "Null")  "" else """
+			        (json['$key'] as List).forEach((v) { $fieldKey.add(new ${Inflector.getInstance().singularize(subtype!!)}.fromJson(v)); });
+                """.trimIndent()
+                return "if (json['$key'] != null) {\n\t\t\t$fieldKey = new List<${Inflector.getInstance().singularize(subtype!!)}>();$value\n\t\t}"
+            }
             else -> // class
                 return "$fieldKey = json['$key'] != null ? ${_buildParseClass(jsonKey)} : null;"
         }
@@ -247,9 +251,10 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
         if (isPrimitive) {
             return "data['$key'] = $thisKey;"
         } else if (name == "List") {
+            val value = if(subtype == "Null")  "[]" else "$thisKey.map((v) => ${_buildToJsonClass("v")}).toList()"
             // class list
             return """if ($thisKey != null) {
-      data['$key'] = $thisKey.map((v) => ${_buildToJsonClass("v")}).toList();
+      data['$key'] =  $value;
     }"""
         } else {
             // class

@@ -53,10 +53,10 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                         directory
                 )
                 val notifyMessage = "Dart Data Class file generated successful"
-                showNotify(notifyMessage, project)
                 if (collectInfo.userIsSelectedRefresh) {
                     FlutterBeanFactoryAction.getGenInfos(event)
                 }
+                showNotify(notifyMessage, project)
             }.show()
         } catch (e: Exception) {
             project.showNotify(e.message!!)
