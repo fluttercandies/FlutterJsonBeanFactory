@@ -1,12 +1,10 @@
 package com.ruiyu.jsontodart
 
-import com.intellij.openapi.actionSystem.AnAction
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.DataKeys
-import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.file.PsiDirectoryFactory
@@ -21,20 +19,23 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.getData(PlatformDataKeys.PROJECT) ?: return
+
         val dataContext = event.dataContext
-        val module = DataKeys.MODULE.getData(dataContext) ?: return
-        val navigatable = DataKeys.NAVIGATABLE.getData(dataContext)
-        val directory: PsiDirectory =
-                if (navigatable is PsiDirectory) {
-                    navigatable
-                } else {
-                    val root = ModuleRootManager.getInstance(module)
-                    var tempDirectory: PsiDirectory? = null
-                    for (file in root.sourceRoots) {
-                        tempDirectory = PsiManager.getInstance(project).findDirectory(file)
-                    }
-                    tempDirectory!!
-                }
+        val module = LangDataKeys.MODULE.getData(dataContext) ?: return
+
+        val navigatable = LangDataKeys.NAVIGATABLE.getData(dataContext)
+        val directory = when (navigatable) {
+            is PsiDirectory -> navigatable
+            is PsiFile -> navigatable.containingDirectory
+            else -> {
+                val root = ModuleRootManager.getInstance(module)
+                root.sourceRoots
+                        .asSequence()
+                        .mapNotNull {
+                            PsiManager.getInstance(project).findDirectory(it)
+                        }.firstOrNull()
+            }
+        } ?: return
         val directoryFactory = PsiDirectoryFactory.getInstance(directory.project)
         val packageName = directoryFactory.getQualifiedName(directory, true)
         val psiFileFactory = PsiFileFactory.getInstance(project)
