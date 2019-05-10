@@ -229,7 +229,7 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
         when {
             isPrimitive -> {
                 if (name == "List") {
-                    return "$fieldKey = json['$key'].cast<$subtype>();";
+                    return "$fieldKey = json['$key']?.cast<$subtype>();"
                 }
                 return "$fieldKey = json['$key'];"
             }
