@@ -1,4 +1,5 @@
-*.iml
-.idea/misc.xml
-build/
-out/
+# Project exclude paths
+/.gradle/
+/build/
+/out/
+/out/production/classes/
