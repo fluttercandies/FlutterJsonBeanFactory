@@ -1,0 +1,26 @@
+{
+  "191.4738.6": {
+    "comments": "2019.1",
+    "ideaVersion": "191.4738.6",
+    "dartPluginVersion": "191.4738.6",
+    "flutterPluginVersion": "34.0.4",
+    "sinceBuild": "191.0",
+    "untilBuild": "191.*"
+  },
+  "192.5728.98": {
+    "comments": "2019.2",
+    "ideaVersion": "192.5728.98",
+    "dartPluginVersion": "192.5728.98",
+    "flutterPluginVersion": "38.1.4",
+    "sinceBuild": "192.0",
+    "untilBuild": "192.*"
+  },
+  "193.5662.53": {
+    "comments": "2019.3",
+    "ideaVersion": "193.5662.*",
+    "dartPluginVersion": "193.5731",
+    "flutterPluginVersion": "42.1.4",
+    "sinceBuild": "193.0",
+    "untilBuild": "193.*"
+  }
+}
