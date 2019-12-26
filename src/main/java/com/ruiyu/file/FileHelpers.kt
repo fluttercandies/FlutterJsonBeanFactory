@@ -97,13 +97,13 @@ object FileHelpers {
      * 自动生成单个文件的辅助文件
      */
     private fun generateDartEntityHelper(project: Project, packageName: String, helperClassGeneratorInfos: MutableList<HelperClassGeneratorInfo>?) {
-
+        val pubSpecConfig = getPubSpecConfig(project)
         val content = StringBuilder()
         //导包
         //辅助主类的包名
         content.append(packageName)
         content.append("\n")
-        content.append("import 'package:${project.name}/generated/json/base/json_filed.dart';")
+        content.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_filed.dart';")
         content.append("\n")
         content.append(helperClassGeneratorInfos?.joinToString("\n"))
         //创建文件
@@ -125,6 +125,7 @@ object FileHelpers {
      * 获取所有符合生成的file
      */
     fun getAllEntityFiles(project: Project): List<Pair<MutableList<HelperClassGeneratorInfo>, String>> {
+        val pubSpecConfig = getPubSpecConfig(project)
         val psiManager = PsiManager.getInstance(project)
         return FilenameIndex.getAllFilesByExt(project, "dart").filter {
             it.path.endsWith("_${ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()}.dart") && it.path.contains("${project.name}/lib/")
@@ -136,7 +137,7 @@ object FileHelpers {
             if (dartFileHelperClassGeneratorInfo == null) {
                 null
             } else {
-                dartFileHelperClassGeneratorInfo to "import 'package:${project.name}/${packageName}';"
+                dartFileHelperClassGeneratorInfo to "import 'package:${pubSpecConfig?.name}/${packageName}';"
             }
 
         }
@@ -307,6 +308,7 @@ fun PsiFileSystemItem.getParentLibEnd(): String {
 
 
 private const val PUBSPEC_KEY = "flutter_i18n"
+private const val PROJECT_NAME = "name"
 private const val PUBSPEC_ENABLE_PLUGIN_KEY = "enable-flutter-i18n"
 private const val PUBSPEC_DART_ENABLED_KEY = "enable-for-dart"
 
@@ -314,6 +316,8 @@ data class PubSpecConfig(
         val project: Project,
         val pubRoot: PubRoot,
         val map: Map<String, Any>,
+        //项目名称,导包需要
+        val name: String = map[PROJECT_NAME]?.toString() ?: "",
         val i18nMap: Map<*, *>? = map[PUBSPEC_KEY] as? Map<*, *>,
         val isFlutterModule: Boolean = FlutterModuleUtils.hasFlutterModule(project),
         val isPluginConfigured: Boolean = i18nMap != null,
