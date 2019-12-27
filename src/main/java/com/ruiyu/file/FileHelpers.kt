@@ -72,7 +72,7 @@ object FileHelpers {
     /**
      *
      */
-    fun getEntityHelperFile(project: Project, fileName: String, callback: (file: VirtualFile) -> Unit) {
+    private fun getEntityHelperFile(project: Project, fileName: String, callback: (file: VirtualFile) -> Unit) {
         ApplicationManager.getApplication().runWriteAction {
             val generated = getGeneratedFile(project)
             callback(generated.findOrCreateChildData(this, fileName))
@@ -91,6 +91,15 @@ object FileHelpers {
                         ?: createChildDirectory(this, "json"))
             }
         }!!
+    }
+
+    /**
+     * 获取generated/json自动生成目录
+     */
+    fun getGeneratedFileRun(project: Project, callback: (file: VirtualFile) -> Unit) {
+        ApplicationManager.getApplication().runWriteAction {
+            callback(getGeneratedFile(project))
+        }
     }
 
     /**
@@ -163,19 +172,7 @@ object FileHelpers {
     @Suppress("DuplicatedCode")
     @JvmStatic
     fun shouldActivateWith(pubSpecConfig: PubSpecConfig?): Boolean {
-        pubSpecConfig?.let {
-            // Did the user deactivate for this project?
-            if (it.isDisabled) {
-                return@shouldActivateWith false
-            }
-
-            // Automatically activated for Flutter projects.
-            return@shouldActivateWith if (it.pubRoot.declaresFlutter())
-                true
-            else
-                it.isEnabledForDart
-        }
-        return false
+        return pubSpecConfig?.pubRoot?.declaresFlutter() ?: false
     }
 
     fun getDartFileHelperClassGeneratorInfo(file: PsiFile): MutableList<HelperClassGeneratorInfo>? {
@@ -319,10 +316,5 @@ data class PubSpecConfig(
         //项目名称,导包需要
         val name: String = map[PROJECT_NAME]?.toString() ?: "",
         val i18nMap: Map<*, *>? = map[PUBSPEC_KEY] as? Map<*, *>,
-        val isFlutterModule: Boolean = FlutterModuleUtils.hasFlutterModule(project),
-        val isPluginConfigured: Boolean = i18nMap != null,
-        val isEnabled: Boolean = isOptionTrue(i18nMap, PUBSPEC_ENABLE_PLUGIN_KEY),
-        val isDisabled: Boolean = isOptionFalse(i18nMap, PUBSPEC_ENABLE_PLUGIN_KEY),
-        val isEnabledForDart: Boolean = isOptionTrue(i18nMap, PUBSPEC_DART_ENABLED_KEY),
-        val isDisabledForDart: Boolean = isOptionFalse(i18nMap, PUBSPEC_DART_ENABLED_KEY)
+        val isFlutterModule: Boolean = FlutterModuleUtils.hasFlutterModule(project)
 )

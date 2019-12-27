@@ -145,19 +145,6 @@ fun JsonArray.onlyOneSubArrayContainsElementAndAllObjectRecursive(): Boolean {
 }
 
 
-internal fun showNotify(notifyMessage: String, project: Project?) {
-    try {
-        val notificationGroup = NotificationGroup("JSON to Dart Class", NotificationDisplayType.BALLOON, true)
-        ApplicationManager.getApplication().invokeLater {
-            val notification = notificationGroup.createNotification(notifyMessage, NotificationType.INFORMATION)
-            Notifications.Bus.notify(notification, project)
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-
-}
-
 fun Project.showNotify(notifyMessage: String) {
     try {
         val notificationGroup = NotificationGroup("JSON to Dart Class", NotificationDisplayType.BALLOON, true)

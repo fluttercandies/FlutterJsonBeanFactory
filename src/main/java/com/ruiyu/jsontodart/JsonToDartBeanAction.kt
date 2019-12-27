@@ -59,7 +59,7 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                 )
                 val notifyMessage = "Dart Data Class file generated successful"
                 FlutterBeanFactoryAction.generateAllFile(project)
-                showNotify(notifyMessage, project)
+                project.showNotify(notifyMessage)
             }.show()
         } catch (e: Exception) {
             project.showNotify(e.message!!)
