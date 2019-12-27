@@ -10,8 +10,9 @@
      <br>If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.</br>
     ]]></description>
     <change-notes><![CDATA[
-       <br>Solve the guide package project name problem</br>
-       <br>Version 3.1 has been released,Provide JsonConvert.dart,EntityFactory is deprecated</br>
+       <br>if the first jsonobject in the jsonarray is not perfect, the data will not be complete</br>
+       <br>rebuild will delete redundant files</br>
+       <br>version 3.1 has been released,Provide JsonConvert.dart,EntityFactory is deprecated</br>
        <br>fixed error occurred when try casting null to List<String></br>
        <br>fixed new file bug</br>
        <br>fixed an empty collection bug</br>
