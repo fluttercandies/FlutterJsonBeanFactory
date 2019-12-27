@@ -75,7 +75,6 @@ class ModelGenerator(
                 .registerTypeAdapter(object : TypeToken<Map<String, Any>>() {}.type, MapTypeAdapter()).create()
         val jsonRawData = gson.fromJson<Map<String, Any>>(collectInfo.userInputJson, object : TypeToken<Map<String, Any>>() {}.type)
 //        val jsonRawData = gson.fromJson<Map<String, Any>>(collectInfo.userInputJson, HashMap::class.java)
-        JsonUtils.jsonMapMCompletion(jsonRawData)
         val pubSpecConfig = FileHelpers.getPubSpecConfig(project)
         val stringBuilder = StringBuilder()
         //导包
@@ -83,7 +82,8 @@ class ModelGenerator(
         stringBuilder.append("\n")
         stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_filed.dart';")
         stringBuilder.append("\n\n")
-        stringBuilder.append(generateClassDefinition(collectInfo.firstClassName(), "", jsonRawData).joinToString("\n"))
+        stringBuilder.append(generateClassDefinition(collectInfo.firstClassName(), "", JsonUtils.jsonMapMCompletion(jsonRawData)
+                ?: mutableMapOf<String, Any>()).joinToString("\n"))
         //生成helper类
 
         //生成

@@ -46,7 +46,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         val helpPackageName = "${File(itemNeedFile.second).nameWithoutExtension}_helper.dart"
                         content.append("import 'package:${pubSpecConfig?.name}/${itemNeedFile.second.substringAfter("${pubSpecConfig?.name}/")}")
                         content.append("\n")
-                        content.append("import 'package:${pubSpecConfig?.name}/generated/json/${helpPackageName}_helper.dart';")
+                        content.append("import 'package:${pubSpecConfig?.name}/generated/json/${helpPackageName}';")
                         content.append("\n")
                         oldHelperChildren.removeIf { oldItemFile ->
                             //删除包含的,剩下的就是多余的,比如之前生成过,现在被删除

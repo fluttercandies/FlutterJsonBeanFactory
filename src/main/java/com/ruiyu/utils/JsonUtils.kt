@@ -10,122 +10,43 @@ import com.google.gson.internal.LinkedTreeMap
  */
 class JsonUtils {
     companion object {
-        fun jsonMapMCompletion(jsonRawData: Map<*, *>) {
-            jsonRawData.keys.mapIndexed { index, key ->
-                if (jsonRawData[key] is Map<*, *>) {
-                    jsonMapMCompletion(jsonRawData[key] as Map<*, *>)
-                } else if (jsonRawData[key] is ArrayList<*>) {
-                    val list = jsonRawData[key] as ArrayList<*>
-                    listCompletion(list)
-                }
-            }
-        }
-
-        private fun listCompletion(list: ArrayList<*>) {
-            list.mapIndexed { index, any ->
-
-                val toList = list.toList()
-                if (toList.isNotEmpty()) {
-                    if (toList.size == 1) {
-                        if (list[0] is Map<*, *>) {
-                            jsonMapMCompletion(list[0] as Map<*, *>)
-                        } else if (list[0] is ArrayList<*>) {
-                            listCompletion(list[0] as ArrayList<*>)
-                        }
-                    } else if (index != 0) {
-                        when {
-                            any is Map<*, *> -> {
-                                any.forEach { key, value ->
-                                    val firstData = (list[0] as LinkedTreeMap<Any?, Any?>)
-                                    if (firstData.containsKey(key).not() || firstData[key] == null) {//不包含
-                                        firstData[key as String] = value
-                                        if (firstData[key] is Map<*, *>) {
-                                            jsonMapMCompletion(firstData[key] as Map<*, *>)
-                                        } else if (firstData[key] is ArrayList<*>) {
-                                            listCompletion(firstData[key] as ArrayList<*>)
-                                        }
-                                    }
-                                }
-                                jsonMapMCompletion(any)
-                            }
-                            list[0] is JsonArray -> listCompletion(list[0] as ArrayList<*>)
-                            else -> {//不是list,那么就是基础数据类型
-
-                            }
+        fun jsonMapMCompletion(data: Any?, initData: MutableMap<String, Any?>? = null): Any? {
+            if (data == null) return null
+            val returnData = initData ?: mutableMapOf()
+            when (data) {
+                is Map<*, *> -> {
+                    data.forEach {
+                        val key = it.key as String
+                        //如果包含,并且字段不为null,那么就不去修改,如果包含,但是包含的是null,那么以最后一个做标准
+                        if ((returnData.containsKey(key) && returnData[key] != null).not()) {
+                            returnData[it.key as String] = jsonMapMCompletion(it.value)
                         }
                     }
-
+                    return returnData
+                }
+                is List<*> -> {
+                    if (data.isEmpty()) return listOf<String>()
+                    return if (data.first() is Map<*, *>) {
+                        //这个map中只有一个数据,但是map数据是最完整的
+                        val listNewDataMap = mutableMapOf<String, Any?>()
+                        data.forEach {
+                            //如果是map,手写一个map,然后元数据每个map都遍历到这个值中,判断null和字段存在,主要为了防止map中字段不同意造成的json类不完整问题
+                            if (it is Map<*, *>) {
+                                //此时
+                                jsonMapMCompletion(it, listNewDataMap)
+                            }
+                        }
+                        listNewDataMap
+                    } else {
+                        data
+                    }
 
                 }
-
+                else -> {
+                    return data
+                }
             }
         }
 
     }
 }
-
-/*
-
-package com.ruiyu.utils
-
-import com.google.gson.internal.LinkedTreeMap
-
-*/
-/**
- * 处理json的list第一个不完整生成的json dart bean
- * 方案:遍历复制list的所有字段到第一个里
- *//*
-
-class JsonUtils {
-    companion object {
-        fun jsonMapMCompletion(jsonRawData: Map<*, *>) {
-            jsonRawData.keys.mapIndexed { index, key ->
-                if (jsonRawData[key] is Map<*, *>) {
-                    jsonMapMCompletion(jsonRawData[key] as Map<*, *>)
-                } else if (jsonRawData[key] is ArrayList<*>) {
-                    val list = jsonRawData[key] as ArrayList<*>
-                    listCompletion(list)
-                }
-            }
-        }
-
-        private fun listCompletion(list: ArrayList<*>) {
-            list.mapIndexed { index, any ->
-                if (list.isNotEmpty()) {
-                    if (list.size == 1) {
-                        if (list[0] is Map<*, *>) {
-                            jsonMapMCompletion(list[0] as Map<*, *>)
-                        } else if (list[0] is ArrayList<*>) {
-                            listCompletion(list[0] as ArrayList<*>)
-                        }
-                    } else if (index != 0) {
-                        when {
-                            any is Map<*, *> -> {
-                                any.forEach { key, value ->
-                                    val firstData = (list[0] as LinkedTreeMap<Any?, Any?>)
-                                    if (firstData.containsKey(key).not() || firstData[key] == null) {//不包含
-                                        firstData[key] = value
-                                        if (firstData[key] is Map<*, *>) {
-                                            jsonMapMCompletion(firstData[key] as Map<*, *>)
-                                        } else if (firstData[key] is ArrayList<*>) {
-                                            listCompletion(firstData[key] as ArrayList<*>)
-                                        }
-                                    }
-                                }
-                                jsonMapMCompletion(any)
-                            }
-                            list[0] is ArrayList<*> -> listCompletion(list[0] as ArrayList<*>)
-                            else -> {//不是list,那么就是基础数据类型
-
-                            }
-                        }
-                    }
-
-
-                }
-
-            }
-        }
-
-    }
-}*/
