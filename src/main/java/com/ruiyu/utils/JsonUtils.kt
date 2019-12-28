@@ -36,7 +36,7 @@ class JsonUtils {
                                 jsonMapMCompletion(it, listNewDataMap)
                             }
                         }
-                        listNewDataMap
+                        listOf(listNewDataMap)
                     } else {
                         data
                     }

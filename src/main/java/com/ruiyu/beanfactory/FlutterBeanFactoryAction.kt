@@ -68,7 +68,7 @@ class FlutterBeanFactoryAction : AnAction() {
 ///
                     //tojson
                     content.append("""  Map<String, dynamic> toJson() {
-		return getToJson<T>(runtimeType, this);
+		return _getToJson<T>(runtimeType, this);
   }""")
 
                     content.append("  static _getFromJson<T>(Type type, data, json) {\n" +
@@ -83,7 +83,7 @@ class FlutterBeanFactoryAction : AnAction() {
                             "    return data as T;\n" +
                             "  }")
 
-                    content.append("  static getToJson<T>(Type type, data) {\n" +
+                    content.append("  static _getToJson<T>(Type type, data) {\n" +
                             "\t\tswitch (type) {")
                     allClass.forEach {
                         it.first.forEach { itemFile ->
