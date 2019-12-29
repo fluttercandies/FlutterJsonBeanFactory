@@ -28,8 +28,8 @@ class FlutterBeanFactoryAction : AnAction() {
 
         fun generateAllFile(project: Project) {
             val pubSpecConfig = FileHelpers.getPubSpecConfig(project)
-            //是flutter项目
-            if (FileHelpers.shouldActivateFor(project)) {
+            //判断是否是flutter项目
+//            if (FileHelpers.shouldActivateFor(project)) {
                 FileHelpers.getGeneratedFileRun(project) {
                     //上次生成的老旧老文件
                     val oldHelperChildren = it.children.filterIsInstance<VirtualFileImpl>().toMutableList()
@@ -118,9 +118,9 @@ class FlutterBeanFactoryAction : AnAction() {
                     project.showNotify("convert factory is generated")
                 }
 
-            } else {
-                project.showNotify("This project is not flutter")
-            }
+//            } else {
+//                project.showNotify("This project is not flutter")
+//            }
 
 
         }

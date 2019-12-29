@@ -5,6 +5,8 @@ import com.google.gson.reflect.TypeToken
 import com.intellij.openapi.project.Project
 import com.ruiyu.file.FileHelpers
 import com.ruiyu.json.GsonUtil.MapTypeAdapter
+import com.ruiyu.jsontodart.utils.camelCase
+import com.ruiyu.jsontodart.utils.fixFieldName
 import com.ruiyu.utils.Inflector
 import com.ruiyu.utils.JsonUtils
 import com.ruiyu.utils.toUpperCaseFirstOne
@@ -42,10 +44,10 @@ class ModelGenerator(
             keys.forEach { key ->
                 val typeDef = TypeDefinition.fromDynamic(jsonRawData[key])
                 if (typeDef.name == "Class") {
-                    typeDef.name = preName + (key as String).toUpperCaseFirstOne()
+                    typeDef.name = preName + camelCase(key as String)
                 }
                 if (typeDef.subtype != null && typeDef.subtype == "Class") {
-                    typeDef.subtype = preName + (key as String).toUpperCaseFirstOne()
+                    typeDef.subtype = preName + camelCase(key as String)
                 }
                 classDefinition.addField(key as String, typeDef)
             }

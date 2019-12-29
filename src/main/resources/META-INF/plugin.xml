@@ -6,10 +6,11 @@
     <description><![CDATA[
      <br>Json to dart beans are provided, and dart files ending in entity are provided to generate dart bean factory for use.</br>
      <br>right click on package -> `New`->`Dart bean clas file from JSON`　And Then you will know how to use</br>
-     <br>If you change the fields in the class, just press the shortcut command + "to regenerate the tojson and fromjson methods. The generated method regenerates all helper classes and JsonConvert classes (the same as the shortcut command +") each time an entity file is created in the generated/json directory.</br>
+     <br>If you change the fields in the class, just press the shortcut alt + j to regenerate the tojson and fromjson methods. The generated method regenerates all helper classes and JsonConvert classes (the same as the shortcut alt + j) each time an entity file is created in the generated/json directory.</br>
      <br>If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.</br>
     ]]></description>
     <change-notes><![CDATA[
+       <br>shortcut key is changed to Alt + j</br>
        <br>if the first jsonobject in the jsonarray is not perfect, the data will not be complete</br>
        <br>rebuild will delete redundant files</br>
        <br>version 3.1 has been released,Provide JsonConvert.dart,EntityFactory is deprecated</br>
@@ -21,10 +22,7 @@
        <br>fixed field forEach method when not converted to list</br>
        <br>fixed the bug of plural to singular</br>
        <br>fixed import bug under Windows</br>
-       <br>fixed the dart keyword problem, fixed the second-level class name problem, and the int automatic double problem</br>
-       <br>incomplete support for the first data of the list results in missing fields in the generated dart file</br>
-       <br>supports custom scan file names, and factory class customizations</br>
-       <br>support for custom model suffix names</br>
+       <br>fixed the dart keyword prob       <br>support for custom model suffix names</br>
        <br>support android studio</br>
        <br>Json to dart beans are provided</br>
     ]]>
@@ -45,7 +43,7 @@
                 text="FlutterBeanFactory"
                 description="Dart files ending in entity generate dart bean factory for use">
             <add-to-group group-id="BuildMenu" anchor="first"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="ctrl QUOTE"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt j"/>
         </action>
 
         <action id="FlutterBeanFactory.GenerateDartBeanFileAction"

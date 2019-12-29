@@ -70,10 +70,12 @@ fun isPrimitiveType(typeName: String): Boolean {
 
 
 fun camelCase(init: String): String {
+    if (init.contains("_").not()) {
+        return init.toUpperCaseFirstOne()
+    }
     val ret = StringBuilder(init.length)
-
     for (word in init.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-        if (!word.isEmpty()) {
+        if (word.isNotEmpty()) {
             ret.append(word.substring(0, 1).toUpperCase())
             ret.append(word.substring(1).toLowerCase())
         }
