@@ -14,7 +14,7 @@ What I do is generate dart beans based on json, as well as generics parameters a
     File --> Settings --> Plugins --> Browse Repositories -->Search FlutterJsonBean
 * Restart your Develop tools 
 * Press shortcut key `alt ` + `j` for mac  , right click on package -> `New`->`Dart bean clas file from JSON`　And Then you will know how to use
-* If you change the fields in the class, just press the shortcut command + "to regenerate the tojson and fromjson methods. The generated method regenerates all helper classes and JsonConvert classes (the same as the shortcut command +") each time an entity file is created in the generated/json directory.
+* If you change the fields in the class, just press the shortcut alt + j to regenerate the tojson and fromjson methods. The generated method regenerates all helper classes and JsonConvert classes (the same as the shortcut alt + j) each time an entity file is created in the generated/json directory.
 * If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.
 * [中文移步](https://www.jianshu.com/p/14cbcbaa74b7)
 
