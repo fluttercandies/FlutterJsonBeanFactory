@@ -56,23 +56,33 @@ class HelperClassGeneratorInfo {
         val isListType = type.contains("List")
         return when {
             isPrimitive -> {
-                if (isListType) {
-                    return "data.$name = json['$getJsonName']?.cast<${getListSubType(type)}>();"
-                } else {
-                    "data.$name = json['$getJsonName'];"
+                when {
+                    isListType -> {
+                        "data.$name = json['$getJsonName']?.cast<${getListSubType(type)}>();"
+                    }
+                    type == "DateTime" -> {
+                        "if(json['$getJsonName'] != null){\n\t\tdata.$name = DateTime.tryParse(json['$getJsonName']);\n\t}"
+                    }
+                    else -> {
+                        "data.$name = json['$getJsonName'];"
+                    }
                 }
             }
             isListType -> { // list of class  //如果是list,就把名字修改成单数
                 //类名
                 val listSubType = getListSubType(type)
-                val value = if (listSubType == "dynamic") "" else
-                    "(json['$getJsonName'] as List).forEach((v) {\n\t\t\tdata.$name.add(new ${listSubType}().fromJson(v));\n\t\t});".trimIndent()
+                val value = when (listSubType) {
+                    "dynamic" -> "data.starTime.addAll(json['$getJsonName']);"
+                    "DateTime" -> "(json['$getJsonName'] as List).forEach((v) {\n\t\t\tdata.$name.add(DateTime.parse(v));\n\t\t});".trimIndent()
+                    else -> "(json['$getJsonName'] as List).forEach((v) {\n\t\t\tdata.$name.add(new ${listSubType}().fromJson(v));\n\t\t});".trimIndent()
+                }
                 "if (json['$getJsonName'] != null) {\n\t\tdata.$name = new List<${listSubType}>();\n\t\t$value\n\t}"
             }
             else -> // class
                 "data.$name = json['$getJsonName'] != null ? new $type().fromJson(json['$getJsonName']) : null;"
         }
     }
+
     //生成tojson方法
     fun jsonGenFunc(): String {
         val sb = StringBuffer();
@@ -102,7 +112,7 @@ class HelperClassGeneratorInfo {
         } else if (isListType) {
             //类名
             val listSubType = getListSubType(type)
-            val value = if (listSubType == "dynamic") "[]" else "$thisKey.map((v) => v.toJson()).toList()"
+            val value = if (listSubType == "dynamic") "[]" else if (listSubType == "DateTime") thisKey else "$thisKey.map((v) => v.toJson()).toList()"
             // class list
             return "if ($thisKey != null) {\n\t\tdata['$getJsonName'] =  $value;\n\t}"
         } else {

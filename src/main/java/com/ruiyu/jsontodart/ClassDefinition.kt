@@ -61,7 +61,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
                 val fieldName = fixFieldName(key, f, privateFields)
                 val sb = StringBuffer();
                 //如果驼峰命名后不一致,才这样
-                if(fieldName != key){
+                if (fieldName != key) {
                     sb.append('\t')
                     sb.append("@JSONField(\"${key}\")\n")
                 }
@@ -135,7 +135,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
             sb.append("});");
             return sb.toString();
         }
-
+/*
     val _jsonParseFunc: String
         get() {
             val sb = StringBuffer();
@@ -146,8 +146,8 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
             }
             sb.append("\t}");
             return sb.toString();
-        }
-
+        }*/
+/*
     val _jsonGenFunc: String
         get() {
             val sb = StringBuffer();
@@ -158,11 +158,12 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
             sb.append("\t\treturn data;\n");
             sb.append("\t}");
             return sb.toString();
-        }
+        }*/
 
     override fun toString(): String {
         return if (privateFields) {
-            "class $name {\n$_fieldList\n\n$_defaultPrivateConstructor\n\n$_gettersSetters\n\n$_jsonParseFunc\n\n$_jsonGenFunc\n}\n";
+//            "class $name {\n$_fieldList\n\n$_defaultPrivateConstructor\n\n$_gettersSetters\n\n$_jsonParseFunc\n\n$_jsonGenFunc\n}\n";
+            ""
         } else {
             "class $name with JsonConvert<${name}> {\n$_fieldList\n}\n";
         }
@@ -200,7 +201,7 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
                     getTypeName(list[0])
                 } else {
                     // when array is empty insert Null just to warn the user
-                    "Null"
+                    "dynamic"
                 }
                 return TypeDefinition(type, firstElementType)
             }
@@ -228,6 +229,7 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
     fun _buildToJsonClass(expression: String): String {
         return "$expression.toJson()"
     }
+/*
 
     fun jsonParseExpression(key: String, privateField: Boolean): String {
         val jsonKey = "json['$key']"
@@ -249,6 +251,7 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
                 return "$fieldKey = json['$key'] != null ? ${_buildParseClass(jsonKey)} : null;"
         }
     }
+*/
 
 
     fun toJsonExpression(key: String, privateField: Boolean): String {

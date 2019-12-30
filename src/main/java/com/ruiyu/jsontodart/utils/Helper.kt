@@ -1,7 +1,7 @@
 package com.ruiyu.jsontodart.utils
 
 import com.ruiyu.jsontodart.TypeDefinition
-import com.ruiyu.utils.Inflector
+import com.ruiyu.utils.DateUtil
 import com.ruiyu.utils.LogUtil
 import com.ruiyu.utils.toUpperCaseFirstOne
 import java.math.BigDecimal
@@ -12,6 +12,7 @@ val PRIMITIVE_TYPES = mapOf(
         "String" to true,
         "bool" to true,
         "List" to true,
+        "DateTime" to true,
         "List<int>" to true,
         "List<double>" to true,
         "List<String>" to true,
@@ -27,6 +28,7 @@ fun getListSubType(typeName: String): String {
             "List<int>" to "int",
             "List<double>" to "double",
             "List<String>" to "String",
+            "List<DateTime>" to "DateTime",
             "List<bool>" to "bool",
             "List" to "dynamic",
             "List<Null>" to "dynamic"
@@ -51,7 +53,7 @@ val dartKeyword = mutableListOf("abstract", "dynamic", "implements", "show",
 
 fun getTypeName(obj: Any?): String {
     return when (obj) {
-        is String -> "String"
+        is String -> if (DateUtil.canParseDate(obj.toString())) "DateTime" else "String"
         is Int -> "int"
         is Double -> "double"
         is Long -> "int"
