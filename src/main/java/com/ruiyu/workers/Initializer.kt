@@ -36,7 +36,7 @@ class Initializer : StartupActivity, DocumentListener {
 
     override fun runActivity(project: Project) {
         documentManager = PsiDocumentManager.getInstance(project)
-
+/*
         Timer().scheduleAtFixedRate(0, 1000) {
             if (FileHelpers.shouldActivateFor(project)) {
                 ApplicationManager.getApplication().invokeLater {
@@ -45,7 +45,7 @@ class Initializer : StartupActivity, DocumentListener {
                     }
                 }
             }
-        }
+        }*/
 
     }
 

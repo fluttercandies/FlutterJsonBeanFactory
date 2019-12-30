@@ -8,12 +8,14 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.newvfs.impl.VirtualDirectoryImpl
 import com.intellij.openapi.vfs.newvfs.impl.VirtualFileImpl
 import com.ruiyu.file.FileHelpers
 import com.ruiyu.file.commitContent
 import com.ruiyu.utils.toLowerCaseFirstOne
+import com.ruiyu.workers.FileGenerator
 import wu.seal.jsontokotlin.utils.showNotify
 import java.io.File
 
@@ -30,6 +32,11 @@ class FlutterBeanFactoryAction : AnAction() {
             val pubSpecConfig = FileHelpers.getPubSpecConfig(project)
             //判断是否是flutter项目
             if (FileHelpers.shouldActivateFor(project)) {
+                ApplicationManager.getApplication().invokeLater {
+                    runWriteAction {
+                        FileGenerator(project).generate()
+                    }
+                }
                 FileHelpers.getGeneratedFileRun(project) {
                     //上次生成的老旧老文件
                     val oldHelperChildren = it.children.filterIsInstance<VirtualFileImpl>().toMutableList()
@@ -119,7 +126,7 @@ class FlutterBeanFactoryAction : AnAction() {
                 }
 
             } else {
-                project.showNotify("This project is not flutter")
+                project.showNotify("This project is not the flutter project or the flutterJson in pubspec.yaml with the enable set to false")
             }
 
 
