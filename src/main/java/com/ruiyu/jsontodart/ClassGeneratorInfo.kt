@@ -72,7 +72,7 @@ class HelperClassGeneratorInfo {
                 //类名
                 val listSubType = getListSubType(type)
                 val value = when (listSubType) {
-                    "dynamic" -> "data.starTime.addAll(json['$getJsonName']);"
+                    "dynamic" -> "data.${name}.addAll(json['$getJsonName']);"
                     "DateTime" -> "(json['$getJsonName'] as List).forEach((v) {\n\t\t\tdata.$name.add(DateTime.parse(v));\n\t\t});".trimIndent()
                     else -> "(json['$getJsonName'] as List).forEach((v) {\n\t\t\tdata.$name.add(new ${listSubType}().fromJson(v));\n\t\t});".trimIndent()
                 }
