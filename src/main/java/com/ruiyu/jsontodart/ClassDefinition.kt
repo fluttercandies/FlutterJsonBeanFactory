@@ -63,7 +63,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
                 //如果驼峰命名后不一致,才这样
                 if (fieldName != key) {
                     sb.append('\t')
-                    sb.append("@JSONField(\"${key}\")\n")
+                    sb.append("@JSONField(name: \"${key}\")\n")
                 }
                 sb.append('\t')
                 _addTypeDef(f!!, sb)

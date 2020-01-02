@@ -127,9 +127,19 @@ class FileGenerator(private val project: Project) {
         private const val JSONFieldContent =
                 """
 class JSONField {
+  //Specify the parse field name
   final String name;
 
-  const JSONField(this.name);
+  //Specify the time resolution format
+  final String format;
+
+  //Whether to participate in fromMap
+  final bool serialize;
+
+  //Whether to participate in toJson
+  final bool deserialize;
+
+  const JSONField({this.name, this.format, this.serialize, this.deserialize});
 }
 """
 
