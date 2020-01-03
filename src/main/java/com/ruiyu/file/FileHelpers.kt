@@ -17,7 +17,6 @@ import com.ruiyu.jsontodart.HelperClassGeneratorInfo
 import com.ruiyu.setting.Settings
 import io.flutter.pub.PubRoot
 import io.flutter.utils.FlutterModuleUtils
-import org.jetbrains.kotlin.nj2k.replace
 //import org.jetbrains.kotlin.idea.core.util.toPsiFile
 //import org.jetbrains.kotlin.idea.refactoring.toPsiFile
 import org.jetbrains.kotlin.psi.psiUtil.children
