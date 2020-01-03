@@ -12,10 +12,12 @@ import com.intellij.psi.impl.source.tree.CompositeElement
 import com.intellij.psi.search.FilenameIndex
 import com.jetbrains.lang.dart.DartTokenTypes
 import com.jetbrains.lang.dart.psi.DartFile
+import com.ruiyu.jsontodart.AnnotationValue
 import com.ruiyu.jsontodart.HelperClassGeneratorInfo
 import com.ruiyu.setting.Settings
 import io.flutter.pub.PubRoot
 import io.flutter.utils.FlutterModuleUtils
+import org.jetbrains.kotlin.nj2k.replace
 //import org.jetbrains.kotlin.idea.core.util.toPsiFile
 //import org.jetbrains.kotlin.idea.refactoring.toPsiFile
 import org.jetbrains.kotlin.psi.psiUtil.children
@@ -114,6 +116,8 @@ object FileHelpers {
         content.append("\n")
         content.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_filed.dart';")
         content.append("\n")
+        content.append("import 'package:intl/intl.dart';")
+        content.append("\n")
         content.append(helperClassGeneratorInfos?.joinToString("\n"))
         //创建文件
         getEntityHelperFile(project, "${File(packageName).nameWithoutExtension}_helper.dart") { file ->
@@ -205,25 +209,39 @@ object FileHelpers {
                                     if (itemFileNode.elementType == DartTokenTypes.VAR_DECLARATION_LIST) {
 
                                         if (itemFileNode.text.contains("JSONField")) {
-                                            val strs = itemFileNode.text.split(" ")
-                                            val nameNode = strs.last()
-                                            if (strs.size == 2) {
-                                                val typeNode = strs[strs.size - 2]
-                                                val annotationValue = if (itemFileNode.text.contains("\"")) {
-                                                    itemFileNode.text.split("\"")[1]
-                                                } else {
-                                                    itemFileNode.text.split("'")[1]
-                                                }
-                                                helperClassGeneratorInfo.addFiled(strs[0].split("\n\t")[1], strs[1], annotationValue)
-                                            } else {
-                                                val typeNode = strs[strs.size - 2]
-                                                val annotationValue = if (itemFileNode.text.contains("\"")) {
-                                                    itemFileNode.text.split("\"")[1]
-                                                } else {
-                                                    itemFileNode.text.split("'")[1]
-                                                }
-                                                helperClassGeneratorInfo.addFiled(typeNode, nameNode, annotationValue)
+                                            val strs = itemFileNode.text.substringAfter(")").split(" ")
+                                            val nameNode = strs.last().trimIndent().trim()
+//                                            if (strs.size == 2) {
+//                                                val typeNode = strs[strs.size - 2]
+//                                                val annotationValue = if (itemFileNode.text.contains("\"")) {
+//                                                    itemFileNode.text.split("\"")[1]
+//                                                } else {
+//                                                    itemFileNode.text.split("'")[1]
+//                                                }
+//                                                helperClassGeneratorInfo.addFiled(strs[0].split("\n\t")[1], strs[1], annotationValue)
+//                                            } else {
+                                            val typeNode = strs.first().trimIndent().trim().replace("\t", "").replace("\n", "")
+                                            val annotationString = itemFileNode.text.substringAfter("(").substringBefore(")").split(",").filterNot { itemAnnotationString ->
+                                                itemAnnotationString.isEmpty()
                                             }
+                                            val annotationValues = annotationString.map { itemAnnotationString ->
+                                                val annotationNameOriginal = itemAnnotationString.substringBefore(":").trimIndent().trim()
+                                                //注解的值
+                                                val annotationValue: Any = when (val annotationValueOriginal = itemAnnotationString.substringAfter(":").trimIndent().trim()) {
+                                                    "true" -> true
+                                                    "false" -> false
+                                                    else -> annotationValueOriginal.replace("\"", "").replace("\'", "")
+                                                }
+
+                                                AnnotationValue(annotationNameOriginal, annotationValue)
+                                            }
+//                                                val annotationValue = if (itemFileNode.text.contains("\"")) {
+//                                                    itemFileNode.text.split("\"")[1]
+//                                                } else {
+//                                                    itemFileNode.text.split("'")[1]
+//                                                }
+                                            helperClassGeneratorInfo.addFiled(typeNode, nameNode, annotationValues)
+//                                            }
 
                                         } else {
                                             val nameNode = itemFileNode.text.split(" ")[1]

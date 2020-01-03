@@ -10,7 +10,7 @@
      <br>If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.</br>
     ]]></description>
     <change-notes><![CDATA[
-       <br>fixed helper generates an error when list is empty</br>
+       <br>add format support for datetime</br>
        <br>if you don't want to use the FlutterJsonBeanFactory in your project, you can close the plugin by adding flutter-json-json: enable: false to the pubspec.yaml file</br>
        <br>shortcut key is changed to Alt + j</br>
        <br>if the first jsonobject in the jsonarray is not perfect, the data will not be complete</br>

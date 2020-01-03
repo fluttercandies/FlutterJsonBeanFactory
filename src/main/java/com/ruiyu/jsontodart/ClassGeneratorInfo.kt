@@ -17,7 +17,7 @@ class HelperClassGeneratorInfo {
     private val fields: MutableList<Filed> = mutableListOf()
 
 
-    fun addFiled(type: String, name: String, annotationValue: String?) {
+    fun addFiled(type: String, name: String, annotationValue: List<AnnotationValue>?) {
         fields.add(Filed(type, name).apply {
             this.annotationValue = annotationValue
         })
@@ -49,7 +49,7 @@ class HelperClassGeneratorInfo {
         val type = filed.type
         val name = filed.name
         //从json里取值的名称
-        val getJsonName = filed.annotationValue ?: name
+        val getJsonName = filed.getValueByName("name") ?: name
         //是否是基础数据类型
         val isPrimitive = PRIMITIVE_TYPES[type] ?: false
         //是否是list
@@ -58,13 +58,18 @@ class HelperClassGeneratorInfo {
             isPrimitive -> {
                 when {
                     isListType -> {
-                        "data.$name = json['$getJsonName']?.cast<${getListSubType(type)}>();"
+                        "if (json['$getJsonName'] != null) {\n\t\tdata.$name = json['$getJsonName']?.map((v) => v${buildToType(getListSubType(type))})?.toList()?.cast<${getListSubType(type)}>();\n\t}"
                     }
                     type == "DateTime" -> {
-                        "if(json['$getJsonName'] != null){\n\t\tdata.$name = DateTime.tryParse(json['$getJsonName']);\n\t}"
+                        if(filed.getValueByName<String>("format")?.isNotEmpty() == true){
+                            "if(json['$getJsonName'] != null){\n\t\tDateFormat format = new DateFormat(\"${filed.getValueByName<String>("format")}\");\n\t\tdata.$name = format.parse(json['$getJsonName'].toString());\n\t}"
+                        }else{
+                            "if(json['$getJsonName'] != null){\n\t\tdata.$name = DateTime.tryParse(json['$getJsonName']);\n\t}"
+                        }
+
                     }
                     else -> {
-                        "data.$name = json['$getJsonName'];"
+                        "data.$name = json['$getJsonName']${buildToType(type)};"
                     }
                 }
             }
@@ -101,7 +106,7 @@ class HelperClassGeneratorInfo {
         val type = filed.type
         val name = filed.name
         //从json里取值的名称
-        val getJsonName = filed.annotationValue ?: name
+        val getJsonName = filed.getValueByName("name") ?: name
         //是否是基础数据类型
         val isPrimitive = PRIMITIVE_TYPES[type] ?: false
         //是否是list
@@ -124,6 +129,21 @@ class HelperClassGeneratorInfo {
     private fun buildToJsonClass(expression: String): String {
         return "$expression().toJson()"
     }
+
+    private fun buildToType(typeName: String): String {
+        return when {
+            typeName.equals("int", true) -> {
+                "?.toInt()"
+            }
+            typeName.equals("double", true) -> {
+                "?.toDouble()"
+            }
+            typeName.equals("string", true) -> {
+                "?.toString()"
+            }
+            else -> ""
+        }
+    }
 }
 
 class Filed constructor(
@@ -135,5 +155,16 @@ class Filed constructor(
     //待定
     var isPrivate: Boolean? = null
     //注解的值
-    var annotationValue: String? = null
+    var annotationValue: List<AnnotationValue>? = null
+
+    fun <T> getValueByName(name: String): T? {
+        return annotationValue?.firstOrNull { it.name == name }?.getValueByName()
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+class AnnotationValue(val name: String, private val value: Any) {
+    fun <T> getValueByName(): T {
+        return value as T
+    }
 }

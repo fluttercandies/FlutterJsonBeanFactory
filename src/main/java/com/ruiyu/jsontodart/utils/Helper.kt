@@ -1,7 +1,7 @@
 package com.ruiyu.jsontodart.utils
 
 import com.ruiyu.jsontodart.TypeDefinition
-import com.ruiyu.utils.DateUtil
+//import com.ruiyu.utils.DateUtil
 import com.ruiyu.utils.LogUtil
 import com.ruiyu.utils.toUpperCaseFirstOne
 import java.math.BigDecimal
@@ -53,7 +53,7 @@ val dartKeyword = mutableListOf("abstract", "dynamic", "implements", "show",
 
 fun getTypeName(obj: Any?): String {
     return when (obj) {
-        is String -> if (DateUtil.canParseDate(obj.toString())) "DateTime" else "String"
+        is String -> /*if (DateUtil.canParseDate(obj.toString())) "DateTime" else*/ "String"
         is Int -> "int"
         is Double -> "double"
         is Long -> "int"
