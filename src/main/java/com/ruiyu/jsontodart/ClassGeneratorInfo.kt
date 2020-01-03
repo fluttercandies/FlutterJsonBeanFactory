@@ -80,7 +80,7 @@ class HelperClassGeneratorInfo {
                     "dynamic" -> "data.${name}.addAll(json['$getJsonName']);"
                     "DateTime" ->
                         if (filed.getValueByName<String>("format")?.isNotEmpty() == true) {
-                            "\n\t\tDateFormat format = new DateFormat(\"${filed.getValueByName<String>("format")}\");\n\t\t\t(json['$getJsonName'] as List).forEach((v) {\n\t\t\t\tif (v != null)\n\t\t\t\t\tdata.$name.add(format.parse(v.toString()));\n\t\t\t});".trimIndent()
+                            "\n\t\tDateFormat format = new DateFormat(\"${filed.getValueByName<String>("format")}\");\n\t\t\t\t(json['$getJsonName'] as List).forEach((v) {\n\t\t\t\t\tif (v != null)\n\t\t\t\t\t\tdata.$name.add(format.parse(v.toString()));\n\t\t\t\t});".trimIndent()
                         } else {
                             "(json['$getJsonName'] as List).forEach((v) {\n\t\t\tdata.$name.add(DateTime.parse(v));\n\t\t});".trimIndent()
                         }
