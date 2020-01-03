@@ -209,7 +209,9 @@ object FileHelpers {
                                     if (itemFileNode.elementType == DartTokenTypes.VAR_DECLARATION_LIST) {
 
                                         if (itemFileNode.text.contains("JSONField")) {
-                                            val strs = itemFileNode.text.substringAfter(")").split(" ")
+                                            val strs = itemFileNode.text.substringAfter(")").split(" ").filter {item->
+                                                item != "\n" && item != "\t" && item.trim().trimIndent().isNotEmpty()
+                                            }
                                             val nameNode = strs.last().trimIndent().trim()
 //                                            if (strs.size == 2) {
 //                                                val typeNode = strs[strs.size - 2]
