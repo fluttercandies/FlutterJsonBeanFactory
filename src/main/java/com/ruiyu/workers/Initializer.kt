@@ -1,30 +1,23 @@
 package com.ruiyu.workers
 
-import com.intellij.json.psi.JsonElementGenerator
-import com.intellij.json.psi.JsonFile
-import com.intellij.json.psi.JsonProperty
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.runWriteAction
-import com.intellij.openapi.command.undo.UndoManager
-import com.intellij.openapi.editor.event.DocumentEvent
+//import com.jetbrains.lang.dart.psi.*
+//import com.jetbrains.lang.dart.util.DartElementGenerator
+
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.openapi.vfs.newvfs.BulkFileListener
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.PsiManager
-import com.intellij.psi.search.FilenameIndex
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.util.messages.MessageBusConnection
 import com.ruiyu.Log
-//import com.jetbrains.lang.dart.psi.*
-//import com.jetbrains.lang.dart.util.DartElementGenerator
+import com.ruiyu.beanfactory.FlutterBeanFactoryAction
 import com.ruiyu.file.FileHelpers
-import io.flutter.pub.PubRoot
-import java.util.*
+import org.jetbrains.annotations.NotNull
 import java.util.regex.Pattern
-import kotlin.concurrent.scheduleAtFixedRate
+
 
 /**
  * User: zhangruiyu
@@ -36,6 +29,25 @@ class Initializer : StartupActivity, DocumentListener {
 
     override fun runActivity(project: Project) {
         documentManager = PsiDocumentManager.getInstance(project)
+        val connection: MessageBusConnection = project.messageBus.connect()
+
+        connection.subscribe(VirtualFileManager.VFS_CHANGES, object : BulkFileListener {
+            override fun after(@NotNull events: List<VFileEvent>) {
+                if (FileHelpers.shouldActivateFor(project)) {
+                    //如果改动文件包括了自动生成的entity.dart
+                    if (events.firstOrNull {
+                                it.path.endsWith("_entity.dart")
+                            } != null) {
+                        //那么此刻就去自动刷新
+                        FlutterBeanFactoryAction.generateAllFile(project)
+                    }
+                    /*for (event in events) {
+                        println("event = $event")
+                    }*/
+                }
+
+            }
+        })
 /*
         Timer().scheduleAtFixedRate(0, 1000) {
             if (FileHelpers.shouldActivateFor(project)) {

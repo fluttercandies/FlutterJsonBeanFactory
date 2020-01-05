@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.ruiyu.ruiyu</id>
     <name>FlutterJsonBeanFactory</name>
-    <vendor email="157418979@qq.com" url="https://github.com/zhangruiyu/FlutterJsonBeanFactory">ruiyu</vendor>
+    <vendor email="157418979@qq.com" url="https://github.com/zhangruiyu/FlutterJsonBeanFactory">ruiyu-QQGroup(963752388)</vendor>
 
     <description><![CDATA[
      <br>Json to dart beans are provided, and dart files ending in entity are provided to generate dart bean factory for use.</br>
@@ -10,6 +10,7 @@
      <br>If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.</br>
     ]]></description>
     <change-notes><![CDATA[
+       <br>if you change the fields, the helper and JsonConvert are automatically regenerated</br>
        <br>support such as @JSONField(name:"end_time",format: "yyyy/MM/dd hh:mm:ss",deserialize: true,serialize: false)</br>
        <br>add format support for datetime</br>
        <br>if you don't want to use the FlutterJsonBeanFactory in your project, you can close the plugin by adding flutter-json: enable: false to the pubspec.yaml file</br>
@@ -17,17 +18,6 @@
        <br>if the first jsonobject in the jsonarray is not perfect, the data will not be complete</br>
        <br>rebuild will delete redundant files</br>
        <br>version 3.1 has been released,Provide JsonConvert.dart,EntityFactory is deprecated</br>
-       <br>fixed error occurred when try casting null to List<String></br>
-       <br>fixed new file bug</br>
-       <br>fixed an empty collection bug</br>
-       <br>fixed field naming bug</br>
-       <br>change null to dynamic to prevent exception resolution</br>
-       <br>fixed field forEach method when not converted to list</br>
-       <br>fixed the bug of plural to singular</br>
-       <br>fixed import bug under Windows</br>
-       <br>fixed the dart keyword prob       <br>support for custom model suffix names</br>
-       <br>support android studio</br>
-       <br>Json to dart beans are provided</br>
     ]]>
     </change-notes>
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
