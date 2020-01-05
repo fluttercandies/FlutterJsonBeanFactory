@@ -208,7 +208,7 @@ object FileHelpers {
                                     if (itemFileNode.elementType == DartTokenTypes.VAR_DECLARATION_LIST) {
 
                                         if (itemFileNode.text.contains("JSONField")) {
-                                            val strs = itemFileNode.text.substringAfter(")").split(" ").filter {item->
+                                            val strs = itemFileNode.text.substringAfter(")").split(" ").filter { item ->
                                                 item != "\n" && item != "\t" && item.trim().trimIndent().isNotEmpty()
                                             }
                                             val nameNode = strs.last().trimIndent().trim()
@@ -315,19 +315,6 @@ fun VirtualFile?.commitContent(project: Project, content: String) {
             }
         }
     }
-}
-
-fun DartFile.getPackage(): String {
-    return "${getParentLibEnd()}/${name}"
-}
-
-fun PsiFileSystemItem.getParentLibEnd(): String {
-    return if (parent?.name == "lib") {
-        ""
-    } else {
-        parent?.name + "/" + parent?.getParentLibEnd()
-    }
-
 }
 
 

@@ -38,7 +38,10 @@ class HelperClassGeneratorInfo {
         sb.append("\n")
         sb.append("${className.toLowerCaseFirstOne()}FromJson(${className} data, Map<String, dynamic> json) {\n")
         fields.forEach { k ->
-            sb.append("\t${jsonParseExpression(k)}\n")
+            //如果deserialize不是false,那么就解析,否则不解析
+            if (k.getValueByName<Boolean>("deserialize") != false) {
+                sb.append("\t${jsonParseExpression(k)}\n")
+            }
         }
         sb.append("\treturn data;\n")
         sb.append("}")
@@ -94,20 +97,23 @@ class HelperClassGeneratorInfo {
     }
 
     //生成tojson方法
-    fun jsonGenFunc(): String {
+    private fun jsonGenFunc(): String {
         val sb = StringBuffer();
         sb.append("Map<String, dynamic> ${className.toLowerCaseFirstOne()}ToJson(${className} entity) {\n");
         sb.append("\tfinal Map<String, dynamic> data = new Map<String, dynamic>();\n");
         fields.forEach { k ->
-            sb.append("\t${toJsonExpression(k)}\n");
+            //如果serialize不是false,那么就解析,否则不解析
+            if (k.getValueByName<Boolean>("serialize") != false) {
+                sb.append("\t${toJsonExpression(k)}\n")
+            }
         }
         sb.append("\treturn data;\n");
         sb.append("}");
-        return sb.toString();
+        return sb.toString()
 
     }
 
-    fun toJsonExpression(filed: Filed): String {
+    private fun toJsonExpression(filed: Filed): String {
         val type = filed.type
         val name = filed.name
         //从json里取值的名称
