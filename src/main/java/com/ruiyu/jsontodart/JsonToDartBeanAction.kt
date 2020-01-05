@@ -14,8 +14,10 @@ import com.intellij.psi.impl.file.PsiDirectoryFactory
 import com.jetbrains.lang.dart.DartFileType
 import com.jetbrains.lang.dart.psi.DartFile
 import com.ruiyu.beanfactory.FlutterBeanFactoryAction
+import com.ruiyu.file.FileHelpers
 import com.ruiyu.ui.JsonInputDialog
 import com.ruiyu.utils.executeCouldRollBackAction
+import wu.seal.jsontokotlin.utils.showErrorMessage
 import wu.seal.jsontokotlin.utils.showNotify
 
 class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
@@ -48,18 +50,32 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                 //生成dart文件的内容
                 val generatorClassContent = ModelGenerator(collectInfo, project).generateDartClassesToString()
                 //文件名字
-                val fileName = changeDartFileNameIfCurrentDirectoryExistTheSameFileNameWithoutSuffix(collectInfo.transformInputClassNameToFileName(), directory)
+                //如果包含那么就提示
+                val fileName = collectInfo.transformInputClassNameToFileName()
+                when {
+                    FileHelpers.containsDirectoryFile(directory, "$fileName.dart") -> {
+                        project.showErrorMessage("The $fileName.dart already exists")
+                        false
+                    }
+                    FileHelpers.containsProjectFile(project, "$fileName.dart") -> {
+                        project.showErrorMessage("$fileName.dart already exists in other package")
+                        false
+                    }
+                    else -> {
+                        generateDartDataClassFile(
+                                fileName,
+                                generatorClassContent,
+                                project,
+                                psiFileFactory,
+                                directory
+                        )
+                        val notifyMessage = "Dart Data Class file generated successful"
+                        FlutterBeanFactoryAction.generateAllFile(project)
+                        project.showNotify(notifyMessage)
+                        true
+                    }
+                }
 
-                generateDartDataClassFile(
-                        fileName,
-                        generatorClassContent,
-                        project,
-                        psiFileFactory,
-                        directory
-                )
-                val notifyMessage = "Dart Data Class file generated successful"
-                FlutterBeanFactoryAction.generateAllFile(project)
-                project.showNotify(notifyMessage)
             }.show()
         } catch (e: Exception) {
             project.showNotify(e.message!!)
@@ -81,7 +97,7 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
             val file = psiFileFactory.createFileFromText("$fileName.dart", DartFileType.INSTANCE, classCodeContent) as DartFile
             directory.add(file)
             //包名
-            val packageName = (directory.virtualFile.path + "/$fileName.dart").substringAfter("${project!!.name}/lib/")
+//            val packageName = (directory.virtualFile.path + "/$fileName.dart").substringAfter("${project!!.name}/lib/")
 //            生成单个helper
 //            FileHelpers.generateDartEntityHelper(project, "import 'package:${project.name}/${packageName}';", FileHelpers.getDartFileHelperClassGeneratorInfo(file))
             //此时应该重新生成所有文件
@@ -89,18 +105,19 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
         }
     }
 
-    private fun changeDartFileNameIfCurrentDirectoryExistTheSameFileNameWithoutSuffix(
-            fileName: String,
-            directory: PsiDirectory
-    ): String {
-        var newFileName = fileName
-        val dartFileSuffix = ".dart"
-        val fileNamesWithoutSuffix =
-                directory.files.filter { it.name.endsWith(dartFileSuffix) }
-                        .map { it.name.dropLast(dartFileSuffix.length) }
-        while (fileNamesWithoutSuffix.contains(newFileName)) {
-            newFileName += "X"
-        }
-        return newFileName
-    }
+    /* private fun changeDartFileNameIfCurrentDirectoryExistTheSameFileNameWithoutSuffix(
+             fileName: String,
+             directory: PsiDirectory
+     ): String {
+         var newFileName = fileName
+         val dartFileSuffix = ".dart"
+         val fileNamesWithoutSuffix =
+                 directory.files.filter { it.name.endsWith(dartFileSuffix) }
+                         .map { it.name.dropLast(dartFileSuffix.length) }
+         while (fileNamesWithoutSuffix.contains(newFileName)) {
+             newFileName += "X"
+         }
+         return newFileName
+     }*/
+
 }

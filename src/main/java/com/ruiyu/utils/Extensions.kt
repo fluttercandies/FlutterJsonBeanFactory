@@ -7,6 +7,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.Messages
 import java.awt.Component
 import java.awt.Container
 import java.util.regex.Pattern
@@ -156,3 +157,8 @@ fun Project.showNotify(notifyMessage: String) {
         e.printStackTrace()
     }
 }
+
+fun Project.showErrorMessage(notifyMessage: String) {
+    Messages.showInfoMessage(this, notifyMessage, "Info");
+}
+

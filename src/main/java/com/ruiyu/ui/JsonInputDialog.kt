@@ -52,7 +52,7 @@ val myInputValidator = MyInputValidator()
  */
 open class JsonInputDialog(
         project: Project,
-        val inputModelBlock: (inputModel: CollectInfo) -> Unit
+        val inputModelBlock: (inputModel: CollectInfo) -> Boolean
 ) : Messages.InputDialog(
         project,
         "Please input the class name and JSON String for generating dart bean class",
@@ -192,8 +192,9 @@ open class JsonInputDialog(
             throw Exception("json must not null or empty")
         }
 
-        inputModelBlock(collectInfo)
-        super.doOKAction()
+        if (inputModelBlock(collectInfo)) {
+            super.doOKAction()
+        }
     }
 }
 

@@ -4,14 +4,11 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiFileSystemItem
-import com.intellij.psi.PsiManager
+import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.CompositeElement
 import com.intellij.psi.search.FilenameIndex
+import com.jetbrains.lang.dart.DartLanguage
 import com.jetbrains.lang.dart.DartTokenTypes
-import com.jetbrains.lang.dart.psi.DartFile
 import com.ruiyu.jsontodart.AnnotationValue
 import com.ruiyu.jsontodart.HelperClassGeneratorInfo
 import com.ruiyu.setting.Settings
@@ -153,6 +150,23 @@ object FileHelpers {
             }
 
         }
+    }
+
+    /**
+     * 判断项目中是否包含这个file
+     */
+    fun containsProjectFile(project: Project, fileName: String): Boolean {
+        return FilenameIndex.getAllFilesByExt(project, "dart").firstOrNull {
+            it.path.endsWith(fileName)
+        } != null
+    }
+
+    /**
+     * 判断Directory中是否包含这个file
+     */
+    fun containsDirectoryFile(directory: PsiDirectory, fileName: String): Boolean {
+        return directory.files.filter { it.name.endsWith(".dart") }
+                .firstOrNull { it.name.contains(fileName) } != null
     }
 
     @Suppress("DuplicatedCode")
