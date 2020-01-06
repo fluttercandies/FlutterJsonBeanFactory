@@ -342,7 +342,7 @@ data class PubSpecConfig(
         val pubRoot: PubRoot,
         val map: Map<String, Any>,
         //项目名称,导包需要
-        val name: String = (map[PROJECT_NAME] ?: project.name).toString(),
+        val name: String = ((if (map[PROJECT_NAME] == "null") null else map[PROJECT_NAME]) ?: project.name).toString(),
         val flutterJsonMap: Map<*, *>? = map[PUBSPEC_KEY] as? Map<*, *>,
         val isFlutterModule: Boolean = FlutterModuleUtils.hasFlutterModule(project),
         val isEnabled: Boolean = isOptionTrue(flutterJsonMap, PUBSPEC_ENABLE_PLUGIN_KEY)
