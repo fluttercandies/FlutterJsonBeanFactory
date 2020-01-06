@@ -18,7 +18,7 @@ What I do is generate dart beans based on json, as well as generics parameters a
 * If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.
 * If you don't want to use the FlutterJsonBeanFactory in your project, you can add flutter-json: enable: false to the pubspec.yaml file
 ![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/filter_json_config.png)
-*如果你有任何问题,添加QQGroup(963752388)随时提问 [中文移步](https://www.jianshu.com/p/14cbcbaa74b7)
+* 如果你有任何问题,添加QQGroup(963752388)随时提问 [中文移步](https://www.jianshu.com/p/14cbcbaa74b7)
 
 ### Others
 * Welcome anyone to raise new issue.
