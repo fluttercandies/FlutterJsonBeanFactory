@@ -7,7 +7,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.CompositeElement
 import com.intellij.psi.search.FilenameIndex
-import com.jetbrains.lang.dart.DartLanguage
 import com.jetbrains.lang.dart.DartTokenTypes
 import com.ruiyu.jsontodart.AnnotationValue
 import com.ruiyu.jsontodart.HelperClassGeneratorInfo
@@ -18,6 +17,7 @@ import io.flutter.utils.FlutterModuleUtils
 //import org.jetbrains.kotlin.idea.refactoring.toPsiFile
 import org.jetbrains.kotlin.psi.psiUtil.children
 import org.yaml.snakeyaml.Yaml
+import wu.seal.jsontokotlin.utils.showErrorMessage
 import java.io.File
 import java.io.FileInputStream
 
@@ -82,13 +82,24 @@ object FileHelpers {
      * 获取generated/json自动生成目录
      */
     private fun getGeneratedFile(project: Project): VirtualFile {
-        return PubRoot.forFile(project.projectFile)?.lib?.let { lib ->
+        return PubRoot.forFile(getProjectIdeaFile(project))?.lib?.let { lib ->
             return@let (lib.findChild("generated")
                     ?: lib.createChildDirectory(this, "generated")).run {
                 return@run (findChild("json")
                         ?: createChildDirectory(this, "json"))
             }
         }!!
+    }
+
+    /**
+     * 获取项目.idea目录的一个文件
+     */
+    private fun getProjectIdeaFile(project: Project): VirtualFile? {
+        val ideaFile = project.projectFile ?: project.workspaceFile
+        if (ideaFile == null) {
+            project.showErrorMessage("Missing .idea/misc.xml or .idea/workspace.xml file")
+        }
+        return ideaFile
     }
 
     /**
@@ -172,7 +183,7 @@ object FileHelpers {
     @Suppress("DuplicatedCode")
     @JvmStatic
     fun getPubSpecConfig(project: Project): PubSpecConfig? {
-        PubRoot.forFile(project.projectFile)?.let { pubRoot ->
+        PubRoot.forFile(getProjectIdeaFile(project))?.let { pubRoot ->
             FileInputStream(pubRoot.pubspec.path).use { inputStream ->
                 (Yaml().load(inputStream) as? Map<String, Any>)?.let { map ->
                     return PubSpecConfig(project, pubRoot, map)
