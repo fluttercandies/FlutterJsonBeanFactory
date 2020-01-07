@@ -56,7 +56,7 @@ class HelperClassGeneratorInfo {
         //是否是基础数据类型
         val isPrimitive = PRIMITIVE_TYPES[type] ?: false
         //是否是list
-        val isListType = type.contains("List")
+        val isListType = isListType(type)
         return when {
             isPrimitive -> {
                 when {
@@ -121,7 +121,7 @@ class HelperClassGeneratorInfo {
         //是否是基础数据类型
         val isPrimitive = PRIMITIVE_TYPES[type] ?: false
         //是否是list
-        val isListType = type.contains("List")
+        val isListType = isListType(type)
         val thisKey = "entity.$name"
         if (isPrimitive) {
             return "data['$getJsonName'] = $thisKey;"

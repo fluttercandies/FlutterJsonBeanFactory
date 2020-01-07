@@ -19,6 +19,7 @@ val PRIMITIVE_TYPES = mapOf(
         "List<bool>" to true,
         "List" to true,
         "Null" to true,
+        "var" to true,
         "dynamic" to true
 )
 
@@ -33,6 +34,17 @@ fun getListSubType(typeName: String): String {
             "List" to "dynamic",
             "List<Null>" to "dynamic"
     )[typeName] ?: typeName.substringAfter("<").substringBefore(">")
+}
+
+fun isListType(typeName: String): Boolean {
+    return when {
+        typeName.contains("List<") -> {
+            true
+        }
+        else -> {
+            typeName == "List"
+        }
+    }
 }
 
 val dartKeyword = mutableListOf("abstract", "dynamic", "implements", "show",
