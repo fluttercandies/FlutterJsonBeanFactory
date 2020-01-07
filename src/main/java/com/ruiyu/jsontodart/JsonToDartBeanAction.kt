@@ -92,7 +92,7 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
             directory: PsiDirectory
     ) {
 
-        executeCouldRollBackAction(project) {
+        project.executeCouldRollBackAction {
 
             val file = psiFileFactory.createFileFromText("$fileName.dart", DartFileType.INSTANCE, classCodeContent) as DartFile
             directory.add(file)

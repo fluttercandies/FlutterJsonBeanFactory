@@ -13,10 +13,10 @@ import com.intellij.openapi.project.Project
 /**
  * do the action that could be roll-back
  */
-fun executeCouldRollBackAction(project: Project?, action: (Project?) -> Unit) {
-    CommandProcessor.getInstance().executeCommand(project, {
+fun Project?.executeCouldRollBackAction( action: (Project?) -> Unit) {
+    CommandProcessor.getInstance().executeCommand(this, {
         ApplicationManager.getApplication().runWriteAction {
-            action.invoke(project)
+            action.invoke(this)
         }
     }, "FlutterJsonBeanFactory", "FlutterJsonBeanFactory")
 }

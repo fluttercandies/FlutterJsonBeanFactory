@@ -15,6 +15,7 @@ import com.intellij.util.messages.MessageBusConnection
 import com.ruiyu.Log
 import com.ruiyu.beanfactory.FlutterBeanFactoryAction
 import com.ruiyu.file.FileHelpers
+import com.ruiyu.utils.executeCouldRollBackAction
 import org.jetbrains.annotations.NotNull
 import java.util.regex.Pattern
 
@@ -28,7 +29,7 @@ class Initializer : StartupActivity, DocumentListener {
     private lateinit var documentManager: PsiDocumentManager
 
     override fun runActivity(project: Project) {
-        documentManager = PsiDocumentManager.getInstance(project)
+        /*documentManager = PsiDocumentManager.getInstance(project)
         val connection: MessageBusConnection = project.messageBus.connect()
 
         connection.subscribe(VirtualFileManager.VFS_CHANGES, object : BulkFileListener {
@@ -39,15 +40,17 @@ class Initializer : StartupActivity, DocumentListener {
                                 it.path.endsWith("_entity.dart")
                             } != null) {
                         //那么此刻就去自动刷新
-                        FlutterBeanFactoryAction.generateAllFile(project)
+                        project.executeCouldRollBackAction {
+                            FlutterBeanFactoryAction.generateAllFile(project)
+                        }
                     }
-                    /*for (event in events) {
+                    *//*for (event in events) {
                         println("event = $event")
-                    }*/
+                    }*//*
                 }
 
             }
-        })
+        })*/
 /*
         Timer().scheduleAtFixedRate(0, 1000) {
             if (FileHelpers.shouldActivateFor(project)) {

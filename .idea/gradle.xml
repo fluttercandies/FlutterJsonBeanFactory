@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$" />
           </set>
         </option>
+        <option name="resolveExternalAnnotations" value="false" />
         <option name="useQualifiedModuleNames" value="true" />
       </GradleProjectSettings>
     </option>
