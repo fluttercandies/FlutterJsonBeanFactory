@@ -72,7 +72,7 @@ class HelperClassGeneratorInfo {
 
                     }
                     else -> {
-                        "data.$name = json['$getJsonName']${buildToType(type)};"
+                        "if (json['$getJsonName'] != null) {\n\t\tdata.$name = json['$getJsonName']${buildToType(type)};\n\t}"
                     }
                 }
             }
@@ -92,7 +92,7 @@ class HelperClassGeneratorInfo {
                 "if (json['$getJsonName'] != null) {\n\t\tdata.$name = new List<${listSubType}>();\n\t\t$value\n\t}"
             }
             else -> // class
-                "data.$name = json['$getJsonName'] != null ? new $type().fromJson(json['$getJsonName']) : null;"
+                "if (json['$getJsonName'] != null) {\n\t\tnew $type().fromJson(json['$getJsonName']);\n\t}"
         }
     }
 
