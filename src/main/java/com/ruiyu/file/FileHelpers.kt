@@ -10,6 +10,7 @@ import com.intellij.psi.search.FilenameIndex
 import com.jetbrains.lang.dart.DartTokenTypes
 import com.ruiyu.jsontodart.AnnotationValue
 import com.ruiyu.jsontodart.HelperClassGeneratorInfo
+import com.ruiyu.jsontodart.HelperFileGeneratorInfo
 import com.ruiyu.setting.Settings
 import io.flutter.pub.PubRoot
 import io.flutter.utils.FlutterModuleUtils
@@ -114,18 +115,20 @@ object FileHelpers {
     /**
      * 自动生成单个文件的辅助文件
      */
-    private fun generateDartEntityHelper(project: Project, packageName: String, helperClassGeneratorInfos: MutableList<HelperClassGeneratorInfo>?) {
+    private fun generateDartEntityHelper(project: Project, packageName: String, helperClassGeneratorInfos: HelperFileGeneratorInfo?) {
         val pubSpecConfig = getPubSpecConfig(project)
         val content = StringBuilder()
         //导包
         //辅助主类的包名
         content.append(packageName)
         content.append("\n")
-        content.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_filed.dart';")
-        content.append("\n")
         content.append("import 'package:intl/intl.dart';")
         content.append("\n")
-        content.append(helperClassGeneratorInfos?.joinToString("\n"))
+        helperClassGeneratorInfos?.imports?.forEach {itemImport->
+            content.append(itemImport)
+            content.append("\n")
+        }
+        content.append(helperClassGeneratorInfos?.classes?.joinToString("\n"))
         //创建文件
         getEntityHelperFile(project, "${File(packageName).nameWithoutExtension}_helper.dart") { file ->
             file.commitContent(project, content.toString())
@@ -135,7 +138,7 @@ object FileHelpers {
     /**
      * 自动生成所有文件的辅助文件
      */
-    fun generateAllDartEntityHelper(project: Project, allClass: List<Pair<MutableList<HelperClassGeneratorInfo>, String>>) {
+    fun generateAllDartEntityHelper(project: Project, allClass: List<Pair<HelperFileGeneratorInfo, String>>) {
         allClass.forEach {
             generateDartEntityHelper(project, it.second, it.first)
         }
@@ -144,7 +147,7 @@ object FileHelpers {
     /**
      * 获取所有符合生成的file
      */
-    fun getAllEntityFiles(project: Project): List<Pair<MutableList<HelperClassGeneratorInfo>, String>> {
+    fun getAllEntityFiles(project: Project): List<Pair<HelperFileGeneratorInfo, String>> {
         val pubSpecConfig = getPubSpecConfig(project)
         val psiManager = PsiManager.getInstance(project)
         return FilenameIndex.getAllFilesByExt(project, "dart").filter {
@@ -152,12 +155,13 @@ object FileHelpers {
             /*it.path.endsWith("_${ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()}.dart") && */it.path.contains("${project.name}/lib/")
         }.mapNotNull {
             val dartFileHelperClassGeneratorInfo = FileHelpers.getDartFileHelperClassGeneratorInfo(psiManager.findFile(it)!!)
-            //包名
-            val packageName = (it.path).substringAfter("${project.name}/lib/")
+
             //导包
             if (dartFileHelperClassGeneratorInfo == null) {
                 null
             } else {
+                //包名
+                val packageName = (it.path).substringAfter("${project.name}/lib/")
                 dartFileHelperClassGeneratorInfo to "import 'package:${pubSpecConfig?.name}/${packageName}';"
             }
 
@@ -209,15 +213,15 @@ object FileHelpers {
         return pubSpecConfig?.pubRoot?.declaresFlutter() ?: false
     }
 
-    fun getDartFileHelperClassGeneratorInfo(file: PsiFile): MutableList<HelperClassGeneratorInfo>? {
+    fun getDartFileHelperClassGeneratorInfo(file: PsiFile): HelperFileGeneratorInfo? {
         //不包含JsonConvert 那么就不转
         if (file.text.contains("with JsonConvert").not()) {
             return null
         }
         val mutableMapOf = mutableListOf<HelperClassGeneratorInfo>()
+        val imports: MutableList<String> = mutableListOf()
         file.children.forEach {
             val text = it.text
-
             val classNode = it?.node
             //是类
             if (classNode?.elementType == DartTokenTypes.CLASS_DEFINITION) {
@@ -298,6 +302,8 @@ object FileHelpers {
 //                        val text1 = filedAndMethodNode.text
 //                    }
                 }
+            } else if (classNode?.elementType == DartTokenTypes.IMPORT_STATEMENT) {
+                imports.add(text)
             }
 
             /* it?.node?.children()?.forEach {
@@ -305,7 +311,7 @@ object FileHelpers {
                  val toString33 = it?.lastChildNode?.toString()
             }*/
         }
-        return mutableMapOf
+        return if (mutableMapOf.isEmpty()) null else HelperFileGeneratorInfo(imports, mutableMapOf)
     }
 }
 

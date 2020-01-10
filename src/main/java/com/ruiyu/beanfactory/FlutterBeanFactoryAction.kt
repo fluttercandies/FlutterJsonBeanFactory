@@ -81,7 +81,7 @@ class FlutterBeanFactoryAction : AnAction() {
                     content.append("  static _getFromJson<T>(Type type, data, json) {\n" +
                             "    switch (type) {")
                     allClass.forEach {
-                        it.first.forEach { itemFile ->
+                        it.first.classes.forEach { itemFile ->
                             content.append("\t\t\tcase ${itemFile.className}:\n")
                             content.append("\t\t\treturn ${itemFile.className.toLowerCaseFirstOne()}FromJson(data as ${itemFile.className}, json) as T;")
                         }
@@ -93,7 +93,7 @@ class FlutterBeanFactoryAction : AnAction() {
                     content.append("  static _getToJson<T>(Type type, data) {\n" +
                             "\t\tswitch (type) {")
                     allClass.forEach {
-                        it.first.forEach { itemFile ->
+                        it.first.classes.forEach { itemFile ->
                             content.append("\t\t\tcase ${itemFile.className}:\n")
                             content.append("\t\t\treturn ${itemFile.className.toLowerCaseFirstOne()}ToJson(data as ${itemFile.className});")
                         }
@@ -106,7 +106,7 @@ class FlutterBeanFactoryAction : AnAction() {
                     content.append("  static T fromJsonAsT<T>(json) {\n" +
                             "    switch (T.toString()) {")
                     allClass.forEach {
-                        it.first.forEach { itemFile ->
+                        it.first.classes.forEach { itemFile ->
                             content.append("\t\t\tcase '${itemFile.className}':\n")
                             content.append("\t\t\treturn ${itemFile.className}().fromJson(json) as T;")
                         }

@@ -11,6 +11,8 @@ import com.ruiyu.utils.toUpperCaseFirstOne
  * Date: 2019/12/23
  * Time: 11:32
  */
+class HelperFileGeneratorInfo(val imports: MutableList<String> = mutableListOf(), val classes: MutableList<HelperClassGeneratorInfo> = mutableListOf())
+
 class HelperClassGeneratorInfo {
     //协助的类名
     lateinit var className: String
@@ -22,6 +24,7 @@ class HelperClassGeneratorInfo {
             this.annotationValue = annotationValue
         })
     }
+
 
     override fun toString(): String {
         val sb = StringBuffer()
@@ -155,6 +158,8 @@ class HelperClassGeneratorInfo {
             else -> ""
         }
     }
+
+
 }
 
 class Filed constructor(
