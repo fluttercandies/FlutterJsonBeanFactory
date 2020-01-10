@@ -148,7 +148,8 @@ object FileHelpers {
         val pubSpecConfig = getPubSpecConfig(project)
         val psiManager = PsiManager.getInstance(project)
         return FilenameIndex.getAllFilesByExt(project, "dart").filter {
-            it.path.endsWith("_${ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()}.dart") && it.path.contains("${project.name}/lib/")
+            //不过滤entity结尾了
+            /*it.path.endsWith("_${ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()}.dart") && */it.path.contains("${project.name}/lib/")
         }.mapNotNull {
             val dartFileHelperClassGeneratorInfo = FileHelpers.getDartFileHelperClassGeneratorInfo(psiManager.findFile(it)!!)
             //包名
@@ -210,7 +211,7 @@ object FileHelpers {
 
     fun getDartFileHelperClassGeneratorInfo(file: PsiFile): MutableList<HelperClassGeneratorInfo>? {
         //不包含JsonConvert 那么就不转
-        if (file.text.contains("JsonConvert").not()) {
+        if (file.text.contains("with JsonConvert").not()) {
             return null
         }
         val mutableMapOf = mutableListOf<HelperClassGeneratorInfo>()

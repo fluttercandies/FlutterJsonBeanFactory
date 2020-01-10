@@ -133,7 +133,7 @@ class HelperClassGeneratorInfo {
             return "if ($thisKey != null) {\n\t\tdata['$getJsonName'] =  $value;\n\t}"
         } else {
             // class
-            return "if ($thisKey != null) {\n\t\tdata['$getJsonName'] = ${buildToJsonClass(type)};\n\t}"
+            return "if ($thisKey != null) {\n\t\tdata['$getJsonName'] = ${thisKey}.toJson();\n\t}"
         }
     }
 
