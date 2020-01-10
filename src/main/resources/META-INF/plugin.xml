@@ -8,8 +8,10 @@
      <br>right click on package -> `New`->`Dart bean clas file from JSON`　And Then you will know how to use</br>
      <br>If you change the fields in the class, just press the shortcut alt + j to regenerate the tojson and fromjson methods. The generated method regenerates all helper classes and JsonConvert classes (the same as the shortcut alt + j) each time an entity file is created in the generated/json directory.</br>
      <br>If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.</br>
+     <br>you must add intl: any to pubspec.yaml.</br>
     ]]></description>
     <change-notes><![CDATA[
+       <br>you must add intl: any to pubspec.yaml</br>
        <br>remove automatically regenerated</br>
        <br>support such as @JSONField(name:"end_time",format: "yyyy/MM/dd hh:mm:ss",deserialize: true,serialize: false)</br>
        <br>add format support for datetime</br>
