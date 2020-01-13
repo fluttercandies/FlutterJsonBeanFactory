@@ -11,7 +11,8 @@
      <br>you must add intl: any to pubspec.yaml.</br>
     ]]></description>
     <change-notes><![CDATA[
-       <br>you must add intl: any to pubspec.yaml</br>
+       <br>smart to import packages</br>
+       <br>if you use @JSONField(format:""), you must add intl: any to pubspec.yaml</br>
        <br>remove automatically regenerated</br>
        <br>support such as @JSONField(name:"end_time",format: "yyyy/MM/dd hh:mm:ss",deserialize: true,serialize: false)</br>
        <br>add format support for datetime</br>
@@ -19,7 +20,7 @@
        <br>shortcut key is changed to Alt + j</br>
        <br>if the first jsonobject in the jsonarray is not perfect, the data will not be complete</br>
        <br>rebuild will delete redundant files</br>
-       <br>version 3.1 has been released,Provide JsonConvert.dart,EntityFactory is deprecated</br>
+       <br>version 3.1 has been released,Provide JsonConvert.dart,EntityFa˚ctory is deprecated</br>
     ]]>
     </change-notes>
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
