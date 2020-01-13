@@ -7,18 +7,11 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "FlutterJsonBeanFactorySettings", storages = [(Storage("FlutterJsonBeanFactorySettings.xml"))])
 data class Settings(
-    var modelSuffix: String,
-    var ignoreContainFieldClass: String,
-    var scanFileSetting: List<Array<String>>,
-    var addPrefix: Boolean
+        var modelSuffix: String
 ) : PersistentStateComponent<Settings> {
 
     constructor() : this(
-        "entity", "base", mutableListOf(
-            arrayOf("entity", "static T generateOBJ<T>(json) {", ".fromJson(json) as T;"),
-            arrayOf("", "", ""),
-            arrayOf("", "", "")
-        ),true
+            "entity"
     )
 
     override fun getState(): Settings {
@@ -29,8 +22,3 @@ data class Settings(
         XmlSerializerUtil.copyBean(state, this)
     }
 }
-
-/**
- *  扫描的名字  方法 类名后面的
- */
-data class GenerateCode(val scanName: String, val methodLine: String, val classNameLine: String)

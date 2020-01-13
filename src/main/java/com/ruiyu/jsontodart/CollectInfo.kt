@@ -16,11 +16,6 @@ class CollectInfo {
         return ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()
     }
 
-    //二级类前缀
-    fun modelPrefix(): Boolean {
-        return ServiceManager.getService(Settings::class.java).state.addPrefix
-    }
-
     //用户输入的类名转为文件名
     fun transformInputClassNameToFileName(): String {
         return if (!userInputClassName.contains("_")) {

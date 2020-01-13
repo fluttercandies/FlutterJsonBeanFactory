@@ -20,13 +20,8 @@ class ModelGenerator(
     var allClasses = mutableListOf<ClassDefinition>()
     //parentType 父类型 是list 或者class
     private fun generateClassDefinition(className: String, parentName: String, jsonRawData: Any, parentType: String = ""): MutableList<ClassDefinition> {
-        var newClassName = className
-        if (collectInfo.modelPrefix()) {
-            newClassName = parentName + newClassName
-        }
-        val preName = if (collectInfo.modelPrefix()) {
-            newClassName
-        } else ""
+        val newClassName = parentName + className
+        val preName = newClassName
         if (jsonRawData is List<*>) {
             // if first element is an array, start in the first element.
             generateClassDefinition(Inflector.getInstance().singularize(newClassName), Inflector.getInstance().singularize(newClassName), jsonRawData[0]!!)

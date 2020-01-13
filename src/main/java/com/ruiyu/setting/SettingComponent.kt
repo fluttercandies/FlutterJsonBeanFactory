@@ -14,10 +14,7 @@ class SettingComponent : Configurable {
             return false
         }
         return getSettings() != Settings(
-                settingLayout!!.getModelSuffix(),
-                settingLayout!!.getIgnoreContainFieldClassTextField(),
-                settingLayout!!.getSuffixFiles(),
-                settingLayout!!.getModelPrefix())
+                settingLayout!!.getModelSuffix())
     }
 
     override fun getDisplayName(): String {
@@ -28,8 +25,6 @@ class SettingComponent : Configurable {
         settingLayout?.run {
             getSettings().apply {
                 modelSuffix = getModelSuffix()
-                scanFileSetting = getSuffixFiles()
-                addPrefix = getModelPrefix()
             }
         }
     }
