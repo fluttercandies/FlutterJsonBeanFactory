@@ -95,7 +95,7 @@ class HelperClassGeneratorInfo {
                 "if (json['$getJsonName'] != null) {\n\t\tdata.$name = new List<${listSubType}>();\n\t\t$value\n\t}"
             }
             else -> // class
-                "if (json['$getJsonName'] != null) {\n\t\tnew $type().fromJson(json['$getJsonName']);\n\t}"
+                "if (json['$getJsonName'] != null) {\n\t\tdata.$name = new $type().fromJson(json['$getJsonName']);\n\t}"
         }
     }
 
