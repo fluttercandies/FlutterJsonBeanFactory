@@ -16,7 +16,7 @@ class HelperFileGeneratorInfo(val imports: MutableList<String> = mutableListOf()
 class HelperClassGeneratorInfo {
     //协助的类名
     lateinit var className: String
-    private val fields: MutableList<Filed> = mutableListOf()
+    val fields: MutableList<Filed> = mutableListOf()
 
 
     fun addFiled(type: String, name: String, annotationValue: List<AnnotationValue>?) {

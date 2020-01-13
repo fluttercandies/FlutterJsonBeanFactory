@@ -1,7 +1,6 @@
 package com.ruiyu.file
 
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
@@ -11,7 +10,6 @@ import com.jetbrains.lang.dart.DartTokenTypes
 import com.ruiyu.jsontodart.AnnotationValue
 import com.ruiyu.jsontodart.HelperClassGeneratorInfo
 import com.ruiyu.jsontodart.HelperFileGeneratorInfo
-import com.ruiyu.setting.Settings
 import io.flutter.pub.PubRoot
 import io.flutter.utils.FlutterModuleUtils
 //import org.jetbrains.kotlin.idea.core.util.toPsiFile
@@ -122,9 +120,20 @@ object FileHelpers {
         //辅助主类的包名
         content.append(packageName)
         content.append("\n")
-        content.append("import 'package:intl/intl.dart';")
-        content.append("\n")
-        helperClassGeneratorInfos?.imports?.forEach {itemImport->
+        //所有字段
+        val allFields = helperClassGeneratorInfos?.classes?.flatMap {
+            it.fields.mapNotNull { itemFiled ->
+                itemFiled.annotationValue
+            }.flatMap { annotationList ->
+                annotationList.asIterable()
+            }
+        }
+        //说明需要制定格式解析
+        if (allFields?.firstOrNull { it.name == "format" } != null) {
+            content.append("import 'package:intl/intl.dart';")
+            content.append("\n")
+        }
+        helperClassGeneratorInfos?.imports?.filterNot { it.endsWith("json_convert_content.dart';") || it.endsWith("json_filed.dart';") }?.forEach { itemImport ->
             content.append(itemImport)
             content.append("\n")
         }

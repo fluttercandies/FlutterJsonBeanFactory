@@ -78,14 +78,24 @@ class ModelGenerator(
         val jsonRawData = gson.fromJson<Map<String, Any>>(collectInfo.userInputJson, object : TypeToken<Map<String, Any>>() {}.type)
 //        val jsonRawData = gson.fromJson<Map<String, Any>>(collectInfo.userInputJson, HashMap::class.java)
         val pubSpecConfig = FileHelpers.getPubSpecConfig(project)
+        val classContentList = generateClassDefinition(collectInfo.firstClassName(), "", JsonUtils.jsonMapMCompletion(jsonRawData)
+                ?: mutableMapOf<String, Any>())
+        val classContent = classContentList.joinToString("\n")
+        classContentList.fold(mutableListOf<TypeDefinition>(), { acc, de ->
+            acc.addAll(de.fields.map { it.value })
+            acc
+        })
         val stringBuilder = StringBuilder()
         //导包
         stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_convert_content.dart';")
         stringBuilder.append("\n")
-        stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_filed.dart';")
-        stringBuilder.append("\n\n")
-        stringBuilder.append(generateClassDefinition(collectInfo.firstClassName(), "", JsonUtils.jsonMapMCompletion(jsonRawData)
-                ?: mutableMapOf<String, Any>()).joinToString("\n"))
+        //说明需要导包json_filed.dart
+        if (classContent.contains("@JSONField(")) {
+            stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_filed.dart';")
+            stringBuilder.append("\n")
+        }
+        stringBuilder.append("\n")
+        stringBuilder.append(classContent)
         //生成helper类
 
         //生成
