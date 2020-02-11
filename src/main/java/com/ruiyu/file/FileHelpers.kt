@@ -1,7 +1,10 @@
 package com.ruiyu.file
 
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.tree.CompositeElement
@@ -94,7 +97,7 @@ object FileHelpers {
      * 获取项目.idea目录的一个文件
      */
     private fun getProjectIdeaFile(project: Project): VirtualFile? {
-        val ideaFile = project.projectFile ?: project.workspaceFile
+        val ideaFile = project.projectFile ?: project.workspaceFile ?: project.guessProjectDir()?.children?.first()
         if (ideaFile == null) {
             project.showErrorMessage("Missing .idea/misc.xml or .idea/workspace.xml file")
         }

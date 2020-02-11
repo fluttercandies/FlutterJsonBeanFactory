@@ -133,19 +133,13 @@ public class GsonUtil {
                     /**
                      * 改写数字的处理逻辑，将数字值分为整型与浮点型。
                      */
-                    double dbNum = in.nextDouble();
-
-                    // 数字超过long的最大值，返回浮点类型
-                    if (dbNum > Long.MAX_VALUE) {
-                        return dbNum;
-                    }
-
-                    // 判断数字是否为整数值
-                    long lngNum = (long) dbNum;
-                    if (dbNum == lngNum) {
-                        return lngNum;
+                    String dbNum = in.nextString();
+                    if (!dbNum.contains(".")) {
+                        //返回0是int
+                        return 0;
                     } else {
-                        return dbNum;
+                        //返回double类型代表是double类型
+                        return 0.0;
                     }
 
                 case BOOLEAN:
