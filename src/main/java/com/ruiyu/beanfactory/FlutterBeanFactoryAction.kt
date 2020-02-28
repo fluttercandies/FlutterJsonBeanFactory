@@ -74,10 +74,11 @@ class FlutterBeanFactoryAction : AnAction() {
 
 ///
                     //tojson
+                    content.append("\n\n");
                     content.append("""  Map<String, dynamic> toJson() {
 		return _getToJson<T>(runtimeType, this);
   }""")
-
+                    content.append("\n\n");
                     content.append("  static _getFromJson<T>(Type type, data, json) {\n" +
                             "    switch (type) {")
                     allClass.forEach {
@@ -89,7 +90,7 @@ class FlutterBeanFactoryAction : AnAction() {
                     content.append("    }\n" +
                             "    return data as T;\n" +
                             "  }")
-
+                    content.append("\n\n");
                     content.append("  static _getToJson<T>(Type type, data) {\n" +
                             "\t\tswitch (type) {")
                     allClass.forEach {
@@ -101,20 +102,53 @@ class FlutterBeanFactoryAction : AnAction() {
                     content.append("    }\n" +
                             "    return data as T;\n" +
                             "  }")
-
-
-                    content.append("  static T fromJsonAsT<T>(json) {\n" +
-                            "    switch (T.toString()) {")
+                    content.append("\n");
+                    //_fromJsonSingle
+                    content.append("  //Go back to a single instance by type\n" +
+                            "  static _fromJsonSingle(String type, json) {\n" +
+                            "    switch (type) {")
                     allClass.forEach {
                         it.first.classes.forEach { itemFile ->
                             content.append("\t\t\tcase '${itemFile.className}':\n")
-                            content.append("\t\t\treturn ${itemFile.className}().fromJson(json) as T;")
+                            content.append("\t\t\treturn ${itemFile.className}().fromJson(json);")
                         }
                     }
                     content.append("    }\n" +
                             "    return null;\n" +
                             "  }")
 
+                    //_getListFromType
+                    content.append("\n\n");
+                    content.append("  //empty list is returned by type\n" +
+                            "  static _getListFromType(String type) {\n" +
+                            "    switch (type) {")
+                    allClass.forEach {
+                        it.first.classes.forEach { itemFile ->
+                            content.append("\t\t\tcase '${itemFile.className}':\n")
+                            content.append("\t\t\treturn List<${itemFile.className}>();")
+                        }
+                    }
+                    content.append("    }\n" +
+                            "    return null;\n" +
+                            "  }")
+                    content.append("\n\n")
+                    //fromJsonAsT
+                    content.append("  static M fromJsonAsT<M>(json) {\n" +
+                            "    String type = M.toString();\n" +
+                            "    if (json is List && type.contains(\"List<\")) {\n" +
+                            "      String itemType = type.substring(5, type.length - 1);\n" +
+                            "      List tempList = _getListFromType(itemType);\n" +
+                            "      json.forEach((itemJson) {\n" +
+                            "        tempList\n" +
+                            "            .add(_fromJsonSingle(type.substring(5, type.length - 1), itemJson));\n" +
+                            "      });\n" +
+                            "      return tempList as M;\n" +
+                            "    } else {\n" +
+                            "      return _fromJsonSingle(M.toString(), json) as M;\n" +
+                            "    }\n" +
+                            "  }")
+
+                    content.append("\n")
                     content.append("}")
 
                     FileHelpers.getJsonConvertContentFile(project) { itemVirtualFile ->
