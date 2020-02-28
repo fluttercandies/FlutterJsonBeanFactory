@@ -12,6 +12,7 @@
      <br>you must add intl: any to pubspec.yaml.</br>
     ]]></description>
     <change-notes><![CDATA[
+       <br>list generics are supported</br>
        <br>smart to import packages</br>
        <br>if you use @JSONField(format:""), you must add intl: any to pubspec.yaml</br>
        <br>remove automatically regenerated</br>
