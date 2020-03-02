@@ -131,11 +131,13 @@ class HelperClassGeneratorInfo {
         val isContainsDateFormat = formatString?.isNotEmpty() == true
         when {
             isPrimitive -> {
-                if (type == "DateTime" && isContainsDateFormat) {
-                    return "if (${thisKey} != null) {\n" +
-                            "    DateFormat format = new DateFormat(\"$formatString\");\n" +
-                            "    data['${getJsonName}'] = format.format(${thisKey});\n" +
-                            "  }"
+                if (type == "DateTime") {
+                    return if (isContainsDateFormat) {
+                        "if (${thisKey} != null) {\n" +
+                                "    DateFormat format = new DateFormat(\"$formatString\");\n" +
+                                "    data['${getJsonName}'] = format.format(${thisKey});\n" +
+                                "  }"
+                    } else "data['${getJsonName}'] = ${thisKey}?.toString();"
                 }
                 return "data['$getJsonName'] = $thisKey;"
             }
@@ -143,17 +145,20 @@ class HelperClassGeneratorInfo {
                 //类名
                 val listSubType = getListSubType(type)
                 //是否是list<DateTime>类型
-                val isListDateTime = listSubType == "DateTime" && isContainsDateFormat
+                val isListDateTime = listSubType == "DateTime"
                 val value = if (listSubType == "dynamic") "[]" else if (listSubType == "DateTime") {
-                    if (isListDateTime) {
+                    if (isContainsDateFormat)
                         "${thisKey}\n" +
                                 "        .map((v) => format.format(v))\n" +
                                 "        .toList()\n" +
                                 "        .cast<String>()"
-                    } else thisKey
+                    else "${thisKey}\n" +
+                            "        .map((v) => v?.toString())\n" +
+                            "        .toList()\n" +
+                            "        .cast<String>()"
                 } else "$thisKey.map((v) => v.toJson()).toList()"
                 // class list
-                return "if ($thisKey != null) {${if (isListDateTime) "\n\t\tDateFormat format = new DateFormat(\"${formatString}\");" else ""}\n\t\tdata['$getJsonName'] =  $value;\n\t}"
+                return "if ($thisKey != null) {${if (isListDateTime && isContainsDateFormat) "\n\t\tDateFormat format = new DateFormat(\"${formatString}\");" else ""}\n\t\tdata['$getJsonName'] =  $value;\n\t}"
             }
             else -> {
                 // class

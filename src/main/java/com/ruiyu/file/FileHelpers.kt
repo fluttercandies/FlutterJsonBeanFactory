@@ -1,12 +1,15 @@
 package com.ruiyu.file
 
+//import org.jetbrains.kotlin.idea.core.util.toPsiFile
+//import org.jetbrains.kotlin.idea.refactoring.toPsiFile
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
-import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.*
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiManager
 import com.intellij.psi.impl.source.tree.CompositeElement
 import com.intellij.psi.search.FilenameIndex
 import com.jetbrains.lang.dart.DartTokenTypes
@@ -15,8 +18,6 @@ import com.ruiyu.jsontodart.HelperClassGeneratorInfo
 import com.ruiyu.jsontodart.HelperFileGeneratorInfo
 import io.flutter.pub.PubRoot
 import io.flutter.utils.FlutterModuleUtils
-//import org.jetbrains.kotlin.idea.core.util.toPsiFile
-//import org.jetbrains.kotlin.idea.refactoring.toPsiFile
 import org.jetbrains.kotlin.psi.psiUtil.children
 import org.yaml.snakeyaml.Yaml
 import wu.seal.jsontokotlin.utils.showErrorMessage
@@ -28,8 +29,9 @@ import java.io.FileInputStream
 object FileHelpers {
     @JvmStatic
     fun getResourceFolder(project: Project): VirtualFile {
-        return project.baseDir.findChild("res")
-                ?: project.baseDir.createChildDirectory(this, "res")
+        val guessProjectDir = project.guessProjectDir()
+        return guessProjectDir?.findChild("res")
+                ?: guessProjectDir!!.createChildDirectory(this, "res")
     }
 
     @JvmStatic
