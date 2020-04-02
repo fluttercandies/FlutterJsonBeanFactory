@@ -140,7 +140,7 @@ fun fixFieldName(name: String, typeDef: TypeDefinition? = null, privateField: Bo
 fun filedKeywordRename(key: String): String {
     var notKeyWord = key
     //关键字的修改字段名
-    if (dartKeyword.contains(key.toLowerCase())) {
+    if (dartKeyword.contains(key.toLowerCase()) || key.first().isDigit()) {
         notKeyWord = "x${key.toUpperCaseFirstOne()}"
     }
     return notKeyWord
