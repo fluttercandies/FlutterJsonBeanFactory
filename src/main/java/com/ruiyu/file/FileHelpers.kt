@@ -229,7 +229,7 @@ object FileHelpers {
 
     fun getDartFileHelperClassGeneratorInfo(file: PsiFile): HelperFileGeneratorInfo? {
         //不包含JsonConvert 那么就不转
-        if (file.text.contains("with JsonConvert").not()) {
+        if (file.text.contains("with JsonConvert").not() && file.text.contains("extends JsonConvert").not()) {
             return null
         }
         val mutableMapOf = mutableListOf<HelperClassGeneratorInfo>()

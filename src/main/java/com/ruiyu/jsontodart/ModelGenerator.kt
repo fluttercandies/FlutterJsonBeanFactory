@@ -1,12 +1,12 @@
 package com.ruiyu.jsontodart
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.intellij.openapi.project.Project
 import com.ruiyu.file.FileHelpers
 import com.ruiyu.json.GsonUtil.MapTypeAdapter
 import com.ruiyu.jsontodart.utils.camelCase
-import com.ruiyu.jsontodart.utils.fixFieldName
 import com.ruiyu.utils.Inflector
 import com.ruiyu.utils.JsonUtils
 import com.ruiyu.utils.toUpperCaseFirstOne
@@ -67,10 +67,21 @@ class ModelGenerator(
     fun generateDartClassesToString(): String {
         //用阿里的防止int变为double 已解决 还是用google的吧 https://www.codercto.com/a/73857.html
 //        val jsonRawData = JSON.parseObject(collectInfo.userInputJson)
-
+        val originalStr = collectInfo.userInputJson.trim()
         val gson = GsonBuilder()
                 .registerTypeAdapter(object : TypeToken<Map<String, Any>>() {}.type, MapTypeAdapter()).create()
-        val jsonRawData = gson.fromJson<Map<String, Any>>(collectInfo.userInputJson, object : TypeToken<Map<String, Any>>() {}.type)
+
+        val jsonRawData = if (originalStr.startsWith("[")) {
+            val list: List<Any> = gson.fromJson(originalStr, object : TypeToken<List<Any>>() {}.type)
+            try {
+                (JsonUtils.jsonMapMCompletion(list) as List<Any>).first()
+            } catch (e: Exception) {
+                mutableMapOf<String, Any>()
+            }
+
+        } else {
+            gson.fromJson<Map<String, Any>>(originalStr, object : TypeToken<Map<String, Any>>() {}.type)
+        }
 //        val jsonRawData = gson.fromJson<Map<String, Any>>(collectInfo.userInputJson, HashMap::class.java)
         val pubSpecConfig = FileHelpers.getPubSpecConfig(project)
         val classContentList = generateClassDefinition(collectInfo.firstClassName(), "", JsonUtils.jsonMapMCompletion(jsonRawData)
