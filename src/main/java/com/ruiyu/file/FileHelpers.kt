@@ -255,7 +255,11 @@ object FileHelpers {
                                             val strs = itemFileNode.text.substringAfter(")").split(" ").filter { item ->
                                                 item != "\n" && item != "\t" && item.trim().trimIndent().isNotEmpty()
                                             }
-                                            val nameNode = strs.last().trimIndent().trim()
+                                           val nameNode =  if(strs.contains("=")){
+                                                strs[strs.indexOf("=")-1]
+                                            }else {
+                                               strs.last().trimIndent().trim()
+                                           }
 //                                            if (strs.size == 2) {
 //                                                val typeNode = strs[strs.size - 2]
 //                                                val annotationValue = if (itemFileNode.text.contains("\"")) {
