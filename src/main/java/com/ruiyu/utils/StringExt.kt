@@ -4,10 +4,11 @@ import java.util.regex.Pattern
 
 //首字母转大写
 fun String.toUpperCaseFirstOne(): String {
-    return if (Character.isUpperCase(this[0]))
-        this
-    else
-        StringBuilder().append(Character.toUpperCase(this[0])).append(this.substring(1)).toString()
+    return when {
+        isEmpty() -> ""
+        Character.isUpperCase(this[0]) -> this
+        else -> StringBuilder().append(Character.toUpperCase(this[0])).append(this.substring(1)).toString()
+    }
 }
 
 //首字母转小写
@@ -17,6 +18,7 @@ fun String.toLowerCaseFirstOne(): String {
     else
         StringBuilder().append(Character.toLowerCase(this[0])).append(this.substring(1)).toString()
 }
+
 //大写字母转下划线和小写
 fun String.upperCharToUnderLine(): String {
     val p = Pattern.compile("[A-Z]")
@@ -37,7 +39,7 @@ fun String.upperCharToUnderLine(): String {
 }
 
 //下划线和小写转大写字母
-fun upperTable(str:String): String {
+fun upperTable(str: String): String {
     // 字符串缓冲区
     val sbf = StringBuffer()
     // 如果字符串包含 下划线
