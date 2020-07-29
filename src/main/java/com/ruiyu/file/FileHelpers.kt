@@ -57,7 +57,7 @@ object FileHelpers {
     fun getJsonConvertJsonFiledFile(project: Project, callback: (file: VirtualFile) -> Unit) {
         ApplicationManager.getApplication().runWriteAction {
             val generated = getJsonConvertBaseFile(project)
-            callback(generated.findOrCreateChildData(this, "json_filed.dart"))
+            callback(generated.findOrCreateChildData(this, "json_field.dart"))
         }
     }
 
@@ -138,7 +138,7 @@ object FileHelpers {
             content.append("import 'package:intl/intl.dart';")
             content.append("\n")
         }
-        helperClassGeneratorInfos?.imports?.filterNot { it.endsWith("json_convert_content.dart';") || it.endsWith("json_filed.dart';") }?.forEach { itemImport ->
+        helperClassGeneratorInfos?.imports?.filterNot { it.endsWith("json_convert_content.dart';") || it.endsWith("json_field.dart';") }?.forEach { itemImport ->
             content.append(itemImport)
             content.append("\n")
         }
