@@ -85,10 +85,10 @@ class FlutterBeanFactoryAction : AnAction() {
                     content.append("\n\n");
                     content.append("  static _getFromJson<T>(Type type, data, json) {\n" +
                             "    switch (type) {")
-                    allClass.forEach {
-                        it.first.classes.forEach { itemFile ->
-                            content.append("\t\t\tcase ${itemFile.className}:\n")
-                            content.append("\t\t\treturn ${itemFile.className.toLowerCaseFirstOne()}FromJson(data as ${itemFile.className}, json) as T;")
+                    allClass.forEach { itemClass ->
+                        itemClass.first.classes.forEach { itemFile ->
+                            content.append("\n\t\t\tcase ${itemFile.className}:\n")
+                            content.append("\t\t\t\treturn ${itemFile.className.toLowerCaseFirstOne()}FromJson(data as ${itemFile.className}, json) as T;")
                         }
                     }
                     content.append("    }\n" +
@@ -99,60 +99,66 @@ class FlutterBeanFactoryAction : AnAction() {
                             "\t\tswitch (type) {")
                     allClass.forEach {
                         it.first.classes.forEach { itemFile ->
-                            content.append("\t\t\tcase ${itemFile.className}:\n")
-                            content.append("\t\t\treturn ${itemFile.className.toLowerCaseFirstOne()}ToJson(data as ${itemFile.className});")
+                            content.append("\n\t\t\tcase ${itemFile.className}:\n")
+                            content.append("\t\t\t\treturn ${itemFile.className.toLowerCaseFirstOne()}ToJson(data as ${itemFile.className});")
                         }
                     }
-                    content.append("    }\n" +
-                            "    return data as T;\n" +
-                            "  }")
+                    content.append("\n\t\t\t}\n" +
+                            "\t\t\treturn data as T;\n" +
+                            "\t\t}")
                     content.append("\n");
                     //_fromJsonSingle
                     content.append("  //Go back to a single instance by type\n" +
-                            "  static _fromJsonSingle(String type, json) {\n" +
-                    "\t\t\tvar item; \n" +
-                    "\t\t\tString runtimeType;\n")
-                    allClass.forEach {
-                        it.first.classes.forEach { itemFile ->
-//                            content.append("\t\t\tcase ${itemFile.className}().runtimeType.toString():\n")
-//                            content.append("\t\t\treturn ${itemFile.className}().fromJson(json);")
-                            content.append("\t\t\titem = ${itemFile.className}();\n")
-                            content.append("\t\t\truntimeType = item.runtimeType.toString();\n")
-                            content.append("\t\t\tif(type == runtimeType){ return item.fromJson(json);}\n")
+                            "\tstatic _fromJsonSingle(Type type, json) {\n")
+                    allClass.forEach { itemClass ->
+                        val isFirstIf = allClass.indexOf(itemClass) == 0
+                        itemClass.first.classes.forEach { itemFile ->
+                            val isFirstClassFileIf = itemClass.first.classes.indexOf(itemFile) == 0
+                            if (isFirstIf && isFirstClassFileIf) {
+                                content.append("\t\tif(type == (${itemFile.className}).runtimeType){\n")
+                                content.append("\t\t\treturn ${itemFile.className}().fromJson(json);\n")
+                                content.append("\t\t}\t")
+                            } else {
+                                content.append("else if(type == (${itemFile.className}).runtimeType){\n")
+                                content.append("\t\t\treturn ${itemFile.className}().fromJson(json);\n")
+                                content.append("\t\t}\t")
+                            }
                         }
                     }
                     content.append(
-                            " return null;\n" +
-                            "  }")
+                            "\n\t\treturn null;\n" +
+                                    "\t}")
 
                     //_getListFromType
                     content.append("\n\n");
-                    content.append("  //empty list is returned by type\n" +
-                            "  static _getListFromType(String type) {\n")
-                    allClass.forEach {
-                        it.first.classes.forEach { itemFile ->
-//                            content.append("\t\t\tcase ${itemFile.className}().runtimeType.toString():\n")
-//                            content.append("\t\t\treturn List<${itemFile.className}>();")
-                            content.append("\t\t\tif(type == ${itemFile.className}().runtimeType.toString()){ return List<${itemFile.className}>();}\n")
+                    content.append("  //list is returned by type\n" +
+                            "\tstatic M _getListChildType<M>(List<Map> data) {\n")
+                    allClass.forEach { itemClass ->
+                        val isFirstIf = allClass.indexOf(itemClass) == 0
+                        itemClass.first.classes.forEach { itemFile ->
+                            val isFirstClassFileIf = itemClass.first.classes.indexOf(itemFile) == 0
+                            //第一行
+                            if (isFirstIf && isFirstClassFileIf) {
+                                content.append("\t\tif(List<${itemFile.className}>() is M){\n")
+                                content.append("\t\t\treturn data.map((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
+                                content.append("\t\t}")
+                            } else {
+                                content.append("\telse if(List<${itemFile.className}>() is M){\n")
+                                content.append("\t\t\treturn data.map((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
+                                content.append("\t\t}")
+                            }
                         }
                     }
                     content.append(
-                            "    return null;\n" +
-                            "  }")
+                            "\n\t\treturn null;\n" +
+                                    "\t}")
                     content.append("\n\n")
                     //fromJsonAsT
                     content.append("  static M fromJsonAsT<M>(json) {\n" +
-                            "    String type = M.toString();\n" +
-                            "    if (json is List && type.contains(\"List<\")) {\n" +
-                            "      String itemType = type.substring(5, type.length - 1);\n" +
-                            "      List tempList = _getListFromType(itemType);\n" +
-                            "      json.forEach((itemJson) {\n" +
-                            "        tempList\n" +
-                            "            .add(_fromJsonSingle(type.substring(5, type.length - 1), itemJson));\n" +
-                            "      });\n" +
-                            "      return tempList as M;\n" +
+                            "    if (json is List) {\n" +
+                            "      return _getListChildType<M>(json);\n" +
                             "    } else {\n" +
-                            "      return _fromJsonSingle(M.toString(), json) as M;\n" +
+                            "      return _fromJsonSingle(M.runtimeType, json) as M;\n" +
                             "    }\n" +
                             "  }")
 
