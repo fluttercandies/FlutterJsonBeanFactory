@@ -110,29 +110,33 @@ class FlutterBeanFactoryAction : AnAction() {
                     //_fromJsonSingle
                     content.append("  //Go back to a single instance by type\n" +
                             "  static _fromJsonSingle(String type, json) {\n" +
-                            "    switch (type) {")
+                    "\t\t\tvar item; \n" +
+                    "\t\t\tString runtimeType;\n")
                     allClass.forEach {
                         it.first.classes.forEach { itemFile ->
-                            content.append("\t\t\tcase '${itemFile.className}':\n")
-                            content.append("\t\t\treturn ${itemFile.className}().fromJson(json);")
+//                            content.append("\t\t\tcase ${itemFile.className}().runtimeType.toString():\n")
+//                            content.append("\t\t\treturn ${itemFile.className}().fromJson(json);")
+                            content.append("\t\t\titem = ${itemFile.className}();\n")
+                            content.append("\t\t\truntimeType = item.runtimeType.toString();\n")
+                            content.append("\t\t\tif(type == runtimeType){ return item.fromJson(json);}\n")
                         }
                     }
-                    content.append("    }\n" +
-                            "    return null;\n" +
+                    content.append(
+                            " return null;\n" +
                             "  }")
 
                     //_getListFromType
                     content.append("\n\n");
                     content.append("  //empty list is returned by type\n" +
-                            "  static _getListFromType(String type) {\n" +
-                            "    switch (type) {")
+                            "  static _getListFromType(String type) {\n")
                     allClass.forEach {
                         it.first.classes.forEach { itemFile ->
-                            content.append("\t\t\tcase '${itemFile.className}':\n")
-                            content.append("\t\t\treturn List<${itemFile.className}>();")
+//                            content.append("\t\t\tcase ${itemFile.className}().runtimeType.toString():\n")
+//                            content.append("\t\t\treturn List<${itemFile.className}>();")
+                            content.append("\t\t\tif(type == ${itemFile.className}().runtimeType.toString()){ return List<${itemFile.className}>();}\n")
                         }
                     }
-                    content.append("    }\n" +
+                    content.append(
                             "    return null;\n" +
                             "  }")
                     content.append("\n\n")
