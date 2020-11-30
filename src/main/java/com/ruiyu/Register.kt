@@ -48,8 +48,4 @@ class Register(private val project: Project) : ProjectComponent {
 //        am.getAction(REBUILD_FILE_ACTION_ID)?.templatePresentation?.isEnabled = false
     }
 
-    companion object {
-        private const val NEW_FILE_ACTION_ID = "FlutterI18n.NewArbFileAction"
-        private const val REBUILD_FILE_ACTION_ID = "FlutterI18n.RebuildI18nFile"
-    }
 }
