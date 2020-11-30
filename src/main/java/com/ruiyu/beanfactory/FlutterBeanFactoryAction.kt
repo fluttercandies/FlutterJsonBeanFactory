@@ -109,17 +109,18 @@ class FlutterBeanFactoryAction : AnAction() {
                     content.append("\n");
                     //_fromJsonSingle
                     content.append("  //Go back to a single instance by type\n" +
-                            "\tstatic _fromJsonSingle(Type type, json) {\n")
+                            "\tstatic _fromJsonSingle<M>( json) {\n")
+                    content.append("\t\tString type = M.toString();\n")
                     allClass.forEach { itemClass ->
                         val isFirstIf = allClass.indexOf(itemClass) == 0
                         itemClass.first.classes.forEach { itemFile ->
                             val isFirstClassFileIf = itemClass.first.classes.indexOf(itemFile) == 0
                             if (isFirstIf && isFirstClassFileIf) {
-                                content.append("\t\tif(type == (${itemFile.className}).runtimeType){\n")
+                                content.append("\t\tif(type == (${itemFile.className}).toString()){\n")
                                 content.append("\t\t\treturn ${itemFile.className}().fromJson(json);\n")
                                 content.append("\t\t}\t")
                             } else {
-                                content.append("else if(type == (${itemFile.className}).runtimeType){\n")
+                                content.append("else if(type == (${itemFile.className}).toString()){\n")
                                 content.append("\t\t\treturn ${itemFile.className}().fromJson(json);\n")
                                 content.append("\t\t}\t")
                             }
@@ -158,7 +159,7 @@ class FlutterBeanFactoryAction : AnAction() {
                             "    if (json is List) {\n" +
                             "      return _getListChildType<M>(json);\n" +
                             "    } else {\n" +
-                            "      return _fromJsonSingle(M.runtimeType, json) as M;\n" +
+                            "      return _fromJsonSingle<M>(json) as M;\n" +
                             "    }\n" +
                             "  }")
 
