@@ -133,7 +133,7 @@ class FlutterBeanFactoryAction : AnAction() {
                     //_getListFromType
                     content.append("\n\n");
                     content.append("  //list is returned by type\n" +
-                            "\tstatic M _getListChildType<M>(List<Map> data) {\n")
+                            "\tstatic M _getListChildType<M>(List data) {\n")
                     allClass.forEach { itemClass ->
                         val isFirstIf = allClass.indexOf(itemClass) == 0
                         itemClass.first.classes.forEach { itemFile ->
