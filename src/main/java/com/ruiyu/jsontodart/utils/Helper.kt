@@ -18,6 +18,7 @@ val PRIMITIVE_TYPES = mapOf(
         "List<double>" to true,
         "List<String>" to true,
         "List<bool>" to true,
+        "List<num>" to true,
         "List" to true,
         "Null" to true,
         "var" to true,

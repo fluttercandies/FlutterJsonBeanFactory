@@ -183,6 +183,11 @@ class HelperClassGeneratorInfo {
                         "\t\t\t\t? double.tryParse(${value})\n" +
                         "\t\t\t\t: ${value}.toDouble()"
             }
+            typeName.equals("num", true) -> {
+                "$value is String\n" +
+                        "\t\t\t\t? num.tryParse(${value})\n" +
+                        "\t\t\t\t: $value"
+            }
             typeName.equals("string", true) -> {
                 "${value}.toString()"
             }
