@@ -8,6 +8,7 @@ import java.math.BigDecimal
 
 val PRIMITIVE_TYPES = mapOf(
         "int" to true,
+        "num" to true,
         "double" to true,
         "String" to true,
         "bool" to true,
@@ -26,6 +27,7 @@ val PRIMITIVE_TYPES = mapOf(
 
 fun getListSubType(typeName: String): String {
     return mapOf(
+            "List<num>" to "num",
             "List<int>" to "int",
             "List<double>" to "double",
             "List<String>" to "String",
@@ -84,25 +86,25 @@ fun isPrimitiveType(typeName: String): Boolean {
 
 
 fun camelCase(init: String): String {
-    if (init.contains("_").not()) {
-        return init.toUpperCaseFirstOne()
+    val newInit = init.replace("-", "_")
+    if (newInit.contains("_").not()) {
+        return newInit.toUpperCaseFirstOne()
     }
-    val ret = StringBuilder(init.length)
-    for (word in init.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
+    val ret = StringBuilder(newInit.length)
+    for (word in newInit.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
         if (word.isNotEmpty()) {
             ret.append(word.substring(0, 1).toUpperCase())
             ret.append(word.substring(1).toLowerCase())
         }
-        if (ret.length != init.length)
+        if (ret.length != newInit.length)
             ret.append(" ")
     }
-    var result = ret.toString().replace(" ", "")
 
     /* if (PRIMITIVE_TYPES[result] != null || dartKeyword.contains(result)) {
  //        throw MessageException("Please do not use the keyword $result as the key")
          result +="X"
      }*/
-    return result
+    return ret.toString().replace(" ", "")
 }
 
 fun camelCaseFirstLower(text: String): String {
@@ -125,10 +127,11 @@ fun camelCaseFirstLower(text: String): String {
 
 //驼峰命名
 fun fixFieldName(name: String, typeDef: TypeDefinition? = null, privateField: Boolean = false): String {
-    var properName = name;
-    if (name.startsWith('_') || name.startsWith("[0-9]")) {
+    val newName = name.replace("-", "_")
+    var properName = newName;
+    if (newName.startsWith('_') || newName.startsWith("[0-9]")) {
         val firstCharType = typeDef?.name?.substring(0, 1)?.toLowerCase();
-        properName = "$firstCharType$name"
+        properName = "$firstCharType$newName"
     }
     val fieldName = camelCaseFirstLower(properName);
     if (privateField) {
