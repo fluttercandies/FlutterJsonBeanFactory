@@ -141,11 +141,11 @@ class FlutterBeanFactoryAction : AnAction() {
                             //第一行
                             if (isFirstIf && isFirstClassFileIf) {
                                 content.append("\t\tif(List<${itemFile.className}>() is M){\n")
-                                content.append("\t\t\treturn data.map((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
+                                content.append("\t\t\treturn data.map<${itemFile.className}>((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
                                 content.append("\t\t}")
                             } else {
                                 content.append("\telse if(List<${itemFile.className}>() is M){\n")
-                                content.append("\t\t\treturn data.map((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
+                                content.append("\t\t\treturn data.map<${itemFile.className}>((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
                                 content.append("\t\t}")
                             }
                         }

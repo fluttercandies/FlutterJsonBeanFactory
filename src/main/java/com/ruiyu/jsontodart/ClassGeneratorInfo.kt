@@ -64,7 +64,7 @@ class HelperClassGeneratorInfo {
             isPrimitive -> {
                 when {
                     isListType -> {
-                        "if (json['$getJsonName'] != null) {\n\t\tdata.$name = json['$getJsonName']?.map((v) => v${buildToType(getListSubType(type))})?.toList()?.cast<${getListSubType(type)}>();\n\t}"
+                        "if (json['$getJsonName'] != null) {\n\t\tdata.$name = json['$getJsonName']?.map((v) => ${buildToType(getListSubType(type), "v")})?.toList()?.cast<${getListSubType(type)}>();\n\t}"
                     }
                     type == "DateTime" -> {
                         if (filed.getValueByName<String>("format")?.isNotEmpty() == true) {
@@ -75,7 +75,7 @@ class HelperClassGeneratorInfo {
 
                     }
                     else -> {
-                        "if (json['$getJsonName'] != null) {\n\t\tdata.$name = json['$getJsonName']${buildToType(type)};\n\t}"
+                        "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${buildToType(type, "json['$getJsonName']")};\n\t}"
                     }
                 }
             }
@@ -171,18 +171,22 @@ class HelperClassGeneratorInfo {
         return "$expression().toJson()"
     }
 
-    private fun buildToType(typeName: String): String {
+    private fun buildToType(typeName: String, value: String): String {
         return when {
             typeName.equals("int", true) -> {
-                "?.toInt()"
+                "$value is String\n" +
+                        "\t\t\t\t? int.tryParse(${value})\n" +
+                        "\t\t\t\t: ${value}.toInt()"
             }
             typeName.equals("double", true) -> {
-                "?.toDouble()"
+                "$value is String\n" +
+                        "\t\t\t\t? double.tryParse(${value})\n" +
+                        "\t\t\t\t: ${value}.toDouble()"
             }
             typeName.equals("string", true) -> {
-                "?.toString()"
+                "${value}.toString()"
             }
-            else -> ""
+            else -> value
         }
     }
 
@@ -197,6 +201,7 @@ class Filed constructor(
 
     //待定
     var isPrivate: Boolean? = null
+
     //注解的值
     var annotationValue: List<AnnotationValue>? = null
 
