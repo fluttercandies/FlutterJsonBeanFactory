@@ -12,6 +12,7 @@
      <br>you must add intl: any to pubspec.yaml.</br>
     ]]></description>
     <change-notes><![CDATA[
+       <br>support sound null safety</br>
        <br>support the flutter web</br>
        <br>list generics are supported,List<DateTime> and DateTime toJson() can return String</br>
        <br>smart to import packages</br>
