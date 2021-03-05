@@ -31,6 +31,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                     if (itemFileNode.elementType == DartTokenTypes.VAR_DECLARATION_LIST) {
                                         var nameNode: String? = null
                                         var typeNode: String? = null
+                                        var isLate: Boolean = false
                                         //当前字段的所有注解
                                         val allAnnotation = mutableListOf<AnnotationValue>()
                                         itemFileNode.firstChildNode.children().forEach { fieldWholeNode ->
@@ -86,8 +87,13 @@ object GeneratorDartClassNodeToHelperInfo {
                                                 }
                                             } else {
                                                 //不是注解,普通解析
-                                                if (fieldWholeNode.elementType == DartTokenTypes.TYPE && fieldWholeNode.text != "late") {
-                                                    typeNode = fieldWholeNode.text
+                                                if (fieldWholeNode.elementType == DartTokenTypes.TYPE) {
+                                                    if (fieldWholeNode.text == "late") {
+                                                        isLate = true
+                                                    } else {
+                                                        typeNode = fieldWholeNode.text
+                                                    }
+
                                                 } else if (fieldWholeNode.elementType == DartTokenTypes.COMPONENT_NAME) {
                                                     nameNode = fieldWholeNode.text
                                                 }
