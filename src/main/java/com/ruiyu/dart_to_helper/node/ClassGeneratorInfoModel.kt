@@ -1,4 +1,4 @@
-package com.ruiyu.node
+package com.ruiyu.dart_to_helper.node
 
 import com.ruiyu.jsontodart.utils.*
 import com.ruiyu.utils.toLowerCaseFirstOne

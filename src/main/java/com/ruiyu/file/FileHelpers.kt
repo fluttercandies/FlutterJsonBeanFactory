@@ -10,8 +10,8 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FilenameIndex
-import com.ruiyu.node.HelperFileGeneratorInfo
-import com.ruiyu.node.GeneratorDartClassNodeToHelperInfo
+import com.ruiyu.dart_to_helper.node.HelperFileGeneratorInfo
+import com.ruiyu.dart_to_helper.node.GeneratorDartClassNodeToHelperInfo
 import io.flutter.pub.PubRoot
 import io.flutter.utils.FlutterModuleUtils
 import org.yaml.snakeyaml.Yaml
