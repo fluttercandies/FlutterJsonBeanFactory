@@ -67,7 +67,7 @@ class HelperClassGeneratorInfo {
                         if (filed.getValueByName<String>("format")?.isNotEmpty() == true) {
                             "if(json['$getJsonName'] != null){\n\t\tDateFormat format = new DateFormat(\"${filed.getValueByName<String>("format")}\");\n\t\tdata.$name = format.parse(json['$getJsonName'].toString());\n\t}"
                         } else {
-                            "if(json['$getJsonName'] != null){\n\t\tdata.$name = DateTime.tryParse(json['$getJsonName']);\n\t}"
+                            "if(json['$getJsonName'] != null){\n\t\tdata.$name = DateTime.parse(json['$getJsonName']);\n\t}"
                         }
 
                     }
@@ -216,9 +216,4 @@ class AnnotationValue(val name: String, private val value: Any) {
     fun <T> getValueByName(): T {
         return value as T
     }
-}
-
-class AnnotationValueTemp {
-    var name: String? = null
-    var value: Any? = null
 }

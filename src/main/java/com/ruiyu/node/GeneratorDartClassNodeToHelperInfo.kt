@@ -36,10 +36,11 @@ object GeneratorDartClassNodeToHelperInfo {
                                         itemFileNode.firstChildNode.children().forEach { fieldWholeNode ->
                                             //如果第一个是注解,解析注解里的内容
                                             if (fieldWholeNode.elementType == DartTokenTypes.METADATA) {
+                                                val annotationWholeNode = fieldWholeNode.firstChildNode;
                                                 //@JSONField(name: 'app',serialize:true) 为例
                                                 if (
                                                 //@
-                                                        fieldWholeNode.text == "@" &&
+                                                        annotationWholeNode.text == "@" &&
                                                         //JSONField
                                                         fieldWholeNode.firstChildNode.treeNext.elementType == DartTokenTypes.REFERENCE_EXPRESSION && fieldWholeNode.firstChildNode.treeNext.text == "JSONField") {
 
@@ -53,22 +54,27 @@ object GeneratorDartClassNodeToHelperInfo {
                                                                     // onlyItemMetaValueDataNode  只有注解的单个内容:name: 'app'
                                                                     println("注解33 ${onlyItemMetaValueDataNode.text}")
                                                                     if (onlyItemMetaValueDataNode.elementType == DartTokenTypes.NAMED_ARGUMENT) {
-                                                                        //注解的实际内容
-                                                                        val itemAnnotation = AnnotationValueTemp()
+                                                                        var annotationName: String? = null
+                                                                        var annotationValue: Any? = null
                                                                         onlyItemMetaValueDataNode.children().forEach { onlyItemNamedArgumentValueDataNode ->
                                                                             //注解里内容的名字  name: 'app' 里的name
                                                                             when (onlyItemNamedArgumentValueDataNode.elementType) {
                                                                                 DartTokenTypes.PARAMETER_NAME_REFERENCE_EXPRESSION -> {
-                                                                                    itemAnnotation.name = onlyItemNamedArgumentValueDataNode.text
+                                                                                    annotationName = onlyItemNamedArgumentValueDataNode.text.replace("\'", "").replace("\"", "")
                                                                                 }
                                                                                 DartTokenTypes.STRING_LITERAL_EXPRESSION -> {
-                                                                                    itemAnnotation.value = onlyItemNamedArgumentValueDataNode.text
+                                                                                    annotationValue = onlyItemNamedArgumentValueDataNode.text.replace("\'", "").replace("\"", "")
                                                                                 }
                                                                                 DartTokenTypes.LITERAL_EXPRESSION -> {
-                                                                                    itemAnnotation.value = onlyItemNamedArgumentValueDataNode.text == "true"
+                                                                                    annotationValue = (onlyItemNamedArgumentValueDataNode.text == "true")
                                                                                 }
                                                                             }
+
                                                                             println("注解的内容 ${onlyItemNamedArgumentValueDataNode.text}")
+                                                                        }
+                                                                        if (annotationName != null && annotationValue != null) {
+                                                                            //注解的实际内容
+                                                                            allAnnotation.add(AnnotationValue(annotationName!!, annotationValue!!))
                                                                         }
                                                                     }
 
