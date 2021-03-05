@@ -17,8 +17,8 @@ class HelperClassGeneratorInfo {
     val fields: MutableList<Filed> = mutableListOf()
 
 
-    fun addFiled(type: String, name: String, annotationValue: List<AnnotationValue>?) {
-        fields.add(Filed(type, name).apply {
+    fun addFiled(type: String, name: String,isLate:Boolean, annotationValue: List<AnnotationValue>?) {
+        fields.add(Filed(type, name,isLate).apply {
             this.annotationValue = annotationValue
         })
     }
@@ -63,14 +63,6 @@ class HelperClassGeneratorInfo {
                     isListType -> {
                         "if (json['$getJsonName'] != null) {\n\t\tdata.$name = json['$getJsonName']?.map((v) => ${buildToType(getListSubType(type), "v")})?.toList()?.cast<${getListSubType(type)}>();\n\t}"
                     }
-                    type == "DateTime" -> {
-                        if (filed.getValueByName<String>("format")?.isNotEmpty() == true) {
-                            "if(json['$getJsonName'] != null){\n\t\tDateFormat format = new DateFormat(\"${filed.getValueByName<String>("format")}\");\n\t\tdata.$name = format.parse(json['$getJsonName'].toString());\n\t}"
-                        } else {
-                            "if(json['$getJsonName'] != null){\n\t\tdata.$name = DateTime.parse(json['$getJsonName']);\n\t}"
-                        }
-
-                    }
                     else -> {
                         "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${buildToType(type, "json['$getJsonName']")};\n\t}"
                     }
@@ -81,12 +73,6 @@ class HelperClassGeneratorInfo {
                 val listSubType = getListSubType(type)
                 val value = when (listSubType) {
                     "dynamic" -> "data.${name}.addAll(json['$getJsonName']);"
-                    "DateTime" ->
-                        if (filed.getValueByName<String>("format")?.isNotEmpty() == true) {
-                            "\n\t\tDateFormat format = new DateFormat(\"${filed.getValueByName<String>("format")}\");\n\t\t\t\t(json['$getJsonName'] as List).forEach((v) {\n\t\t\t\t\tif (v != null)\n\t\t\t\t\t\tdata.$name.add(format.parse(v.toString()));\n\t\t\t\t});".trimIndent()
-                        } else {
-                            "(json['$getJsonName'] as List).forEach((v) {\n\t\t\tdata.$name.add(DateTime.parse(v));\n\t\t});".trimIndent()
-                        }
                     else -> "(json['$getJsonName'] as List).forEach((v) {\n\t\t\tdata.$name.add(new ${listSubType}().fromJson(v));\n\t\t});".trimIndent()
                 }
                 "if (json['$getJsonName'] != null) {\n\t\tdata.$name = <${listSubType}>[];\n\t\t$value\n\t}"
@@ -121,47 +107,31 @@ class HelperClassGeneratorInfo {
         //是否是list
         val isListType = isListType(type)
         val thisKey = "entity.$name"
-        //是否包含format注解
-        val formatString = filed.getValueByName<String>("format")
-        val isContainsDateFormat = formatString?.isNotEmpty() == true
         when {
             //是否是基础数据类型
             isPrimitiveType(type) -> {
-                if (type == "DateTime") {
-                    return if (isContainsDateFormat) {
-                        "if (${thisKey} != null) {\n" +
-                                "    DateFormat format = new DateFormat(\"$formatString\");\n" +
-                                "    data['${getJsonName}'] = format.format(${thisKey});\n" +
-                                "  }"
-                    } else "data['${getJsonName}'] = ${thisKey}?.toString();"
-                }
                 return "data['$getJsonName'] = $thisKey;"
             }
             isListType -> {
                 //类名
                 val listSubType = getListSubType(type)
-                //是否是list<DateTime>类型
-                val isListDateTime = listSubType == "DateTime"
-                val value = if (listSubType == "dynamic") "[]" else if (listSubType == "DateTime") {
-                    if (isContainsDateFormat)
-                        "${thisKey}\n" +
-                                "        .map((v) => format.format(v))\n" +
-                                "        .toList()\n" +
-                                "        .cast<String>()"
-                    else "${thisKey}\n" +
-                            "        .map((v) => v?.toString())\n" +
-                            "        .toList()\n" +
-                            "        .cast<String>()"
-                } else "$thisKey.map((v) => v.toJson()).toList()"
+                val value = if (listSubType == "dynamic") "[]" else "$thisKey.map((v) => v.toJson())${isLateCallSymbol(filed.isLate)}toList()"
                 // class list
-                return "if ($thisKey != null) {${if (isListDateTime && isContainsDateFormat) "\n\t\tDateFormat format = new DateFormat(\"${formatString}\");" else ""}\n\t\tdata['$getJsonName'] =  $value;\n\t}"
+                return "data['$getJsonName'] =  $value;"
             }
             else -> {
                 // class
-                return "if ($thisKey != null) {\n\t\tdata['$getJsonName'] = ${thisKey}.toJson();\n\t}"
+                return "data['$getJsonName'] = ${thisKey}${isLateCallSymbol(filed.isLate)}toJson();"
             }
         }
     }
+
+    private fun isLateCallSymbol(isLate: Boolean): String {
+        return if (isLate) {
+            return "."
+        } else "?."
+    }
+
 
     private fun buildToJsonClass(expression: String): String {
         return "$expression().toJson()"
@@ -198,7 +168,9 @@ class Filed constructor(
         //字段类型
         var type: String,
         //字段名字
-        var name: String) {
+        var name: String,
+        //是否是late修饰
+        var isLate:Boolean) {
 
     //待定
     var isPrivate: Boolean? = null

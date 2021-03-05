@@ -87,15 +87,18 @@ object GeneratorDartClassNodeToHelperInfo {
                                                 }
                                             } else {
                                                 //不是注解,普通解析
-                                                if (fieldWholeNode.elementType == DartTokenTypes.TYPE) {
-                                                    if (fieldWholeNode.text == "late") {
+                                                when {
+                                                    fieldWholeNode.text == "late" -> {
                                                         isLate = true
-                                                    } else {
+                                                    }
+                                                    fieldWholeNode.elementType == DartTokenTypes.TYPE -> {
                                                         typeNode = fieldWholeNode.text
                                                     }
-
-                                                } else if (fieldWholeNode.elementType == DartTokenTypes.COMPONENT_NAME) {
-                                                    nameNode = fieldWholeNode.text
+                                                    fieldWholeNode.elementType == DartTokenTypes.COMPONENT_NAME -> {
+                                                        nameNode = fieldWholeNode.text
+                                                    }
+                                                    //  println("普通解析类型 ${itemFieldNode.elementType}")
+                                                    //  println("普通解析类型文本 ${itemFieldNode.text}")
                                                 }
 //                                                println("普通解析类型 ${itemFieldNode.elementType}")
 //                                                println("普通解析类型文本 ${itemFieldNode.text}")
@@ -103,7 +106,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                             }
 
                                         }
-                                        helperClassGeneratorInfo.addFiled(typeNode!!, nameNode!!, allAnnotation)
+                                        helperClassGeneratorInfo.addFiled(typeNode!!, nameNode!!, isLate, allAnnotation)
                                     }
                                     var text4 = itemFileNode.text
                                     var text5 = itemFileNode.text

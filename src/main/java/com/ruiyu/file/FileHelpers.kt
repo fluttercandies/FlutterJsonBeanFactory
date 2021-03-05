@@ -128,11 +128,6 @@ object FileHelpers {
                 annotationList.asIterable()
             }
         }
-        //说明需要制定格式解析
-        if (allFields?.firstOrNull { it.name == "format" } != null) {
-            content.append("import 'package:intl/intl.dart';")
-            content.append("\n")
-        }
         helperClassGeneratorInfos?.imports?.filterNot { it.endsWith("json_convert_content.dart';") || it.endsWith("json_field.dart';") }?.forEach { itemImport ->
             content.append(itemImport)
             content.append("\n")
