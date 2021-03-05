@@ -48,7 +48,7 @@
 
         <action id="FlutterBeanFactory.GenerateDartBeanFileAction"
                 class="com.ruiyu.jsontodart.JsonToDartBeanAction"
-                text="dart bean class File from JSON"
+                text="Dart Bean Class File from JSON"
                 icon="/icons/action.png"
                 description="Generate dart bean class File from JSON">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>

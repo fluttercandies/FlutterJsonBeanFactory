@@ -45,6 +45,7 @@
     "dartPluginVersion": "203.5981.152",
     "flutterPluginVersion": "52.0.5",
     "sinceBuild": "191.0",
-    "untilBuild": "203.*"
-  }
+    "untilBuild": "204.*"
+  },
+
 }
