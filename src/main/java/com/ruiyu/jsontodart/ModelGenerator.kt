@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.intellij.openapi.project.Project
 import com.ruiyu.file.FileHelpers
+import com.ruiyu.helper.YamlHelper
 import com.ruiyu.json.GsonUtil.MapTypeAdapter
 import com.ruiyu.jsontodart.utils.camelCase
 import com.ruiyu.utils.Inflector
@@ -83,7 +84,7 @@ class ModelGenerator(
             gson.fromJson<Map<String, Any>>(originalStr, object : TypeToken<Map<String, Any>>() {}.type)
         }
 //        val jsonRawData = gson.fromJson<Map<String, Any>>(collectInfo.userInputJson, HashMap::class.java)
-        val pubSpecConfig = FileHelpers.getPubSpecConfig(project)
+        val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
         val classContentList = generateClassDefinition(collectInfo.firstClassName(), "", JsonUtils.jsonMapMCompletion(jsonRawData)
                 ?: mutableMapOf<String, Any>())
         val classContent = classContentList.joinToString("\n")

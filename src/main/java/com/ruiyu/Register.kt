@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.project.Project
 import com.ruiyu.file.FileHelpers
+import com.ruiyu.helper.YamlHelper
 
 class Register(private val project: Project) : ProjectComponent {
 
@@ -17,7 +18,7 @@ class Register(private val project: Project) : ProjectComponent {
     }
 
     override fun projectOpened() {
-        FileHelpers.getPubSpecConfig(project)?.let { pubSpecConfig ->
+        YamlHelper.getPubSpecConfig(project)?.let { pubSpecConfig ->
             if (!pubSpecConfig.isFlutterModule) {
                 return
             }

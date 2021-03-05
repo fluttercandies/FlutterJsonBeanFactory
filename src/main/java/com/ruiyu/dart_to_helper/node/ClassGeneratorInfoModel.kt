@@ -73,9 +73,9 @@ class HelperClassGeneratorInfo {
                 val listSubType = getListSubType(type)
                 val value = when (listSubType) {
                     "dynamic" -> "data.${name}.addAll(json['$getJsonName']);"
-                    else -> "(json['$getJsonName'] as List).forEach((v) {\n\t\t\tdata.$name.add(new ${listSubType}().fromJson(v));\n\t\t});".trimIndent()
+                    else -> "data.$name = (json['$getJsonName'] as List).map((v) => ${listSubType}().fromJson(v)).toList();".trimIndent()
                 }
-                "if (json['$getJsonName'] != null) {\n\t\tdata.$name = <${listSubType}>[];\n\t\t$value\n\t}"
+                "if (json['$getJsonName'] != null) {\n\t\t$value\n\t}"
             }
             else -> // class
                 "if (json['$getJsonName'] != null) {\n\t\tdata.$name = new $type().fromJson(json['$getJsonName']);\n\t}"
@@ -115,7 +115,7 @@ class HelperClassGeneratorInfo {
             isListType -> {
                 //类名
                 val listSubType = getListSubType(type)
-                val value = if (listSubType == "dynamic") "[]" else "$thisKey.map((v) => v.toJson())${isLateCallSymbol(filed.isLate)}toList()"
+                val value = if (listSubType == "dynamic") "[]" else "$thisKey${isLateCallSymbol(filed.isLate)}map((v) => v.toJson()).toList()"
                 // class list
                 return "data['$getJsonName'] =  $value;"
             }

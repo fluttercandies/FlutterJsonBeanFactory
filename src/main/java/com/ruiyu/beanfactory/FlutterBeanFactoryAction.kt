@@ -8,7 +8,8 @@ import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.newvfs.impl.VirtualFileImpl
 import com.ruiyu.file.FileHelpers
-import com.ruiyu.file.commitContent
+import com.ruiyu.helper.YamlHelper
+import com.ruiyu.helper.commitContent
 import com.ruiyu.utils.toLowerCaseFirstOne
 import com.ruiyu.workers.FileGenerator
 import com.ruiyu.utils.showNotify
@@ -26,9 +27,9 @@ class FlutterBeanFactoryAction : AnAction() {
          * 生成辅助类
          */
         fun generateAllFile(project: Project) {
-            val pubSpecConfig = FileHelpers.getPubSpecConfig(project)
+            val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
             //判断是否是flutter项目
-            if (FileHelpers.shouldActivateFor(project)) {
+            if (YamlHelper.shouldActivateFor(project)) {
                 //如果没有可以生成的文件,那么就不会生成
                 val allClass = FileHelpers.getAllEntityFiles(project)
                 if (allClass.isEmpty()) {

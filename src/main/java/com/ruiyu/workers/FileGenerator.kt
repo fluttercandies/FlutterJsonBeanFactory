@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
 import com.ruiyu.file.FileHelpers
+import com.ruiyu.helper.YamlHelper
 import java.util.regex.Pattern
 
 /**
@@ -30,7 +31,7 @@ class FileGenerator(private val project: Project) {
     }
 
     fun generate() {
-        if (!FileHelpers.shouldActivateFor(project)) {
+        if (!YamlHelper.shouldActivateFor(project)) {
             return
         }
         psiManager?.let { psiManager ->
@@ -125,7 +126,7 @@ class FileGenerator(private val project: Project) {
 }"""
 
         fun getJSONFieldContent(project: Project): String {
-            val isNullSafe = FileHelpers.getPubSpecConfig(project)?.isNullSafe ?: true
+            val isNullSafe = YamlHelper.getPubSpecConfig(project)?.isNullSafe ?: true
             return if (isNullSafe) """
 class JSONField {
   //Specify the parse field name
