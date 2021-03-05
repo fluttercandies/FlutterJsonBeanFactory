@@ -1,4 +1,4 @@
-package wu.seal.jsontokotlin.utils
+package com.ruiyu.utils
 
 import com.google.gson.JsonArray
 import com.intellij.notification.NotificationDisplayType

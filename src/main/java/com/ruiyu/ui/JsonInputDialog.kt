@@ -10,8 +10,7 @@ import com.intellij.ui.components.JBScrollPane
 import com.intellij.util.ui.JBDimension
 import com.intellij.util.ui.JBEmptyBorder
 import com.ruiyu.jsontodart.CollectInfo
-import wu.seal.jsontokotlin.utils.addComponentIntoVerticalBoxAlignmentLeft
-import wu.seal.jsontokotlin.utils.showNotify
+import com.ruiyu.utils.addComponentIntoVerticalBoxAlignmentLeft
 import java.awt.BorderLayout
 import java.awt.event.ActionEvent
 import javax.swing.*

@@ -1,22 +1,17 @@
 package com.ruiyu.beanfactory
 
-import com.intellij.notification.NotificationDisplayType
-import com.intellij.notification.NotificationGroup
-import com.intellij.notification.NotificationType
-import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.newvfs.impl.VirtualDirectoryImpl
 import com.intellij.openapi.vfs.newvfs.impl.VirtualFileImpl
 import com.ruiyu.file.FileHelpers
 import com.ruiyu.file.commitContent
 import com.ruiyu.utils.toLowerCaseFirstOne
 import com.ruiyu.workers.FileGenerator
-import wu.seal.jsontokotlin.utils.showNotify
+import com.ruiyu.utils.showNotify
 import java.io.File
 
 class FlutterBeanFactoryAction : AnAction() {
@@ -27,7 +22,9 @@ class FlutterBeanFactoryAction : AnAction() {
     }
 
     companion object {
-
+        /**
+         * 生成辅助类
+         */
         fun generateAllFile(project: Project) {
             val pubSpecConfig = FileHelpers.getPubSpecConfig(project)
             //判断是否是flutter项目
@@ -140,18 +137,18 @@ class FlutterBeanFactoryAction : AnAction() {
                             val isFirstClassFileIf = itemClass.first.classes.indexOf(itemFile) == 0
                             //第一行
                             if (isFirstIf && isFirstClassFileIf) {
-                                content.append("\t\tif(List<${itemFile.className}>() is M){\n")
+                                content.append("\t\tif(<${itemFile.className}>[] is M){\n")
                                 content.append("\t\t\treturn data.map<${itemFile.className}>((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
                                 content.append("\t\t}")
                             } else {
-                                content.append("\telse if(List<${itemFile.className}>() is M){\n")
+                                content.append("\telse if(<${itemFile.className}>[] is M){\n")
                                 content.append("\t\t\treturn data.map<${itemFile.className}>((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
                                 content.append("\t\t}")
                             }
                         }
                     }
                     content.append(
-                            "\n\t\treturn null;\n" +
+                            "\n\t\tthrow Exception(\"not fond\");\n" +
                                     "\t}")
                     content.append("\n\n")
                     //fromJsonAsT

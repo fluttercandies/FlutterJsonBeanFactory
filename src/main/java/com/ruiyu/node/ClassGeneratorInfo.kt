@@ -1,9 +1,7 @@
-package com.ruiyu.jsontodart
+package com.ruiyu.node
 
 import com.ruiyu.jsontodart.utils.*
-import com.ruiyu.utils.Inflector
 import com.ruiyu.utils.toLowerCaseFirstOne
-import com.ruiyu.utils.toUpperCaseFirstOne
 
 
 /**
@@ -56,12 +54,11 @@ class HelperClassGeneratorInfo {
         val name = filed.name
         //从json里取值的名称
         val getJsonName = filed.getValueByName("name") ?: name
-        //是否是基础数据类型
-        val isPrimitive = PRIMITIVE_TYPES[type] ?: false
         //是否是list
         val isListType = isListType(type)
         return when {
-            isPrimitive -> {
+            //是否是基础数据类型
+            isPrimitiveType(type) -> {
                 when {
                     isListType -> {
                         "if (json['$getJsonName'] != null) {\n\t\tdata.$name = json['$getJsonName']?.map((v) => ${buildToType(getListSubType(type), "v")})?.toList()?.cast<${getListSubType(type)}>();\n\t}"
@@ -92,7 +89,7 @@ class HelperClassGeneratorInfo {
                         }
                     else -> "(json['$getJsonName'] as List).forEach((v) {\n\t\t\tdata.$name.add(new ${listSubType}().fromJson(v));\n\t\t});".trimIndent()
                 }
-                "if (json['$getJsonName'] != null) {\n\t\tdata.$name = new List<${listSubType}>();\n\t\t$value\n\t}"
+                "if (json['$getJsonName'] != null) {\n\t\tdata.$name = <${listSubType}>[];\n\t\t$value\n\t}"
             }
             else -> // class
                 "if (json['$getJsonName'] != null) {\n\t\tdata.$name = new $type().fromJson(json['$getJsonName']);\n\t}"
@@ -121,8 +118,6 @@ class HelperClassGeneratorInfo {
         val name = filed.name
         //从json里取值的名称
         val getJsonName = filed.getValueByName("name") ?: name
-        //是否是基础数据类型
-        val isPrimitive = PRIMITIVE_TYPES[type] ?: false
         //是否是list
         val isListType = isListType(type)
         val thisKey = "entity.$name"
@@ -130,7 +125,8 @@ class HelperClassGeneratorInfo {
         val formatString = filed.getValueByName<String>("format")
         val isContainsDateFormat = formatString?.isNotEmpty() == true
         when {
-            isPrimitive -> {
+            //是否是基础数据类型
+            isPrimitiveType(type) -> {
                 if (type == "DateTime") {
                     return if (isContainsDateFormat) {
                         "if (${thisKey} != null) {\n" +
@@ -220,4 +216,9 @@ class AnnotationValue(val name: String, private val value: Any) {
     fun <T> getValueByName(): T {
         return value as T
     }
+}
+
+class AnnotationValueTemp {
+    var name: String? = null
+    var value: Any? = null
 }

@@ -17,8 +17,8 @@ import com.ruiyu.beanfactory.FlutterBeanFactoryAction
 import com.ruiyu.file.FileHelpers
 import com.ruiyu.ui.JsonInputDialog
 import com.ruiyu.utils.executeCouldRollBackAction
-import wu.seal.jsontokotlin.utils.showErrorMessage
-import wu.seal.jsontokotlin.utils.showNotify
+import com.ruiyu.utils.showErrorMessage
+import com.ruiyu.utils.showNotify
 
 class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
 

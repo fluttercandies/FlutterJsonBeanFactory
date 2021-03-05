@@ -1,11 +1,9 @@
 package com.ruiyu.setting
 
 import com.intellij.ui.components.JBLabel
-import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.components.JBTextField
-import com.intellij.ui.table.JBTable
 import com.intellij.util.ui.JBDimension
-import wu.seal.jsontokotlin.utils.addComponentIntoVerticalBoxAlignmentLeft
+import com.ruiyu.utils.addComponentIntoVerticalBoxAlignmentLeft
 import java.awt.BorderLayout
 import javax.swing.*
 import javax.swing.border.EmptyBorder

@@ -8,19 +8,14 @@ import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
-import com.intellij.psi.impl.source.tree.CompositeElement
 import com.intellij.psi.search.FilenameIndex
-import com.jetbrains.lang.dart.DartTokenTypes
-import com.ruiyu.jsontodart.AnnotationValue
-import com.ruiyu.jsontodart.HelperClassGeneratorInfo
-import com.ruiyu.jsontodart.HelperFileGeneratorInfo
+import com.ruiyu.node.HelperFileGeneratorInfo
+import com.ruiyu.node.GeneratorDartClassNodeToHelperInfo
 import io.flutter.pub.PubRoot
 import io.flutter.utils.FlutterModuleUtils
-import org.jetbrains.kotlin.psi.psiUtil.children
 import org.yaml.snakeyaml.Yaml
-import wu.seal.jsontokotlin.utils.showErrorMessage
+import com.ruiyu.utils.showErrorMessage
 import java.io.File
 import java.io.FileInputStream
 
@@ -168,7 +163,7 @@ object FileHelpers {
             //不过滤entity结尾了
             /*it.path.endsWith("_${ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()}.dart") && */it.path.contains("${project.name}/lib/")
         }.mapNotNull {
-            val dartFileHelperClassGeneratorInfo = FileHelpers.getDartFileHelperClassGeneratorInfo(psiManager.findFile(it)!!)
+            val dartFileHelperClassGeneratorInfo = GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(psiManager.findFile(it)!!)
 
             //导包
             if (dartFileHelperClassGeneratorInfo == null) {
@@ -227,110 +222,6 @@ object FileHelpers {
         return pubSpecConfig?.pubRoot?.declaresFlutter() ?: false
     }
 
-    fun getDartFileHelperClassGeneratorInfo(file: PsiFile): HelperFileGeneratorInfo? {
-        //不包含JsonConvert 那么就不转
-        if (file.text.contains("with JsonConvert").not() && file.text.contains("extends JsonConvert").not()) {
-            return null
-        }
-        val mutableMapOf = mutableListOf<HelperClassGeneratorInfo>()
-        val imports: MutableList<String> = mutableListOf()
-        file.children.forEach {
-            val text = it.text
-            val classNode = it?.node
-            //是类
-            if (classNode?.elementType == DartTokenTypes.CLASS_DEFINITION) {
-                if (classNode is CompositeElement) {
-                    val helperClassGeneratorInfo = HelperClassGeneratorInfo()
-                    for (filedAndMethodNode in classNode.children()) {
-                        val toBinaryName = filedAndMethodNode.elementType.toString()
-                        val nodeName = filedAndMethodNode.text
-                        //是类里字段
-                        if (filedAndMethodNode.elementType == DartTokenTypes.CLASS_BODY) {
-                            filedAndMethodNode.children().forEach { itemFile ->
-                                itemFile.children().forEach { itemFileNode ->
-                                    //itemFileNode text : int code
-                                    if (itemFileNode.elementType == DartTokenTypes.VAR_DECLARATION_LIST) {
-
-                                        if (itemFileNode.text.contains("JSONField")) {
-                                            val strs = itemFileNode.text.substringAfter(")").split(" ").filter { item ->
-                                                item != "\n" && item != "\t" && item.trim().trimIndent().isNotEmpty()
-                                            }
-                                           val nameNode =  if(strs.contains("=")){
-                                                strs[strs.indexOf("=")-1]
-                                            }else {
-                                               strs.last().trimIndent().trim()
-                                           }
-//                                            if (strs.size == 2) {
-//                                                val typeNode = strs[strs.size - 2]
-//                                                val annotationValue = if (itemFileNode.text.contains("\"")) {
-//                                                    itemFileNode.text.split("\"")[1]
-//                                                } else {
-//                                                    itemFileNode.text.split("'")[1]
-//                                                }
-//                                                helperClassGeneratorInfo.addFiled(strs[0].split("\n\t")[1], strs[1], annotationValue)
-//                                            } else {
-                                            val typeNode = strs.first().trimIndent().trim().replace("\t", "").replace("\n", "")
-                                            val annotationString = itemFileNode.text.substringAfter("(").substringBefore(")").split(",").filterNot { itemAnnotationString ->
-                                                itemAnnotationString.isEmpty()
-                                            }
-                                            val annotationValues = annotationString.map { itemAnnotationString ->
-                                                val annotationNameOriginal = itemAnnotationString.substringBefore(":").trimIndent().trim()
-                                                //注解的值
-                                                val annotationValue: Any = when (val annotationValueOriginal = itemAnnotationString.substringAfter(":").trimIndent().trim()) {
-                                                    "true" -> true
-                                                    "false" -> false
-                                                    else -> annotationValueOriginal.replace("\"", "").replace("\'", "")
-                                                }
-
-                                                AnnotationValue(annotationNameOriginal, annotationValue)
-                                            }
-//                                                val annotationValue = if (itemFileNode.text.contains("\"")) {
-//                                                    itemFileNode.text.split("\"")[1]
-//                                                } else {
-//                                                    itemFileNode.text.split("'")[1]
-//                                                }
-                                            helperClassGeneratorInfo.addFiled(typeNode, nameNode, annotationValues)
-//                                            }
-
-                                        } else {
-                                            val nameNode = itemFileNode.text.split(" ")[1]
-                                            val typeNode = itemFileNode.text.split(" ")[0]
-                                            helperClassGeneratorInfo.addFiled(typeNode, nameNode, null)
-                                        }
-
-                                    }
-                                    var text4 = itemFileNode.text
-                                    var text5 = itemFileNode.text
-                                }
-                                val text2 = itemFile.text
-                                val text3 = itemFile.text
-                            }
-                        } else if (filedAndMethodNode.elementType == DartTokenTypes.COMPONENT_NAME) {
-                            helperClassGeneratorInfo.className = (nodeName)
-                        } else if (filedAndMethodNode.elementType == DartTokenTypes.MIXINS) {
-                            //不包含JsonConvert 那么就不转
-                            if (nodeName.contains("JsonConvert").not()) {
-                                continue
-                            }
-                        }
-
-                    }
-                    mutableMapOf.add(helperClassGeneratorInfo)
-//                    classNode.children() {filedAndMethodNode->
-//                        val text1 = filedAndMethodNode.text
-//                    }
-                }
-            } else if (classNode?.elementType == DartTokenTypes.IMPORT_STATEMENT) {
-                imports.add(text)
-            }
-
-            /* it?.node?.children()?.forEach {
-                 val toString = it?.firstChildNode?.toString()
-                 val toString33 = it?.lastChildNode?.toString()
-            }*/
-        }
-        return if (mutableMapOf.isEmpty()) null else HelperFileGeneratorInfo(imports, mutableMapOf)
-    }
 }
 
 @Suppress("SameParameterValue")

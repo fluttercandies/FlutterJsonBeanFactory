@@ -6,7 +6,7 @@ import com.ruiyu.utils.LogUtil
 import com.ruiyu.utils.toUpperCaseFirstOne
 import java.math.BigDecimal
 
-val PRIMITIVE_TYPES = mapOf(
+private val PRIMITIVE_TYPES = mapOf(
         "int" to true,
         "num" to true,
         "double" to true,
@@ -19,14 +19,24 @@ val PRIMITIVE_TYPES = mapOf(
         "List<String>" to true,
         "List<bool>" to true,
         "List<num>" to true,
+        "List<DateTime>" to true,
+        "List<dynamic>" to true,
         "List" to true,
         "Null" to true,
         "var" to true,
         "dynamic" to true
 )
 
+/**
+ * 是否是主数据类型
+ */
+fun isPrimitiveType(typeName: String): Boolean {
+    return PRIMITIVE_TYPES[typeName.replace("?", "")] ?: false
+}
+
 
 fun getListSubType(typeName: String): String {
+    val newTypeName = typeName.replace("?","")
     return mapOf(
             "List<num>" to "num",
             "List<int>" to "int",
@@ -34,9 +44,10 @@ fun getListSubType(typeName: String): String {
             "List<String>" to "String",
             "List<DateTime>" to "DateTime",
             "List<bool>" to "bool",
+            "List<dynamic>" to "dynamic",
             "List" to "dynamic",
             "List<Null>" to "dynamic"
-    )[typeName] ?: typeName.substringAfter("<").substringBefore(">")
+    )[newTypeName] ?: newTypeName.substringAfter("<").substringBefore(">")
 }
 
 fun isListType(typeName: String): Boolean {
@@ -80,11 +91,6 @@ fun getTypeName(obj: Any?): String {
             "Class"
     }
 }
-
-fun isPrimitiveType(typeName: String): Boolean {
-    return PRIMITIVE_TYPES[typeName] ?: return false
-}
-
 
 fun camelCase(init: String): String {
     val newInit = init.replace("-", "_")
