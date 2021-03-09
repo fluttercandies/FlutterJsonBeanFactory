@@ -61,7 +61,7 @@ class HelperClassGeneratorInfo {
             isPrimitiveType(type) -> {
                 when {
                     isListType -> {
-                        "if (json['$getJsonName'] != null) {\n\t\tdata.$name = json['$getJsonName']?.map((v) => ${buildToType(getListSubType(type), "v")})?.toList()?.cast<${getListSubType(type)}>();\n\t}"
+                        "data.$name = (json['$getJsonName'] as List)?.map((v) => ${buildToType(getListSubType(type), "v")})?.toList()?.cast<${getListSubType(type)}>();"
                     }
                     else -> {
                         "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${buildToType(type, "json['$getJsonName']")};\n\t}"
@@ -71,11 +71,7 @@ class HelperClassGeneratorInfo {
             isListType -> { // list of class  //如果是list,就把名字修改成单数
                 //类名
                 val listSubType = getListSubType(type)
-                val value = when (listSubType) {
-                    "dynamic" -> "data.${name}.addAll(json['$getJsonName']);"
-                    else -> "data.$name = (json['$getJsonName'] as List).map((v) => ${listSubType}().fromJson(v)).toList();".trimIndent()
-                }
-                "if (json['$getJsonName'] != null) {\n\t\t$value\n\t}"
+                 "data.$name = (json['$getJsonName'] as List)${isLateCallSymbol(filed.isLate)}map((v) => ${listSubType}().fromJson(v))${isLateCallSymbol(filed.isLate)}toList();".trimIndent()
             }
             else -> // class
                 "if (json['$getJsonName'] != null) {\n\t\tdata.$name = new $type().fromJson(json['$getJsonName']);\n\t}"
@@ -115,7 +111,7 @@ class HelperClassGeneratorInfo {
             isListType -> {
                 //类名
                 val listSubType = getListSubType(type)
-                val value = if (listSubType == "dynamic") "[]" else "$thisKey${isLateCallSymbol(filed.isLate)}map((v) => v.toJson()).toList()"
+                val value = if (listSubType == "dynamic") "[]" else "$thisKey${isLateCallSymbol(filed.isLate)}map((v) => v.toJson())${isLateCallSymbol(filed.isLate)}toList()"
                 // class list
                 return "data['$getJsonName'] =  $value;"
             }
