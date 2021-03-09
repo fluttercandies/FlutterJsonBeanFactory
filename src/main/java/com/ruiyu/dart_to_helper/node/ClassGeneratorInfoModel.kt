@@ -129,10 +129,6 @@ class HelperClassGeneratorInfo {
     }
 
 
-    private fun buildToJsonClass(expression: String): String {
-        return "$expression().toJson()"
-    }
-
     private fun buildToType(typeName: String, value: String): String {
         return when {
             typeName.equals("int", true) -> {
