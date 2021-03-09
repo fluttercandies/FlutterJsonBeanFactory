@@ -7,24 +7,25 @@ import com.ruiyu.utils.toUpperCaseFirstOne
 import java.math.BigDecimal
 
 private val PRIMITIVE_TYPES = mapOf(
-        "int" to true,
-        "num" to true,
-        "double" to true,
-        "String" to true,
-        "bool" to true,
-        "List" to true,
-        "DateTime" to true,
-        "List<int>" to true,
-        "List<double>" to true,
-        "List<String>" to true,
-        "List<bool>" to true,
-        "List<num>" to true,
-        "List<DateTime>" to true,
-        "List<dynamic>" to true,
-        "List" to true,
-        "Null" to true,
-        "var" to true,
-        "dynamic" to true
+    "int" to true,
+    "num" to true,
+    "double" to true,
+    "String" to true,
+    "bool" to true,
+    "List" to true,
+    "DateTime" to true,
+    "List<int>" to true,
+    "List<double>" to true,
+    "List<String>" to true,
+    "List<bool>" to true,
+    "List<num>" to true,
+//List<DateTime>不能是主类型
+// "List<DateTime>" to true,
+    "List<dynamic>" to true,
+    "List" to true,
+    "Null" to true,
+    "var" to true,
+    "dynamic" to true
 )
 
 /**
@@ -36,17 +37,17 @@ fun isPrimitiveType(typeName: String): Boolean {
 
 
 fun getListSubType(typeName: String): String {
-    val newTypeName = typeName.replace("?","")
+    val newTypeName = typeName.replace("?", "")
     return mapOf(
-            "List<num>" to "num",
-            "List<int>" to "int",
-            "List<double>" to "double",
-            "List<String>" to "String",
-            "List<DateTime>" to "DateTime",
-            "List<bool>" to "bool",
-            "List<dynamic>" to "dynamic",
-            "List" to "dynamic",
-            "List<Null>" to "dynamic"
+        "List<num>" to "num",
+        "List<int>" to "int",
+        "List<double>" to "double",
+        "List<String>" to "String",
+        "List<DateTime>" to "DateTime",
+        "List<bool>" to "bool",
+        "List<dynamic>" to "dynamic",
+        "List" to "dynamic",
+        "List<Null>" to "dynamic"
     )[newTypeName] ?: newTypeName.substringAfter("<").substringBefore(">")
 }
 
@@ -61,21 +62,23 @@ fun isListType(typeName: String): Boolean {
     }
 }
 
-val dartKeyword = mutableListOf("abstract", "dynamic", "implements", "show",
-        "as", "else", "import ", "static",
-        "assert", "enum", "in", "super",
-        "async", "export", "interface", "switch",
-        "await", "external", "is", "sync",
-        "break", "extends", "library", "this",
-        "case", "factory", "mixin", "throw",
-        "catch", "false", "new", "true",
-        "class", "final", "null", "try",
-        "const", "finally", "on", "typedef",
-        "continue", "for", "operator", "var",
-        "covariant", "Function", "part", "void",
-        "default", "get", "rethrow", "while",
-        "deferred", "hide", "return", "with",
-        "do", "if", "set", "yield", "list", "map")
+val dartKeyword = mutableListOf(
+    "abstract", "dynamic", "implements", "show",
+    "as", "else", "import ", "static",
+    "assert", "enum", "in", "super",
+    "async", "export", "interface", "switch",
+    "await", "external", "is", "sync",
+    "break", "extends", "library", "this",
+    "case", "factory", "mixin", "throw",
+    "catch", "false", "new", "true",
+    "class", "final", "null", "try",
+    "const", "finally", "on", "typedef",
+    "continue", "for", "operator", "var",
+    "covariant", "Function", "part", "void",
+    "default", "get", "rethrow", "while",
+    "deferred", "hide", "return", "with",
+    "do", "if", "set", "yield", "list", "map"
+)
 
 fun getTypeName(obj: Any?): String {
     return when (obj) {

@@ -63,6 +63,9 @@ class HelperClassGeneratorInfo {
                     isListType -> {
                         "data.$name = (json['$getJsonName'] as List)?.map((v) => ${buildToType(getListSubType(type), "v")})?.toList()?.cast<${getListSubType(type)}>();"
                     }
+                    type == "DateTime" -> {
+                         "if(json['$getJsonName'] != null){\n\t\tdata.$name = DateTime.parse(json['$getJsonName']);\n\t}"
+                    }
                     else -> {
                         "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${buildToType(type, "json['$getJsonName']")};\n\t}"
                     }
@@ -106,12 +109,22 @@ class HelperClassGeneratorInfo {
         when {
             //是否是基础数据类型
             isPrimitiveType(type) -> {
-                return "data['$getJsonName'] = $thisKey;"
+                return if (type == "DateTime") {
+                    "data['${getJsonName}'] = ${thisKey}?.toString();"
+                } else "data['$getJsonName'] = $thisKey;"
             }
             isListType -> {
                 //类名
-                val listSubType = getListSubType(type)
-                val value = if (listSubType == "dynamic") "[]" else "$thisKey${isLateCallSymbol(filed.isLate)}map((v) => v.toJson())${isLateCallSymbol(filed.isLate)}toList()"
+                val value = when (getListSubType(type)) {
+                    "DateTime" -> {
+                        "${thisKey}\n" +
+                                "        ${isLateCallSymbol(filed.isLate)}map((v) => v?.toString())\n" +
+                                "        ${isLateCallSymbol(filed.isLate)}toList()\n" +
+                                "        ${isLateCallSymbol(filed.isLate)}cast<String>()"
+                    }
+                    "dynamic" -> "[]"
+                    else -> "$thisKey${isLateCallSymbol(filed.isLate)}map((v) => v.toJson())${isLateCallSymbol(filed.isLate)}toList()"
+                }
                 // class list
                 return "data['$getJsonName'] =  $value;"
             }
