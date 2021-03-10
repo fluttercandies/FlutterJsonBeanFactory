@@ -9,14 +9,12 @@
      <br>If you change the fields in the class, just press the shortcut alt + j to regenerate the tojson and fromjson methods. The generated method regenerates all helper classes and JsonConvert classes (the same as the shortcut alt + j) each time an entity file is created in the generated/json directory.</br>
      <br>If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.</br>
      <br>If no helper files are generated, you can delete the .idea directory and restart your idea</br>
-     <br>you must add intl: any to pubspec.yaml.</br>
     ]]></description>
     <change-notes><![CDATA[
        <br>support sound null safety</br>
        <br>support the flutter web</br>
        <br>list generics are supported,List<DateTime> and DateTime toJson() can return String</br>
        <br>smart to import packages</br>
-       <br>if you use @JSONField(format:""), you must add intl: any to pubspec.yaml</br>
        <br>remove automatically regenerated</br>
        <br>support such as @JSONField(name:"end_time",format: "yyyy/MM/dd hh:mm:ss",deserialize: true,serialize: false)</br>
        <br>add format support for datetime</br>
