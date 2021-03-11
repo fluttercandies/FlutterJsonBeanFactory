@@ -9,7 +9,10 @@ import com.ruiyu.utils.toLowerCaseFirstOne
  * Date: 2019/12/23
  * Time: 11:32
  */
-class HelperFileGeneratorInfo(val imports: MutableList<String> = mutableListOf(), val classes: MutableList<HelperClassGeneratorInfo> = mutableListOf())
+class HelperFileGeneratorInfo(
+    val imports: MutableList<String> = mutableListOf(),
+    val classes: MutableList<HelperClassGeneratorInfo> = mutableListOf()
+)
 
 class HelperClassGeneratorInfo {
     //协助的类名
@@ -17,8 +20,8 @@ class HelperClassGeneratorInfo {
     val fields: MutableList<Filed> = mutableListOf()
 
 
-    fun addFiled(type: String, name: String,isLate:Boolean, annotationValue: List<AnnotationValue>?) {
-        fields.add(Filed(type, name,isLate).apply {
+    fun addFiled(type: String, name: String, isLate: Boolean, annotationValue: List<AnnotationValue>?) {
+        fields.add(Filed(type, name, isLate).apply {
             this.annotationValue = annotationValue
         })
     }
@@ -61,23 +64,37 @@ class HelperClassGeneratorInfo {
             isPrimitiveType(type) -> {
                 when {
                     isListType -> {
-                        "data.$name = (json['$getJsonName'] as List)?.map((v) => ${buildToType(getListSubType(type), "v")})?.toList()?.cast<${getListSubType(type)}>();"
+                        "if (json['$getJsonName'] != null) {\n" +
+                                "\t\tdata.$name = (json['$getJsonName'] as List).map((v) => ${
+                                    buildToType(
+                                        getListSubType(type),
+                                        "v"
+                                    )
+                                }).toList().cast<${getListSubType(type)}>();\n" +
+                                "\t}"
                     }
                     type == "DateTime" -> {
-                         "if(json['$getJsonName'] != null){\n\t\tdata.$name = DateTime.parse(json['$getJsonName']);\n\t}"
+                        "if(json['$getJsonName'] != null){\n\t\tdata.$name = DateTime.parse(json['$getJsonName']);\n\t}"
                     }
                     else -> {
-                        "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${buildToType(type, "json['$getJsonName']")};\n\t}"
+                        "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${
+                            buildToType(
+                                type,
+                                "json['$getJsonName']"
+                            )
+                        };\n\t}"
                     }
                 }
             }
             isListType -> { // list of class  //如果是list,就把名字修改成单数
                 //类名
                 val listSubType = getListSubType(type)
-                 "data.$name = (json['$getJsonName'] as List)${isLateCallSymbol(filed.isLate)}map((v) => ${listSubType}().fromJson(v))${isLateCallSymbol(filed.isLate)}toList();".trimIndent()
+                "if (json['$getJsonName'] != null) {\n" +
+                        "\t\tdata.$name = (json['$getJsonName'] as List).map((v) => ${listSubType}().fromJson(v)).toList();\n" +
+                        "\t}"
             }
             else -> // class
-                "if (json['$getJsonName'] != null) {\n\t\tdata.$name = new $type().fromJson(json['$getJsonName']);\n\t}"
+                "if (json['$getJsonName'] != null) {\n\t\tdata.$name = $type().fromJson(json['$getJsonName']);\n\t}"
         }
     }
 
@@ -109,22 +126,23 @@ class HelperClassGeneratorInfo {
         when {
             //是否是基础数据类型
             isPrimitiveType(type) -> {
-                return if (type == "DateTime") {
-                    "data['${getJsonName}'] = ${thisKey}?.toString();"
-                } else "data['$getJsonName'] = $thisKey;"
-            }
-            isListType -> {
-                //类名
-                val value = when (getListSubType(type)) {
-                    "DateTime" -> {
+                return when {
+                    isListType && getListSubType(type) == "DateTime" -> {
                         "${thisKey}\n" +
                                 "        ${isLateCallSymbol(filed.isLate)}map((v) => v?.toString())\n" +
                                 "        ${isLateCallSymbol(filed.isLate)}toList()\n" +
-                                "        ${isLateCallSymbol(filed.isLate)}cast<String>()"
+                                "        ${isLateCallSymbol(filed.isLate)}cast<String>();"
                     }
-                    "dynamic" -> "[]"
-                    else -> "$thisKey${isLateCallSymbol(filed.isLate)}map((v) => v.toJson())${isLateCallSymbol(filed.isLate)}toList()"
+                    type == "DateTime" -> {
+                        "data['${getJsonName}'] = ${thisKey}?.toString();"
+                    }
+                    else -> "data['$getJsonName'] = $thisKey;"
                 }
+            }
+            isListType -> {
+                //类名
+                val value =
+                    "$thisKey${isLateCallSymbol(filed.isLate)}map((v) => v.toJson())${isLateCallSymbol(filed.isLate)}toList()"
                 // class list
                 return "data['$getJsonName'] =  $value;"
             }
@@ -162,6 +180,9 @@ class HelperClassGeneratorInfo {
             typeName.equals("string", true) -> {
                 "${value}.toString()"
             }
+            typeName.equals("DateTime", true) -> {
+                "DateTime.parse(${value})"
+            }
             else -> value
         }
     }
@@ -170,12 +191,13 @@ class HelperClassGeneratorInfo {
 }
 
 class Filed constructor(
-        //字段类型
-        var type: String,
-        //字段名字
-        var name: String,
-        //是否是late修饰
-        var isLate:Boolean) {
+    //字段类型
+    var type: String,
+    //字段名字
+    var name: String,
+    //是否是late修饰
+    var isLate: Boolean
+) {
 
     //待定
     var isPrivate: Boolean? = null

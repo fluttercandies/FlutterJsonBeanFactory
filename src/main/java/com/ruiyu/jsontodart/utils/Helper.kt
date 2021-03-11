@@ -19,8 +19,7 @@ private val PRIMITIVE_TYPES = mapOf(
     "List<String>" to true,
     "List<bool>" to true,
     "List<num>" to true,
-//List<DateTime>不能是主类型
-// "List<DateTime>" to true,
+    "List<DateTime>" to true,
     "List<dynamic>" to true,
     "List" to true,
     "Null" to true,
@@ -52,12 +51,13 @@ fun getListSubType(typeName: String): String {
 }
 
 fun isListType(typeName: String): Boolean {
+    val newTypeName = typeName.replace("?", "")
     return when {
-        typeName.contains("List<") -> {
+        newTypeName.contains("List<") -> {
             true
         }
         else -> {
-            typeName == "List"
+            newTypeName == "List"
         }
     }
 }
