@@ -1,15 +1,21 @@
 package com.ruiyu.ui
 
 import com.google.gson.*
+import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.InputValidator
 import com.intellij.openapi.ui.Messages
 import com.intellij.ui.DocumentAdapter
+import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.layout.CellBuilder
+import com.intellij.ui.layout.panel
 import com.intellij.util.ui.JBDimension
 import com.intellij.util.ui.JBEmptyBorder
 import com.ruiyu.jsontodart.CollectInfo
+import com.ruiyu.setting.Settings
 import com.ruiyu.utils.addComponentIntoVerticalBoxAlignmentLeft
 import java.awt.BorderLayout
 import java.awt.event.ActionEvent
@@ -49,15 +55,15 @@ val myInputValidator = MyInputValidator()
  * Json input Dialog
  */
 open class JsonInputDialog(
-        project: Project,
-        val inputModelBlock: (inputModel: CollectInfo) -> Boolean
+    project: Project,
+    val inputModelBlock: (inputModel: CollectInfo) -> Boolean
 ) : Messages.InputDialog(
-        project,
-        "Please input the class name and JSON String for generating dart bean class",
-        "Make Dart bean Class Code",
-        Messages.getInformationIcon(),
-        "",
-        myInputValidator
+    project,
+    "Please input the class name and JSON String for generating dart bean class",
+    "Make Dart bean Class Code",
+    Messages.getInformationIcon(),
+    "",
+    myInputValidator
 ) {
 
     private lateinit var classNameInput: JTextField
@@ -126,6 +132,7 @@ open class JsonInputDialog(
         settingContainer.add(Box.createHorizontalGlue())
         settingContainer.add(formatButton)
         messagePanel.add(settingContainer, BorderLayout.SOUTH)
+        messagePanel.add(createCheckBox(), BorderLayout.SOUTH)
 
         return messagePanel
     }
@@ -202,4 +209,53 @@ fun createLinearLayoutVertical(): JPanel {
     val boxLayout = BoxLayout(container, BoxLayout.PAGE_AXIS)
     container.layout = boxLayout
     return container
+}
+
+fun createCheckBox(): DialogPanel {
+    val listCheckBox = mutableListOf<CellBuilder<JBCheckBox>?>(null, null, null)
+    return panel {
+        row {
+            checkBoxGroup(null) {
+                listCheckBox[0] =
+                    checkBox("default", ServiceManager.getService(Settings::class.java).filedSelectIndex == 1).apply {
+//                        component.isSelected = true
+                        component.addItemListener {
+                            listCheckBox.forEachIndexed { index, cellBuilder ->
+                                if (component.isSelected) {
+                                    ServiceManager.getService(Settings::class.java).filedSelectIndex = 1
+                                    listCheckBox[1]?.component?.isSelected = false
+                                    listCheckBox[2]?.component?.isSelected = false
+                                }
+                            }
+                        }
+                    }
+                listCheckBox[1] =
+                    checkBox("late", ServiceManager.getService(Settings::class.java).filedSelectIndex == 2).apply {
+//                    component.isSelected = true
+                        component.addItemListener {
+                            listCheckBox.forEachIndexed { index, cellBuilder ->
+                                if (component.isSelected) {
+                                    ServiceManager.getService(Settings::class.java).filedSelectIndex = 2
+                                    listCheckBox[0]?.component?.isSelected = false
+                                    listCheckBox[2]?.component?.isSelected = false
+                                }
+                            }
+                        }
+                    }
+                listCheckBox[2] =
+                    checkBox("null", ServiceManager.getService(Settings::class.java).filedSelectIndex == 3).apply {
+//                    component.isSelected = true
+                        component.addItemListener {
+                            listCheckBox.forEachIndexed { index, cellBuilder ->
+                                if (component.isSelected) {
+                                    ServiceManager.getService(Settings::class.java).filedSelectIndex = 3
+                                    listCheckBox[0]?.component?.isSelected = false
+                                    listCheckBox[1]?.component?.isSelected = false
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+    }
 }
