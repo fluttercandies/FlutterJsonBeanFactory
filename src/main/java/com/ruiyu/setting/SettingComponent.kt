@@ -14,7 +14,7 @@ class SettingComponent : Configurable {
             return false
         }
         return getSettings() != Settings(
-                settingLayout!!.getModelSuffix(),0)
+                settingLayout!!.getModelSuffix(),null,false)
     }
 
     override fun getDisplayName(): String {

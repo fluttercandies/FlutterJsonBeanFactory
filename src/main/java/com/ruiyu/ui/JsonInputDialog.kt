@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.text.JTextComponent
+import kotlin.reflect.KMutableProperty0
 
 /**
  * Dialog widget relative
@@ -212,46 +213,34 @@ fun createLinearLayoutVertical(): JPanel {
 }
 
 fun createCheckBox(): DialogPanel {
+    val isOpenNullSafety = ServiceManager.getService(Settings::class.java).isOpenNullSafety == true
     val listCheckBox = mutableListOf<CellBuilder<JBCheckBox>?>(null, null, null)
     return panel {
         row {
             checkBoxGroup(null) {
                 listCheckBox[0] =
-                    checkBox("default", ServiceManager.getService(Settings::class.java).filedSelectIndex == 1).apply {
+                    checkBox("null-safety", isOpenNullSafety).apply {
 //                        component.isSelected = true
                         component.addItemListener {
                             listCheckBox.forEachIndexed { index, cellBuilder ->
+                                listCheckBox[1]?.component?.isVisible = component.isSelected
+                                ServiceManager.getService(Settings::class.java).isOpenNullSafety = component.isSelected
                                 if (component.isSelected) {
-                                    ServiceManager.getService(Settings::class.java).filedSelectIndex = 1
                                     listCheckBox[1]?.component?.isSelected = false
-                                    listCheckBox[2]?.component?.isSelected = false
                                 }
                             }
                         }
                     }
                 listCheckBox[1] =
-                    checkBox("late", ServiceManager.getService(Settings::class.java).filedSelectIndex == 2).apply {
-//                    component.isSelected = true
+                    checkBox(
+                        "null-able",
+                        isOpenNullSafety && ServiceManager.getService(Settings::class.java).isOpenNullAble == true
+                    ).apply {
+                        component.isVisible = isOpenNullSafety
+
                         component.addItemListener {
                             listCheckBox.forEachIndexed { index, cellBuilder ->
-                                if (component.isSelected) {
-                                    ServiceManager.getService(Settings::class.java).filedSelectIndex = 2
-                                    listCheckBox[0]?.component?.isSelected = false
-                                    listCheckBox[2]?.component?.isSelected = false
-                                }
-                            }
-                        }
-                    }
-                listCheckBox[2] =
-                    checkBox("null", ServiceManager.getService(Settings::class.java).filedSelectIndex == 3).apply {
-//                    component.isSelected = true
-                        component.addItemListener {
-                            listCheckBox.forEachIndexed { index, cellBuilder ->
-                                if (component.isSelected) {
-                                    ServiceManager.getService(Settings::class.java).filedSelectIndex = 3
-                                    listCheckBox[0]?.component?.isSelected = false
-                                    listCheckBox[1]?.component?.isSelected = false
-                                }
+                                ServiceManager.getService(Settings::class.java).isOpenNullAble = component.isSelected
                             }
                         }
                     }

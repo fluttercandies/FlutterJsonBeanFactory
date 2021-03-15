@@ -7,12 +7,13 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(name = "FlutterJsonBeanFactorySettings", storages = [(Storage("FlutterJsonBeanFactorySettings.xml"))])
 data class Settings(
-        var modelSuffix: String,
-        var filedSelectIndex: Int
+    var modelSuffix: String,
+    var isOpenNullSafety: Boolean?,
+    var isOpenNullAble: Boolean?
 ) : PersistentStateComponent<Settings> {
 
     constructor() : this(
-            "entity",0
+        "entity", null, null
     )
 
     override fun getState(): Settings {
