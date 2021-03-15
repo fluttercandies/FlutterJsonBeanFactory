@@ -106,8 +106,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                             }
 
                                         }
-                                        //去掉类型中的?
-                                        helperClassGeneratorInfo.addFiled(typeNode!!.replace("?",""), nameNode!!, isLate, allAnnotation)
+                                        helperClassGeneratorInfo.addFiled(typeNode!!, nameNode!!, isLate, allAnnotation)
                                     }
                                     var text4 = itemFileNode.text
                                     var text5 = itemFileNode.text

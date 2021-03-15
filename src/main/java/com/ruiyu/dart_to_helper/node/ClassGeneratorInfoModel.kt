@@ -94,7 +94,7 @@ class HelperClassGeneratorInfo {
                         "\t}"
             }
             else -> // class
-                "if (json['$getJsonName'] != null) {\n\t\tdata.$name = $type().fromJson(json['$getJsonName']);\n\t}"
+                "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${type.replace("?","")}().fromJson(json['$getJsonName']);\n\t}"
         }
     }
 
@@ -140,9 +140,10 @@ class HelperClassGeneratorInfo {
                 }
             }
             isListType -> {
+                val nullType = if (getListSubTypeCanNull(type).last() == '?') "?." else "."
                 //类名
                 val value =
-                    "$thisKey${isLateCallSymbol(filed.isLate)}map((v) => v.toJson())${isLateCallSymbol(filed.isLate)}toList()"
+                    "$thisKey${isLateCallSymbol(filed.isLate)}map((v) => v${nullType}toJson())${isLateCallSymbol(filed.isLate)}toList()"
                 // class list
                 return "data['$getJsonName'] =  $value;"
             }

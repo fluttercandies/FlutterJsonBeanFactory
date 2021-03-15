@@ -49,6 +49,20 @@ fun getListSubType(typeName: String): String {
         "List<Null>" to "dynamic"
     )[newTypeName] ?: newTypeName.substringAfter("<").substringBefore(">")
 }
+fun getListSubTypeCanNull(typeName: String): String {
+    return mapOf(
+        "List<num?>" to "num",
+        "List<int?>" to "int",
+        "List<double?>" to "double",
+        "List<String?>" to "String",
+        "List<DateTime?>" to "DateTime",
+        "List<bool?>" to "bool",
+        "List<dynamic?>" to "dynamic",
+        "List" to "dynamic",
+        "List<Null>" to "dynamic"
+    )[typeName] ?: typeName.substringAfter("<").substringBefore(">")
+}
+
 
 fun isListType(typeName: String): Boolean {
     val newTypeName = typeName.replace("?", "")
