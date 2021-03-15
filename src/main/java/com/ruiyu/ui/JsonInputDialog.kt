@@ -222,13 +222,8 @@ fun createCheckBox(): DialogPanel {
                     checkBox("null-safety", isOpenNullSafety).apply {
 //                        component.isSelected = true
                         component.addItemListener {
-                            listCheckBox.forEachIndexed { index, cellBuilder ->
-                                listCheckBox[1]?.component?.isVisible = component.isSelected
-                                ServiceManager.getService(Settings::class.java).isOpenNullSafety = component.isSelected
-                                if (component.isSelected) {
-                                    listCheckBox[1]?.component?.isSelected = false
-                                }
-                            }
+                            listCheckBox[1]?.component?.isVisible = component.isSelected
+                            ServiceManager.getService(Settings::class.java).isOpenNullSafety = component.isSelected
                         }
                     }
                 listCheckBox[1] =
@@ -237,11 +232,8 @@ fun createCheckBox(): DialogPanel {
                         isOpenNullSafety && ServiceManager.getService(Settings::class.java).isOpenNullAble == true
                     ).apply {
                         component.isVisible = isOpenNullSafety
-
                         component.addItemListener {
-                            listCheckBox.forEachIndexed { index, cellBuilder ->
-                                ServiceManager.getService(Settings::class.java).isOpenNullAble = component.isSelected
-                            }
+                            ServiceManager.getService(Settings::class.java).isOpenNullAble = component.isSelected
                         }
                     }
             }
