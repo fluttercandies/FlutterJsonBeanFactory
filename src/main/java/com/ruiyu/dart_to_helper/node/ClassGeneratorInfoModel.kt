@@ -140,6 +140,7 @@ class HelperClassGeneratorInfo {
                 }
             }
             isListType -> {
+                //如果泛型里包含?,那么就需要?调用了
                 val nullType = if (getListSubTypeCanNull(type).last() == '?') "?." else "."
                 //类名
                 val value =
