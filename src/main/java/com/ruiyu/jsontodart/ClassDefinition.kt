@@ -1,6 +1,8 @@
 package com.ruiyu.jsontodart
 
+import com.intellij.openapi.components.ServiceManager
 import com.ruiyu.jsontodart.utils.*
+import com.ruiyu.setting.Settings
 import com.ruiyu.utils.Inflector
 import com.ruiyu.utils.toUpperCaseFirstOne
 
@@ -56,8 +58,13 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
     //字段的集合
     val _fieldList: String
         get() {
+            val settings = ServiceManager.getService(Settings::class.java)
+            val isOpenNullSafety = settings.isOpenNullSafety == true
+            val isOpenNullAble = settings.isOpenNullAble == true
+            val prefix = if(isOpenNullSafety && !isOpenNullAble) "late " else ""
+            val suffix = if(isOpenNullSafety && isOpenNullAble) "?" else ""
             return fields.keys.map { key ->
-                val f = fields[key];
+                val f = fields[key]
                 val fieldName = fixFieldName(key, f, privateFields)
                 val sb = StringBuffer();
                 //如果驼峰命名后不一致,才这样
@@ -66,7 +73,9 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
                     sb.append("@JSONField(name: \"${key}\")\n")
                 }
                 sb.append('\t')
+                sb.append(prefix)
                 _addTypeDef(f!!, sb)
+                sb.append(suffix)
                 sb.append(" $fieldName;")
                 return@map sb.toString()
             }.joinToString("\n")
