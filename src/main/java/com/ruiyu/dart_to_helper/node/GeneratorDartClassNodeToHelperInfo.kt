@@ -106,7 +106,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                                 }
                                             } else {
                                                 val isVar =
-                                                    fieldWholeNode.elementType.debugName == DartElementType("var").debugName
+                                                    fieldWholeNode.text == "var"
                                                 println("普通解析 $nameNode $typeNode")
                                                 //不是注解,普通解析
                                                 when {
