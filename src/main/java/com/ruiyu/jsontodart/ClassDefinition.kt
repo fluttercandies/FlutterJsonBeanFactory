@@ -3,7 +3,6 @@ package com.ruiyu.jsontodart
 import com.intellij.openapi.components.ServiceManager
 import com.ruiyu.jsontodart.utils.*
 import com.ruiyu.setting.Settings
-import com.ruiyu.utils.Inflector
 import com.ruiyu.utils.toUpperCaseFirstOne
 
 class ClassDefinition(private val name: String, private val privateFields: Boolean = false) {
@@ -51,7 +50,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
 
         if (typeDef.subtype != null) {
             //如果是list,就把名字修改成单数
-            sb.append("<${Inflector.getInstance().singularize(typeDef.subtype!!)}>")
+            sb.append("<${typeDef.subtype!!}>")
         }
     }
 

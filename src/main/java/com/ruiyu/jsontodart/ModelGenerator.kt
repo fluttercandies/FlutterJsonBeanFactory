@@ -1,42 +1,51 @@
 package com.ruiyu.jsontodart
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.intellij.openapi.project.Project
-import com.ruiyu.file.FileHelpers
 import com.ruiyu.helper.YamlHelper
 import com.ruiyu.json.GsonUtil.MapTypeAdapter
 import com.ruiyu.jsontodart.utils.camelCase
-import com.ruiyu.utils.Inflector
 import com.ruiyu.utils.JsonUtils
 import com.ruiyu.utils.toUpperCaseFirstOne
 
 
 class ModelGenerator(
-        val collectInfo: CollectInfo,
-        val project: Project
+    val collectInfo: CollectInfo,
+    val project: Project
 ) {
     var isFirstClass = true
     var allClasses = mutableListOf<ClassDefinition>()
+
     //parentType 父类型 是list 或者class
-    private fun generateClassDefinition(className: String, parentName: String, jsonRawData: Any, parentType: String = ""): MutableList<ClassDefinition> {
+    private fun generateClassDefinition(
+        className: String,
+        parentName: String,
+        jsonRawData: Any,
+        parentType: String = ""
+    ): MutableList<ClassDefinition> {
         val newClassName = parentName + className
         val preName = newClassName
         if (jsonRawData is List<*>) {
             // if first element is an array, start in the first element.
-            generateClassDefinition(Inflector.getInstance().singularize(newClassName), Inflector.getInstance().singularize(newClassName), jsonRawData[0]!!)
+            generateClassDefinition(newClassName, newClassName, jsonRawData[0]!!)
         } else if (jsonRawData is Map<*, *>) {
             val keys = jsonRawData.keys
             //如果是list,就把名字修改成单数
-            val classDefinition = ClassDefinition(if ("list" == parentType) {
-                Inflector.getInstance().singularize(newClassName)
-            } else if (isFirstClass) {//如果是第一个类
-                isFirstClass = false
-                newClassName + collectInfo.modelSuffix().toUpperCaseFirstOne()
-            } else {
-                newClassName
-            })
+            val classDefinition = ClassDefinition(
+                when {
+                    "list" == parentType -> {
+                        newClassName
+                    }
+                    isFirstClass -> {//如果是第一个类
+                        isFirstClass = false
+                        newClassName + collectInfo.modelSuffix().toUpperCaseFirstOne()
+                    }
+                    else -> {
+                        newClassName
+                    }
+                }
+            )
             keys.forEach { key ->
                 val typeDef = TypeDefinition.fromDynamic(jsonRawData[key])
                 if (typeDef.name == "Class") {
@@ -70,7 +79,7 @@ class ModelGenerator(
 //        val jsonRawData = JSON.parseObject(collectInfo.userInputJson)
         val originalStr = collectInfo.userInputJson.trim()
         val gson = GsonBuilder()
-                .registerTypeAdapter(object : TypeToken<Map<String, Any>>() {}.type, MapTypeAdapter()).create()
+            .registerTypeAdapter(object : TypeToken<Map<String, Any>>() {}.type, MapTypeAdapter()).create()
 
         val jsonRawData = if (originalStr.startsWith("[")) {
             val list: List<Any> = gson.fromJson(originalStr, object : TypeToken<List<Any>>() {}.type)
@@ -85,8 +94,10 @@ class ModelGenerator(
         }
 //        val jsonRawData = gson.fromJson<Map<String, Any>>(collectInfo.userInputJson, HashMap::class.java)
         val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
-        val classContentList = generateClassDefinition(collectInfo.firstClassName(), "", JsonUtils.jsonMapMCompletion(jsonRawData)
-                ?: mutableMapOf<String, Any>())
+        val classContentList = generateClassDefinition(
+            collectInfo.firstClassName(), "", JsonUtils.jsonMapMCompletion(jsonRawData)
+                ?: mutableMapOf<String, Any>()
+        )
         val classContent = classContentList.joinToString("\n")
         classContentList.fold(mutableListOf<TypeDefinition>(), { acc, de ->
             acc.addAll(de.fields.map { it.value })
