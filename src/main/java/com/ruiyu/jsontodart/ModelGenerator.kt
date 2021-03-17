@@ -84,7 +84,7 @@ class ModelGenerator(
         val jsonRawData = if (originalStr.startsWith("[")) {
             val list: List<Any> = gson.fromJson(originalStr, object : TypeToken<List<Any>>() {}.type)
             try {
-                (JsonUtils.jsonMapMCompletion(list) as List<Any>).first()
+                (JsonUtils.jsonMapMCompletion(list) as List<*>).first()
             } catch (e: Exception) {
                 mutableMapOf<String, Any>()
             }

@@ -1,10 +1,7 @@
 package com.ruiyu.utils
 
 import com.google.gson.JsonArray
-import com.intellij.notification.NotificationDisplayType
-import com.intellij.notification.NotificationGroup
-import com.intellij.notification.NotificationType
-import com.intellij.notification.Notifications
+import com.intellij.notification.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
@@ -13,6 +10,7 @@ import java.awt.Container
 import java.util.regex.Pattern
 import javax.swing.Box
 import javax.swing.BoxLayout
+
 
 /**
  *
@@ -148,11 +146,9 @@ fun JsonArray.onlyOneSubArrayContainsElementAndAllObjectRecursive(): Boolean {
 
 fun Project.showNotify(notifyMessage: String) {
     try {
-        val notificationGroup = NotificationGroup("JSON to Dart Class", NotificationDisplayType.BALLOON, true)
-        ApplicationManager.getApplication().invokeLater {
-            val notification = notificationGroup.createNotification(notifyMessage, NotificationType.INFORMATION)
-            Notifications.Bus.notify(notification, this)
-        }
+        NotificationGroupManager.getInstance().getNotificationGroup("JSON to Dart Class")
+            .createNotification(notifyMessage, NotificationType.ERROR)
+            .notify(this)
     } catch (e: Exception) {
         e.printStackTrace()
     }
