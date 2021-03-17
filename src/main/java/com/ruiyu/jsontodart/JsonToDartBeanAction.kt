@@ -41,8 +41,8 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                         }.firstOrNull()
             }
         } ?: return
-        val directoryFactory = PsiDirectoryFactory.getInstance(directory.project)
-        val packageName = directoryFactory.getQualifiedName(directory, true)
+//        val directoryFactory = PsiDirectoryFactory.getInstance(directory.project)
+//        val packageName = directoryFactory.getQualifiedName(directory, true)
         val psiFileFactory = PsiFileFactory.getInstance(project)
 
         try {

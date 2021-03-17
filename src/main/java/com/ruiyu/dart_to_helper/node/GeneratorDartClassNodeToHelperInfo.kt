@@ -22,7 +22,6 @@ object GeneratorDartClassNodeToHelperInfo {
                 if (classNode is CompositeElement) {
                     val helperClassGeneratorInfo = HelperClassGeneratorInfo()
                     for (filedAndMethodNode in classNode.children()) {
-                        val toBinaryName = filedAndMethodNode.elementType.toString()
                         val nodeName = filedAndMethodNode.text
                         //是类里字段
                         if (filedAndMethodNode.elementType == DartTokenTypes.CLASS_BODY) {
@@ -129,11 +128,11 @@ object GeneratorDartClassNodeToHelperInfo {
                                         }
                                         helperClassGeneratorInfo.addFiled(typeNode!!, nameNode!!, isLate, allAnnotation)
                                     }
-                                    var text4 = itemFileNode.text
-                                    var text5 = itemFileNode.text
+//                                    var text4 = itemFileNode.text
+//                                    var text5 = itemFileNode.text
                                 }
-                                val text2 = itemFile.text
-                                val text3 = itemFile.text
+//                                val text2 = itemFile.text
+//                                val text3 = itemFile.text
                             }
                         } else if (filedAndMethodNode.elementType == DartTokenTypes.COMPONENT_NAME) {
                             helperClassGeneratorInfo.className = (nodeName)

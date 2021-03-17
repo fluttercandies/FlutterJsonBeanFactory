@@ -112,20 +112,20 @@ object FileHelpers {
      * 自动生成单个文件的辅助文件
      */
     private fun generateDartEntityHelper(project: Project, packageName: String, helperClassGeneratorInfos: HelperFileGeneratorInfo?) {
-        val pubSpecConfig = getPubSpecConfig(project)
+//        val pubSpecConfig = getPubSpecConfig(project)
         val content = StringBuilder()
         //导包
         //辅助主类的包名
         content.append(packageName)
         content.append("\n")
         //所有字段
-        val allFields = helperClassGeneratorInfos?.classes?.flatMap {
+       /* val allFields = helperClassGeneratorInfos?.classes?.flatMap {
             it.fields.mapNotNull { itemFiled ->
                 itemFiled.annotationValue
             }.flatMap { annotationList ->
                 annotationList.asIterable()
             }
-        }
+        }*/
         helperClassGeneratorInfos?.imports?.filterNot { it.endsWith("json_convert_content.dart';") || it.endsWith("json_field.dart';") }?.forEach { itemImport ->
             content.append(itemImport)
             content.append("\n")

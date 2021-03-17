@@ -63,9 +63,4 @@
 
     </extensions>
 
-    <project-components>
-        <component>
-            <implementation-class>com.ruiyu.Register</implementation-class>
-        </component>
-    </project-components>
 </idea-plugin>

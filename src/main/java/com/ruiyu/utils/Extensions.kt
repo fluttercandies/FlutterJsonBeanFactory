@@ -146,9 +146,11 @@ fun JsonArray.onlyOneSubArrayContainsElementAndAllObjectRecursive(): Boolean {
 
 fun Project.showNotify(notifyMessage: String) {
     try {
-        NotificationGroupManager.getInstance().getNotificationGroup("JSON to Dart Class")
-            .createNotification(notifyMessage, NotificationType.ERROR)
-            .notify(this)
+        val notificationGroup = NotificationGroup("JSON to Dart Class", NotificationDisplayType.BALLOON, true)
+        ApplicationManager.getApplication().invokeLater {
+            val notification = notificationGroup.createNotification(notifyMessage, NotificationType.INFORMATION)
+            Notifications.Bus.notify(notification, this)
+        }
     } catch (e: Exception) {
         e.printStackTrace()
     }
