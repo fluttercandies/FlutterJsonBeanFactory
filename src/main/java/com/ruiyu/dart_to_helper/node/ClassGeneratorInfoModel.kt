@@ -53,7 +53,7 @@ class HelperClassGeneratorInfo {
     }
 
     private fun jsonParseExpression(filed: Filed): String {
-        val type = filed.type
+        val type = filed.type.replace("?","")
         val name = filed.name
         //从json里取值的名称
         val getJsonName = filed.getValueByName("name") ?: name
