@@ -7,6 +7,7 @@ import com.jetbrains.lang.dart.DartTokenTypes
 import org.jetbrains.kotlin.psi.psiUtil.children
 
 object GeneratorDartClassNodeToHelperInfo {
+    val notSupportType = listOf("final", "static", "const")
     fun getDartFileHelperClassGeneratorInfo(file: PsiFile): HelperFileGeneratorInfo? {
         //不包含JsonConvert 那么就不转
         if (file.text.contains("with JsonConvert").not() && file.text.contains("extends JsonConvert").not()) {
@@ -121,8 +122,13 @@ object GeneratorDartClassNodeToHelperInfo {
                                                     //  println("普通解析类型 ${itemFieldNode.elementType}")
                                                     //  println("普通解析类型文本 ${itemFieldNode.text}")
                                                 }
-//                                                println("普通解析类型 ${itemFieldNode.elementType}")
-//                                                println("普通解析类型文本 ${itemFieldNode.text}")
+                                                if (fieldWholeNode.elementType is DartElementType) {
+                                                    if (notSupportType.contains(fieldWholeNode.text)) {
+                                                        val errorMessage = "This file contains code that cannot be parsed: ${file.name}. content: ${nodeName}. type not supported ,such as ${notSupportType.joinToString()}"
+                                                        throw RuntimeException(errorMessage)
+                                                    }
+                                                }
+                                                println("普通解析类型文本 ${fieldWholeNode.text} 普通解析类型 ${fieldWholeNode.elementType}")
                                             }
 
                                         }
