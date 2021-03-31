@@ -12,6 +12,7 @@ import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.util.messages.MessageBusConnection
+import com.ruiyu.App
 import com.ruiyu.Log
 import com.ruiyu.beanfactory.FlutterBeanFactoryAction
 import com.ruiyu.file.FileHelpers
@@ -29,6 +30,7 @@ class Initializer : StartupActivity, DocumentListener {
     private lateinit var documentManager: PsiDocumentManager
 
     override fun runActivity(project: Project) {
+        App.project = project
         /*documentManager = PsiDocumentManager.getInstance(project)
         val connection: MessageBusConnection = project.messageBus.connect()
 
