@@ -1,4 +1,4 @@
-package com.ruiyu.json;
+package com.ruiyu.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

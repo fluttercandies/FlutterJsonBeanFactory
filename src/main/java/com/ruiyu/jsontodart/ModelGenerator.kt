@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.intellij.openapi.project.Project
 import com.ruiyu.helper.YamlHelper
-import com.ruiyu.json.GsonUtil.MapTypeAdapter
+import com.ruiyu.utils.GsonUtil.MapTypeAdapter
 import com.ruiyu.jsontodart.utils.camelCase
 import com.ruiyu.utils.JsonUtils
 import com.ruiyu.utils.toUpperCaseFirstOne
