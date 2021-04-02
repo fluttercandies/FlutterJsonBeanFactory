@@ -7,7 +7,7 @@ import com.jetbrains.lang.dart.DartTokenTypes
 import org.jetbrains.kotlin.psi.psiUtil.children
 
 object GeneratorDartClassNodeToHelperInfo {
-    val notSupportType = listOf("final", "static", "const")
+    val notSupportType = listOf("static", "const")
     fun getDartFileHelperClassGeneratorInfo(file: PsiFile): HelperFileGeneratorInfo? {
         //不包含JsonConvert 那么就不转
         if (file.text.contains("with JsonConvert").not() && file.text.contains("extends JsonConvert").not()) {
