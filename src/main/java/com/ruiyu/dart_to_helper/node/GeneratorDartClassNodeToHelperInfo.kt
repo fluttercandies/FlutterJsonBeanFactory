@@ -10,7 +10,7 @@ object GeneratorDartClassNodeToHelperInfo {
     val notSupportType = listOf("static", "const")
     fun getDartFileHelperClassGeneratorInfo(file: PsiFile): HelperFileGeneratorInfo? {
         //不包含JsonConvert 那么就不转
-        if (file.text.contains("with JsonConvert").not() && file.text.contains("extends JsonConvert").not()) {
+        if (file.text.contains("JsonConvert<").not() || file.name == "json_convert_content.dart") {
             return null
         }
         val mutableMapOf = mutableListOf<HelperClassGeneratorInfo>()
@@ -124,7 +124,8 @@ object GeneratorDartClassNodeToHelperInfo {
                                                 }
                                                 if (fieldWholeNode.elementType is DartElementType) {
                                                     if (notSupportType.contains(fieldWholeNode.text)) {
-                                                        val errorMessage = "This file contains code that cannot be parsed: ${file.name}. content: ${nodeName}. type not supported ,such as ${notSupportType.joinToString()}"
+                                                        val errorMessage =
+                                                            "This file contains code that cannot be parsed: ${file.name}. content: ${nodeName}. type not supported ,such as ${notSupportType.joinToString()}"
                                                         throw RuntimeException(errorMessage)
                                                     }
                                                 }
