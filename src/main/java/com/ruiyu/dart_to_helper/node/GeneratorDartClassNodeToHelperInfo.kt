@@ -4,7 +4,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.CompositeElement
 import com.jetbrains.lang.dart.DartElementType
 import com.jetbrains.lang.dart.DartTokenTypes
+import org.jetbrains.kotlin.nj2k.replace
 import org.jetbrains.kotlin.psi.psiUtil.children
+import org.jetbrains.kotlin.utils.addToStdlib.indexOfOrNull
 
 object GeneratorDartClassNodeToHelperInfo {
     val notSupportType = listOf("static", "const")
@@ -19,7 +21,7 @@ object GeneratorDartClassNodeToHelperInfo {
             val text = it.text
             val classNode = it?.node
             //是类
-            if (classNode?.elementType == DartTokenTypes.CLASS_DEFINITION) {
+            if (classNode?.elementType == DartTokenTypes.CLASS_DEFINITION && text.contains("with") && text.contains("JsonConvert<")) {
                 if (classNode is CompositeElement) {
                     val helperClassGeneratorInfo = HelperClassGeneratorInfo()
                     for (filedAndMethodNode in classNode.children()) {
