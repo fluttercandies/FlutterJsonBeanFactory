@@ -109,10 +109,13 @@ object GeneratorDartClassNodeToHelperInfo {
                                             } else {
                                                 val isVar =
                                                     fieldWholeNode.text == "var"
+                                                fieldWholeNode.children().forEach {
+                                                    println("普通解析222 ${it.firstChildNode.text}")
+                                                }
                                                 println("普通解析 $nameNode $typeNode")
                                                 //不是注解,普通解析
                                                 when {
-                                                    fieldWholeNode.text == "late" -> {
+                                                    fieldWholeNode.text == "late" || fieldWholeNode.text == "=" -> {
                                                         isLate = true
                                                     }
                                                     fieldWholeNode.elementType == DartTokenTypes.TYPE || isVar -> {
@@ -134,6 +137,10 @@ object GeneratorDartClassNodeToHelperInfo {
                                                 println("普通解析类型文本 ${fieldWholeNode.text} 普通解析类型 ${fieldWholeNode.elementType}")
                                             }
 
+                                        }
+                                        //如果不是late,但是最后一行包括=号,说明默认赋值了
+                                        if(!isLate && itemFileNode.lastChildNode.text.contains("=")){
+                                            isLate = true
                                         }
                                         helperClassGeneratorInfo.addFiled(typeNode!!, nameNode!!, isLate, allAnnotation)
                                     }

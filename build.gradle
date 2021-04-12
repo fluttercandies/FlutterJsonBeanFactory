@@ -101,7 +101,7 @@ publishPlugin {
     token = System.getenv("ORG_GRADLE_PROJECT_intellijPublishToken")
 }
 
-def productMatrixFile = 'product-matrix.json'
+def productMatrixFile = "${projectDir.absolutePath}/product-matrix.json"
 def jsonFile = new File(productMatrixFile)
 if (jsonFile == null) {
     // noinspection GroovyAssignabilityCheck
