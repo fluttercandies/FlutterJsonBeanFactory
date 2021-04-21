@@ -21,7 +21,10 @@ object GeneratorDartClassNodeToHelperInfo {
             val text = it.text
             val classNode = it?.node
             //是类
-            if (classNode?.elementType == DartTokenTypes.CLASS_DEFINITION && text.contains("with") && text.contains("JsonConvert<")) {
+            if (classNode?.elementType == DartTokenTypes.CLASS_DEFINITION && (text.contains("with") || text.contains("extends")) && text.contains(
+                    "JsonConvert<"
+                )
+            ) {
                 if (classNode is CompositeElement) {
                     val helperClassGeneratorInfo = HelperClassGeneratorInfo()
                     for (filedAndMethodNode in classNode.children()) {
@@ -139,7 +142,7 @@ object GeneratorDartClassNodeToHelperInfo {
 
                                         }
                                         //如果不是late,但是最后一行包括=号,说明默认赋值了
-                                        if(!isLate && itemFileNode.lastChildNode.text.contains("=")){
+                                        if (!isLate && itemFileNode.lastChildNode.text.contains("=")) {
                                             isLate = true
                                         }
                                         helperClassGeneratorInfo.addFiled(typeNode!!, nameNode!!, isLate, allAnnotation)
