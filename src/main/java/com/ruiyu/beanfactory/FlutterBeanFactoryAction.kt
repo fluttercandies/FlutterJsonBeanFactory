@@ -173,7 +173,7 @@ class FlutterBeanFactoryAction : AnAction() {
                             }
                         }
                         content.append(
-                            "\n\t\tthrow Exception(\"not fond\");\n" +
+                            "\n\t\tthrow Exception(\"not found\");\n" +
                                     "\t}"
                         )
                         content.append("\n\n")
