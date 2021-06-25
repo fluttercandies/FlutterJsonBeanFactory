@@ -133,16 +133,9 @@ class FlutterBeanFactoryAction : AnAction() {
                         allClass.forEach { itemClass ->
                             val isFirstIf = allClass.indexOf(itemClass) == 0
                             itemClass.first.classes.forEach { itemFile ->
-                                val isFirstClassFileIf = itemClass.first.classes.indexOf(itemFile) == 0
-                                if (isFirstIf && isFirstClassFileIf) {
-                                    content.append("\t\tif(type == (${itemFile.className}).toString()){\n")
-                                    content.append("\t\t\treturn ${itemFile.className}().fromJson(json);\n")
-                                    content.append("\t\t}\t")
-                                } else {
-                                    content.append("else if(type == (${itemFile.className}).toString()){\n")
-                                    content.append("\t\t\treturn ${itemFile.className}().fromJson(json);\n")
-                                    content.append("\t\t}\t")
-                                }
+                                content.append("\t\tif(type == (${itemFile.className}).toString()){\n")
+                                content.append("\t\t\treturn ${itemFile.className}().fromJson(json);\n")
+                                content.append("\t\t}\n")
                             }
                         }
                         content.append(
@@ -157,19 +150,10 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "\tstatic M _getListChildType<M>(List data) {\n"
                         )
                         allClass.forEach { itemClass ->
-                            val isFirstIf = allClass.indexOf(itemClass) == 0
                             itemClass.first.classes.forEach { itemFile ->
-                                val isFirstClassFileIf = itemClass.first.classes.indexOf(itemFile) == 0
-                                //第一行
-                                if (isFirstIf && isFirstClassFileIf) {
-                                    content.append("\t\tif(<${itemFile.className}>[] is M){\n")
-                                    content.append("\t\t\treturn data.map<${itemFile.className}>((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
-                                    content.append("\t\t}")
-                                } else {
-                                    content.append("\telse if(<${itemFile.className}>[] is M){\n")
-                                    content.append("\t\t\treturn data.map<${itemFile.className}>((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
-                                    content.append("\t\t}")
-                                }
+                                content.append("\t\tif(<${itemFile.className}>[] is M){\n")
+                                content.append("\t\t\treturn data.map<${itemFile.className}>((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
+                                content.append("\t\t}\n")
                             }
                         }
                         content.append(
@@ -180,12 +164,12 @@ class FlutterBeanFactoryAction : AnAction() {
                         //fromJsonAsT
                         content.append(
                             "  static M fromJsonAsT<M>(json) {\n" +
-                                    "    if (json is List) {\n" +
-                                    "      return _getListChildType<M>(json);\n" +
-                                    "    } else {\n" +
-                                    "      return _fromJsonSingle<M>(json) as M;\n" +
-                                    "    }\n" +
-                                    "  }"
+                                    "\t\tif (json is List) {\n" +
+                                    "\t\t\treturn _getListChildType<M>(json);\n" +
+                                    "\t\t} else {\n" +
+                                    "\t\t\treturn _fromJsonSingle<M>(json) as M;\n" +
+                                    "\t\t}\n" +
+                                    "\t}"
                         )
 
                         content.append("\n")
