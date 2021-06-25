@@ -94,7 +94,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("\n\n");
                         content.append(
                             "  static _getFromJson<T>(Type type, data, json) {\n" +
-                                    "    switch (type) {"
+                                    "\t\tswitch (type) {"
                         )
                         allClass.forEach { itemClass ->
                             itemClass.first.classes.forEach { itemFile ->
@@ -104,8 +104,8 @@ class FlutterBeanFactoryAction : AnAction() {
                         }
                         content.append(
                             "    }\n" +
-                                    "    return data as T;\n" +
-                                    "  }"
+                                    "\t\treturn data as T;\n" +
+                                    "\t}"
                         )
                         content.append("\n\n");
                         content.append(
