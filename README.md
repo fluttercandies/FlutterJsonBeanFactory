@@ -27,7 +27,8 @@ What I do is generate dart beans based on json, as well as generics parameters a
 
 ### Thanks
 * Thank [@wuseal](https://github.com/wuseal/JsonToKotlinClass) 
-* Thank [@javiercbk/](https://github.com/javiercbk/json_to_dart) 
+* Thank [@javiercbk/](https://github.com/javiercbk/json_to_dart)
+* Thanks to [JetBrains](https://www.jetbrains.com/) for helping the open source people by licensing me
 
 ### Find me useful ? :heart:
 * Support me by clicking the :star: button on the upper right of this page. :v:
