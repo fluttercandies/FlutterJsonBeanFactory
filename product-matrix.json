@@ -1,12 +1,4 @@
 {
-  "201.8538.31": {
-    "comments": "2020.1",
-    "ideaVersion": "201.8538.*",
-    "dartPluginVersion": "201.9335",
-    "flutterPluginVersion": "54.1.1",
-    "sinceBuild": "201.0",
-    "untilBuild": "201.*"
-  },
   "202.6397.94": {
     "comments": "2020.2",
     "ideaVersion": "202.6397.*",
@@ -20,8 +12,8 @@
     "ideaVersion": "203.6682.*",
     "dartPluginVersion": "203.7759",
     "flutterPluginVersion": "54.1.3",
-    "sinceBuild": "201.0",
-    "untilBuild": "211.*"
+    "sinceBuild": "202.0",
+    "untilBuild": "212.*"
   },
   "211.6693.111": {
     "comments": "2021.1",
