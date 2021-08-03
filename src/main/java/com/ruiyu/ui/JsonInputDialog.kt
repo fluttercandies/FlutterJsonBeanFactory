@@ -36,13 +36,18 @@ class MyInputValidator : InputValidator {
     override fun checkInput(inputString: String): Boolean {
         return try {
             val classNameLegal = classNameField.text.trim().isNotBlank()
-            val jsonElement = JsonParser.parseString(inputString)
-
-            (jsonElement.isJsonObject || jsonElement.isJsonArray) && classNameLegal
+            inputIsValidJson(inputString) && classNameLegal
         } catch (e: JsonSyntaxException) {
             false
         }
 
+    }
+
+    private fun inputIsValidJson(string: String) = try {
+        val jsonElement = JsonParser().parse(string)
+        (jsonElement.isJsonObject || jsonElement.isJsonArray)
+    } catch (e: JsonSyntaxException) {
+        false
     }
 
     override fun canClose(inputString: String): Boolean {

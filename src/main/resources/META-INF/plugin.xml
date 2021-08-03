@@ -11,6 +11,7 @@
      <br>If no helper files are generated, you can delete the .idea directory and restart your idea</br>
     ]]></description>
     <change-notes><![CDATA[
+       <br>fixed bug where Android Studio could not open</br>
        <br>support sound null safety</br>
        <br>support the flutter web</br>
        <br>list generics are supported,List<DateTime> and DateTime toJson() can return String</br>
