@@ -11,7 +11,7 @@
      <br>If no helper files are generated, you can delete the .idea directory and restart your idea</br>
     ]]></description>
     <change-notes><![CDATA[
-       <br>fixed bug where Android Studio could not open</br>
+       <br>Multiple people collaborate to submit json_convert_content.dart file order</br>
        <br>support sound null safety</br>
        <br>support the flutter web</br>
        <br>list generics are supported,List<DateTime> and DateTime toJson() can return String</br>
@@ -32,6 +32,7 @@
     <depends>com.intellij.modules.lang</depends>
     <!--    <depends>com.intellij.modules.java</depends>-->
     <depends>com.intellij.modules.all</depends>
+    <depends>com.intellij.modules.java</depends>
     <depends>com.intellij.modules.platform</depends>
     <depends>Dart</depends>
     <depends>org.jetbrains.kotlin</depends>

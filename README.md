@@ -8,7 +8,7 @@ What I do is generate dart beans based on json, as well as generics parameters a
 ### Easy Use
 ![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/beantojson_factory.gif)
 
-
+<!-- Plugin description -->
 ### Usage
 * Search 'FlutterJsonBeanFactory' in Intellij Idea Plugin Repositroy Or AndroidStudio Plugin Repository And Install it.</br>
     File --> Settings --> Plugins --> Browse Repositories -->Search FlutterJsonBean
@@ -20,6 +20,7 @@ What I do is generate dart beans based on json, as well as generics parameters a
 * If no helper files are generated, you can delete the .idea directory and restart your idea
 ![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/filter_json_config.png)
 * 如果你有任何问题,添加QQGroup(963752388)随时提问 [中文移步](https://www.jianshu.com/p/14cbcbaa74b7)
+<!-- Plugin description end -->
 
 ### Others
 * Welcome anyone to raise new issue.
