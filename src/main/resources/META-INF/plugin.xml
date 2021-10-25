@@ -10,22 +10,6 @@
      <br>If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.</br>
      <br>If no helper files are generated, you can delete the .idea directory and restart your idea</br>
     ]]></description>
-    <change-notes><![CDATA[
-       <br>Multiple people collaborate to submit json_convert_content.dart file order</br>
-       <br>support sound null safety</br>
-       <br>support the flutter web</br>
-       <br>list generics are supported,List<DateTime> and DateTime toJson() can return String</br>
-       <br>smart to import packages</br>
-       <br>remove automatically regenerated</br>
-       <br>support such as @JSONField(name:"end_time",format: "yyyy/MM/dd hh:mm:ss",deserialize: true,serialize: false)</br>
-       <br>add format support for datetime</br>
-       <br>if you don't want to use the FlutterJsonBeanFactory in your project, you can close the plugin by adding flutter-json: enable: false to the pubspec.yaml file</br>
-       <br>shortcut key is changed to Alt + j</br>
-       <br>if the first jsonobject in the jsonarray is not perfect, the data will not be complete</br>
-       <br>rebuild will delete redundant files</br>
-       <br>version 3.1 has been released,Provide JsonConvert.dart,EntityFactory is deprecated</br>
-    ]]>
-    </change-notes>
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.json</depends>

@@ -35,7 +35,7 @@ class FlutterBeanFactoryAction : AnAction() {
                     //如果没有可以生成的文件,那么就不会生成
                     val allClass = FileHelpers.getAllEntityFiles(project)
                     if (allClass.isEmpty()) {
-                        throw RuntimeException("No classes that inherit JsonConvert were found")
+                        throw RuntimeException("No classes that inherit JsonConvert were found,the project root directory must contain the lib directory, because this plugin will only scan the lib directory of the root directory")
                     }
                     ApplicationManager.getApplication().invokeLater {
                         runWriteAction {
