@@ -155,6 +155,8 @@ object FileHelpers {
         return FilenameIndex.getAllFilesByExt(project, "dart").filter {
             //不过滤entity结尾了
             /*it.path.endsWith("_${ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()}.dart") && */it.path.contains("${project.name}/lib/")
+        }.sortedBy {
+            it.path
         }.mapNotNull {
             val dartFileHelperClassGeneratorInfo = GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(psiManager.findFile(it)!!)
 
