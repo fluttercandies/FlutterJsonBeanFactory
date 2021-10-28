@@ -40,8 +40,7 @@ intellij {
     type = properties("platformType")
     downloadSources = properties("platformDownloadSources").toBoolean()
     updateSinceUntilBuild = true
-    setPlugins("yaml", "java", "Dart:203.7759", "io.flutter:61.2.2", "Kotlin")
-//    setPlugins(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
+    setPlugins(*properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty).toTypedArray())
 }
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
