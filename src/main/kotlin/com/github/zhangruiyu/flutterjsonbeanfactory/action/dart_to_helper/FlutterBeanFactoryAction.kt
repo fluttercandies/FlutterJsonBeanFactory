@@ -54,7 +54,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         //导包
                         allClass.forEach { itemNeedFile ->
                             //需要生成包名
-                            val helpPackageName = "${File(itemNeedFile.second).nameWithoutExtension}_helper.dart"
+                            val helpPackageName = "${File(itemNeedFile.second).nameWithoutExtension}.g.dart"
                             content.append(
                                 "import 'package:${pubSpecConfig?.name}/${
                                     itemNeedFile.second.substringAfter(

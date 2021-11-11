@@ -126,13 +126,13 @@ object FileHelpers {
                 annotationList.asIterable()
             }
         }*/
-        helperClassGeneratorInfos?.imports?.filterNot { it.endsWith("json_convert_content.dart';") || it.endsWith("json_field.dart';")|| it.endsWith("helper.dart';") }?.forEach { itemImport ->
+        helperClassGeneratorInfos?.imports?.filterNot { it.endsWith("json_convert_content.dart';") || it.endsWith("json_field.dart';")|| it.endsWith(".g.dart';") }?.forEach { itemImport ->
             content.append(itemImport)
             content.append("\n")
         }
         content.append(helperClassGeneratorInfos?.classes?.joinToString("\n"))
         //创建文件
-        getEntityHelperFile(project, "${File(packageName).nameWithoutExtension}_helper.dart") { file ->
+        getEntityHelperFile(project, "${File(packageName).nameWithoutExtension}.g.dart") { file ->
             file.commitContent(project, content.toString())
         }
     }

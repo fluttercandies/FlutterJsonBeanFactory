@@ -42,7 +42,11 @@ object OldDartClassNodeMigrate {
                     }
                 }
             }
-            className.forEach {itemClass->
+            var addImport = if (file.text.contains("json_field.dart").not()) {
+                "import 'package:${pubSpecConfig.name}/generated/json/base/json_field.dart';\n"
+            } else ""
+            addImport += "import 'package:${pubSpecConfig.name}/generated/json/${File(file.name).nameWithoutExtension}.g.dart';\n"
+            className.forEach { itemClass ->
                 val replaceWith = if (file.text.contains("with JsonConvert<${itemClass}> {")) {
                     "with JsonConvert<${itemClass}> {"
                 } else if (file.text.contains("with JsonConvert<${itemClass}>{")) {
@@ -70,12 +74,7 @@ object OldDartClassNodeMigrate {
                 } else {
                     "JsonConvert<${itemClass}> {"
                 }
-                var addImport = if (file.text.contains("json_field.dart").not()) {
-                    "import 'package:${pubSpecConfig.name}/generated/json/base/json_field.dart';\n"
-                } else ""
-                addImport += "import 'package:${pubSpecConfig.name}/generated/json/${File(file.name).nameWithoutExtension}_helper.dart';"
-                val result = """
-$addImport
+                addImport += """
 ${
                     file.text.lines().filterNot { itemLine ->
                         itemLine.contains("json_convert_content.dart")
@@ -83,14 +82,18 @@ ${
                         .replace("class $itemClass\n", "@JsonSerializable()\nclass $itemClass ")
                         .replace(
                             replaceWith,
-                            "{\n\n${itemClass}();" +
-                            "\n\n\tfactory ${itemClass}.fromJson(Map<String, dynamic> json) => $${itemClass}FromJson(json);\n\n" +
+                            "{\n\n\t${itemClass}();" +
+                                    "\n\n\tfactory ${itemClass}.fromJson(Map<String, dynamic> json) => $${itemClass}FromJson(json);\n\n" +
                                     "\tMap<String, dynamic> toJson() => $${itemClass}ToJson(this);\n"
                         )
                 }
                 """.trimIndent()
-                file.virtualFile.commitContent(project, result)
             }
+            file.virtualFile.commitContent(
+                project, """
+$addImport
+            """.trimIndent()
+            )
 
         }
     }

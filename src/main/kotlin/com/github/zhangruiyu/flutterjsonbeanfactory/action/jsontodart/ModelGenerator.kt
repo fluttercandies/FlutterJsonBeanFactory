@@ -107,7 +107,7 @@ class ModelGenerator(
         //导包
         stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_field.dart';")
         stringBuilder.append("\n")
-        stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/${fileName}_helper.dart';")
+        stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/${fileName}.g.dart';")
         stringBuilder.append("\n")
         stringBuilder.append("\n")
         stringBuilder.append(classContent)
