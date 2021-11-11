@@ -1,31 +1,27 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.utils;
+package com.github.zhangruiyu.flutterjsonbeanfactory.utils
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static com.google.gson.stream.JsonToken.BEGIN_ARRAY;
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.TypeAdapter
+import java.io.IOException
+import com.google.gson.stream.JsonReader
+import com.google.gson.internal.LinkedTreeMap
+import com.google.gson.reflect.TypeToken
+import com.google.gson.stream.JsonToken
+import com.google.gson.stream.JsonWriter
+import java.lang.IllegalStateException
+import java.util.ArrayList
 
 /**
  * User: zhangruiyu
  * Date: 2019/12/24
  * Time: 21:19
  */
-public class GsonUtil {
+object GsonUtil {
     /**
      * 实现格式化的时间字符串转时间对象
      */
-    private static final String DATEFORMAT_default = "yyyy-MM-dd HH:mm:ss";
+    private const val DATEFORMAT_default = "yyyy-MM-dd HH:mm:ss"
 
     /**
      * 使用默认的gson对象进行反序列化
@@ -34,9 +30,9 @@ public class GsonUtil {
      * @param typeToken
      * @return
      */
-    public static <T> T fromJsonDefault(String json, TypeToken<T> typeToken) {
-        Gson gson = new Gson();
-        return gson.fromJson(json, typeToken.getType());
+    fun <T> fromJsonDefault(json: String?, typeToken: TypeToken<T>): T {
+        val gson = Gson()
+        return gson.fromJson(json, typeToken.type)
     }
 
     /**
@@ -46,17 +42,13 @@ public class GsonUtil {
      * @param typeToken
      * @return
      */
-    public static <T> T fromJson(String json, TypeToken<T> typeToken) {
-
-        Gson gson = new GsonBuilder()
-                /**
-                 * 重写map的反序列化
-                 */
-                .registerTypeAdapter(new TypeToken<Map<String, Object>>() {
-                }.getType(), new MapTypeAdapter()).create();
-
-        return gson.fromJson(json, typeToken.getType());
-
+    fun <T> fromJson(json: String?, typeToken: TypeToken<T>): T {
+        val gson = GsonBuilder()
+            /**
+             * 重写map的反序列化
+             */
+            .registerTypeAdapter(object : TypeToken<Map<String?, Any?>?>() {}.type, MapTypeAdapter()).create()
+        return gson.fromJson(json, typeToken.type)
     }
 
     /**
@@ -66,13 +58,10 @@ public class GsonUtil {
      * @param cls
      * @return
      */
-    public static <T> T fromJson(String json, Class<T> cls) {
-
-        Gson gson = new GsonBuilder().setDateFormat(DATEFORMAT_default)
-                .create();
-
-        return gson.fromJson(json, cls);
-
+    fun <T> fromJson(json: String?, cls: Class<T>?): T {
+        val gson = GsonBuilder().setDateFormat(DATEFORMAT_default)
+            .create()
+        return gson.fromJson(json, cls)
     }
 
     /**
@@ -82,82 +71,72 @@ public class GsonUtil {
      * @param format
      * @return
      */
-    public static String toJson(Object obj, boolean format) {
-
-        GsonBuilder gsonBuilder = new GsonBuilder();
+    fun toJson(obj: Any?, format: Boolean): String {
+        val gsonBuilder = GsonBuilder()
         /**
          * 设置默认时间格式
          */
-        gsonBuilder.setDateFormat(DATEFORMAT_default);
-
+        gsonBuilder.setDateFormat(DATEFORMAT_default)
         /**
          * 添加格式化设置
          */
         if (format) {
-            gsonBuilder.setPrettyPrinting();
+            gsonBuilder.setPrettyPrinting()
         }
-
-        Gson gson = gsonBuilder.create();
-
-        return gson.toJson(obj);
+        val gson = gsonBuilder.create()
+        return gson.toJson(obj)
     }
 
-    public static class MapTypeAdapter extends TypeAdapter<Object> {
-
-        @Override
-        public Object read(JsonReader in) throws IOException {
-            JsonToken token = in.peek();
-            switch (token) {
-                case BEGIN_ARRAY:
-                    List<Object> list = new ArrayList<Object>();
-                    in.beginArray();
-                    while (in.hasNext()) {
-                        list.add(read(in));
+    class MapTypeAdapter : TypeAdapter<Any?>() {
+        @Throws(IOException::class)
+        override fun read(`in`: JsonReader): Any? {
+            val token = `in`.peek()
+            return when (token) {
+                JsonToken.BEGIN_ARRAY -> {
+                    val list: MutableList<Any?> = ArrayList()
+                    `in`.beginArray()
+                    while (`in`.hasNext()) {
+                        list.add(read(`in`))
                     }
-                    in.endArray();
-                    return list;
-
-                case BEGIN_OBJECT:
-                    Map<String, Object> map = new LinkedTreeMap<String, Object>();
-                    in.beginObject();
-                    while (in.hasNext()) {
-                        map.put(in.nextName(), read(in));
+                    `in`.endArray()
+                    list
+                }
+                JsonToken.BEGIN_OBJECT -> {
+                    val map: MutableMap<String, Any?> =
+                        LinkedTreeMap()
+                    `in`.beginObject()
+                    while (`in`.hasNext()) {
+                        map[`in`.nextName()] = read(`in`)
                     }
-                    in.endObject();
-                    return map;
-
-                case STRING:
-                    return in.nextString();
-
-                case NUMBER:
+                    `in`.endObject()
+                    map
+                }
+                JsonToken.STRING -> `in`.nextString()
+                JsonToken.NUMBER -> {
                     /**
                      * 改写数字的处理逻辑，将数字值分为整型与浮点型。
                      */
-                    String dbNum = in.nextString();
+                    val dbNum = `in`.nextString()
                     if (!dbNum.contains(".")) {
                         //返回0是int
-                        return 0;
+                        0
                     } else {
                         //返回double类型代表是double类型
-                        return 0.0;
+                        0.0
                     }
-
-                case BOOLEAN:
-                    return in.nextBoolean();
-
-                case NULL:
-                    in.nextNull();
-                    return null;
-
-                default:
-                    throw new IllegalStateException();
+                }
+                JsonToken.BOOLEAN -> `in`.nextBoolean()
+                JsonToken.NULL -> {
+                    `in`.nextNull()
+                    null
+                }
+                else -> throw IllegalStateException()
             }
         }
 
-        @Override
-        public void write(JsonWriter out, Object value) throws IOException {
+        @Throws(IOException::class)
+        override fun write(out: JsonWriter, value: Any?) {
             // 序列化无需实现
         }
-
     }
 }
