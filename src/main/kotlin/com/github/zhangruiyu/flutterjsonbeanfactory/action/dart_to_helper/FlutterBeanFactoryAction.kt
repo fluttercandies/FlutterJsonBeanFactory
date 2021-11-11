@@ -78,27 +78,37 @@ class FlutterBeanFactoryAction : AnAction() {
 
                         ////
                         content.append("JsonConvert jsonConvert = JsonConvert();")
-                        content.append("\n");
+                        content.append("\n")
                         content.append("class JsonConvert {")
-                        content.append("\n\n");
+                        content.append("\n\n")
                         content.append("""
   T? convert<T>(dynamic value) {
     return asT<T>(value);
   }
 
- List<T?>? convertList<T>(List? value) {
-   if (value == null) {
-     return null;
-   }
-   return value.map((e) => asT<T>(value)!).toList();
- }
+  List<T?>? convertList<T>(List? value) {
+    if (value == null) {
+      return [];
+    }
+    try {
+      return value.map((e) => asT<T>(value)).toList();
+    } catch (e, stackTrace) {
+      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
+      return [];
+    }
+  }
 
- List<T>? convertListNotNull<T>(List? value) {
-   if (value == null) {
-     return null;
-   }
-   return value.map((e) => asT<T>(value)!).toList();
- }
+  List<T>? convertListNotNull<T>(List? value) {
+    if (value == null) {
+      return [];
+    }
+    try {
+      return value.map((e) => asT<T>(value)!).toList();
+    } catch (e, stackTrace) {
+      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
+      return [];
+    }
+  }
 
 T? asT<T extends Object?>(dynamic value,[T? defaultValue]) {
 	String type = T.toString();
@@ -132,7 +142,7 @@ T? asT<T extends Object?>(dynamic value,[T? defaultValue]) {
 
 	return defaultValue;
 }
-                        """.trimIndent());
+                        """.trimIndent())
                         //_fromJsonSingle
                         content.append(
                             "  //Go back to a single instance by type\n" +
@@ -140,7 +150,7 @@ T? asT<T extends Object?>(dynamic value,[T? defaultValue]) {
                         )
                         content.append("\t\tString type = M.toString();\n")
                         allClass.forEach { itemClass ->
-                            val isFirstIf = allClass.indexOf(itemClass) == 0
+//                            val isFirstIf = allClass.indexOf(itemClass) == 0
                             itemClass.first.classes.forEach { itemFile ->
                                 content.append("\t\tif(type == (${itemFile.className}).toString()){\n")
                                 content.append("\t\t\treturn ${itemFile.className}.fromJson(json);\n")
@@ -153,7 +163,7 @@ T? asT<T extends Object?>(dynamic value,[T? defaultValue]) {
                         )
 
                         //_getListFromType
-                        content.append("\n\n");
+                        content.append("\n\n")
                         content.append(
                             "  //list is returned by type\n" +
                                     "\tstatic M _getListChildType<M>(List data) {\n"
