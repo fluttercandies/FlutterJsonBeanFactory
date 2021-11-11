@@ -77,8 +77,62 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("\n")
 
                         ////
+                        content.append("JsonConvert jsonConvert = JsonConvert();")
+                        content.append("\n");
                         content.append("class JsonConvert {")
                         content.append("\n\n");
+                        content.append("""
+  T? convert<T>(dynamic value) {
+    return asT<T>(value);
+  }
+
+ List<T?>? convertList<T>(List? value) {
+   if (value == null) {
+     return null;
+   }
+   return value.map((e) => asT<T>(value)!).toList();
+ }
+
+ List<T>? convertListNotNull<T>(List? value) {
+   if (value == null) {
+     return null;
+   }
+   return value.map((e) => asT<T>(value)!).toList();
+ }
+
+T? asT<T extends Object?>(dynamic value,[T? defaultValue]) {
+	String type = T.toString();
+	if (value is T) {
+		return value;
+	}
+	try {
+		if (value != null) {
+			final String valueS = value.toString();
+			if (type == "String") {
+				return valueS as T;
+			} else if (type == "int") {
+				return int.parse(valueS) as T;
+			} else if (type == "double") {
+				return double.parse(valueS) as T;
+			} else if (type == "DateTime") {
+				return DateTime.parse(valueS) as T;
+			} else if (type == "bool") {
+				if (valueS == '0' || valueS == '1') {
+					return (valueS == '1') as T;
+				}
+				return (valueS == 'true') as T;
+			} else {
+				return JsonConvert.fromJsonAsT<T>(value);
+			}
+		}
+	} catch (e, stackTrace) {
+		print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
+		return defaultValue;
+	}
+
+	return defaultValue;
+}
+                        """.trimIndent());
                         //_fromJsonSingle
                         content.append(
                             "  //Go back to a single instance by type\n" +

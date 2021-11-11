@@ -161,12 +161,12 @@ object GeneratorDartClassNodeToHelperInfo {
                                 }
                             } else if (filedAndMethodNode.elementType == DartTokenTypes.COMPONENT_NAME) {
                                 helperClassGeneratorInfo.className = (nodeName)
-                            } else if (filedAndMethodNode.elementType == DartTokenTypes.MIXINS) {
+                            } /*else if (filedAndMethodNode.elementType == DartTokenTypes.MIXINS) {
                                 //不包含JsonConvert 那么就不转
                                 if (nodeName.contains("JsonConvert").not()) {
                                     continue
                                 }
-                            }
+                            }*/
 
                         }
                         mutableMapOf.add(helperClassGeneratorInfo)

@@ -46,6 +46,7 @@ object OldDartClassNodeMigrate {
                 "import 'package:${pubSpecConfig.name}/generated/json/base/json_field.dart';\n"
             } else ""
             addImport += "import 'package:${pubSpecConfig.name}/generated/json/${File(file.name).nameWithoutExtension}.g.dart';\n"
+            var content = file.text
             className.forEach { itemClass ->
                 val replaceWith = if (file.text.contains("with JsonConvert<${itemClass}> {")) {
                     "with JsonConvert<${itemClass}> {"
@@ -74,9 +75,9 @@ object OldDartClassNodeMigrate {
                 } else {
                     "JsonConvert<${itemClass}> {"
                 }
-                addImport += """
+                content = """
 ${
-                    file.text.lines().filterNot { itemLine ->
+                    content.lines().filterNot { itemLine ->
                         itemLine.contains("json_convert_content.dart")
                     }.joinToString("\n").replace("class $itemClass ", "@JsonSerializable()\nclass $itemClass ")
                         .replace("class $itemClass\n", "@JsonSerializable()\nclass $itemClass ")
@@ -92,6 +93,7 @@ ${
             file.virtualFile.commitContent(
                 project, """
 $addImport
+$content
             """.trimIndent()
             )
 
