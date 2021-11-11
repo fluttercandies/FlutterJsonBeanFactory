@@ -78,7 +78,7 @@ class FlutterBeanFactoryAction : AnAction() {
 
                         ////
                         content.append("JsonConvert jsonConvert = JsonConvert();")
-                        content.append("\n")
+                        content.append("\n\n")
                         content.append("class JsonConvert {")
                         content.append("\n\n")
                         content.append("""
@@ -110,7 +110,7 @@ class FlutterBeanFactoryAction : AnAction() {
     }
   }
 
-T? asT<T extends Object?>(dynamic value,[T? defaultValue]) {
+T? asT<T extends Object?>(dynamic value) {
 	String type = T.toString();
 	if (value is T) {
 		return value;
@@ -137,10 +137,10 @@ T? asT<T extends Object?>(dynamic value,[T? defaultValue]) {
 		}
 	} catch (e, stackTrace) {
 		print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
-		return defaultValue;
+		return null;
 	}
 
-	return defaultValue;
+	return null;
 }
                         """.trimIndent())
                         //_fromJsonSingle
