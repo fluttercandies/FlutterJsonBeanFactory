@@ -1,5 +1,4 @@
-# Project exclude paths
-/.gradle/
-/build/
-/out/
-/out/production/classes/
+.gradle
+.idea
+.qodana
+build

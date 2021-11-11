@@ -1,5 +1,6 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.ruiyu.ruiyu</id>
+    <id>com.github.zhangruiyu.flutterjsonbeanfactory</id>
     <name>FlutterJsonBeanFactory</name>
     <vendor email="157418979@qq.com" url="https://github.com/zhangruiyu/FlutterJsonBeanFactory">ruiyu-QQGroup(963752388)</vendor>
 
@@ -30,16 +31,15 @@
          on how to target different products -->
     <depends>com.intellij.modules.json</depends>
     <depends>com.intellij.modules.lang</depends>
-    <!--    <depends>com.intellij.modules.java</depends>-->
     <depends>com.intellij.modules.all</depends>
-    <depends>com.intellij.modules.java</depends>
+    <!--    <depends>com.intellij.modules.java</depends>-->
     <depends>com.intellij.modules.platform</depends>
     <depends>Dart</depends>
     <depends>org.jetbrains.kotlin</depends>
     <depends>io.flutter</depends>
     <actions>
         <!-- Add your actions here -->
-        <action id="FlutterBeanFactory.ID" class="com.ruiyu.beanfactory.FlutterBeanFactoryAction"
+        <action id="FlutterBeanFactory.ID" class="com.github.zhangruiyu.flutterjsonbeanfactory.beanfactory.FlutterBeanFactoryAction"
                 text="FlutterBeanFactory"
                 description="Dart files ending in entity generate dart bean factory for use">
             <add-to-group group-id="BuildMenu" anchor="first"/>
@@ -47,22 +47,25 @@
         </action>
 
         <action id="FlutterBeanFactory.GenerateDartBeanFileAction"
-                class="com.ruiyu.jsontodart.JsonToDartBeanAction"
+                class="com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart.JsonToDartBeanAction"
                 text="Dart Bean Class File from JSON"
                 icon="/icons/action.png"
                 description="Generate dart bean class File from JSON">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
     </actions>
-
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
-        <postStartupActivity implementation="com.ruiyu.workers.Initializer"/>
-        <applicationService serviceImplementation="com.ruiyu.setting.Settings"/>
+        <postStartupActivity implementation="com.github.zhangruiyu.flutterjsonbeanfactory.workers.Initializer"/>
+        <applicationService serviceImplementation="com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings"/>
         <projectConfigurable groupId="tools" displayName="FlutterJsonBeanFactory"
                              id="preferences.SingleFileExecutionConfigurable"
-                             instance="com.ruiyu.setting.SettingComponent"/>
-
+                             instance="com.github.zhangruiyu.flutterjsonbeanfactory.setting.SettingComponent"/>
+        <applicationService serviceImplementation="com.github.zhangruiyu.flutterjsonbeanfactory.services.MyApplicationService"/>
+        <projectService serviceImplementation="com.github.zhangruiyu.flutterjsonbeanfactory.services.MyProjectService"/>
     </extensions>
 
+    <applicationListeners>
+        <listener class="com.github.zhangruiyu.flutterjsonbeanfactory.listeners.MyProjectManagerListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    </applicationListeners>
 </idea-plugin>

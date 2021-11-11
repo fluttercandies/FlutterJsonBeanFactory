@@ -1,36 +1,41 @@
-
 # FlutterJsonBeanFactory
 
-Hi,Welcome to come to see me!
-What I do is generate dart beans based on json, as well as generics parameters and json build instances
+![Build](https://github.com/zhangruiyu/FlutterJsonBeanFactory/workflows/Build/badge.svg)
+[![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 
-
-### Easy Use
-![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/beantojson_factory.gif)
+## Template ToDo list
+- [x] Create a new [IntelliJ Platform Plugin Template][template] project.
+- [ ] Get known with the [template documentation][template].
+- [ ] Verify the [pluginGroup](/gradle.properties), [plugin ID](/src/main/resources/META-INF/plugin.xml) and [sources package](/src/main/kotlin).
+- [ ] Review the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html).
+- [ ] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate) for the first time.
+- [ ] Set the Plugin ID in the above README badges.
+- [ ] Set the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html).
+- [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
 
 <!-- Plugin description -->
-### Usage
-* Search 'FlutterJsonBeanFactory' in Intellij Idea Plugin Repositroy Or AndroidStudio Plugin Repository And Install it.</br>
-  <kbd>File</kbd> > <kbd>Settings</kbd> > <kbd>Plugins</kbd> > <kbd>Browse Repositories</kbd> ><kbd>Search FlutterJsonBean</kbd>
-* Restart your Develop tools 
-* Press shortcut key `alt ` + `j` for mac  , right click on package -> `New`->`Dart bean clas file from JSON`　And Then you will know how to use
-* If you change the fields in the class, just press the shortcut alt + j to regenerate the tojson and fromjson methods. The generated method regenerates all helper classes and JsonConvert classes (the same as the shortcut alt + j) each time an entity file is created in the generated/json directory.
-* If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.
-* If you don't want to use the FlutterJsonBeanFactory in your project, you can add flutter-json: enable: false to the pubspec.yaml file
-* If no helper files are generated, you can delete the .idea directory and restart your idea
-![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/filter_json_config.png)
-* 如果你有任何问题,添加QQGroup(963752388)随时提问 [中文移步](https://www.jianshu.com/p/14cbcbaa74b7)
+This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
+
+This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be extracted by the [Gradle](/build.gradle.kts) during the build process.
+
+To keep everything working, do not remove `<!-- ... -->` sections. 
 <!-- Plugin description end -->
 
-### Others
-* Welcome anyone to raise new issue.
-* Welcome anyone to push a pull request to improve me.
+## Installation
 
-### Thanks
-* Thank [@wuseal](https://github.com/wuseal/JsonToKotlinClass) 
-* Thank [@javiercbk/](https://github.com/javiercbk/json_to_dart)
-* Thanks to [JetBrains](https://www.jetbrains.com/) for helping the open source people by licensing me
+- Using IDE built-in plugin system:
+  
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "FlutterJsonBeanFactory"</kbd> >
+  <kbd>Install Plugin</kbd>
+  
+- Manually:
 
-### Find me useful ? :heart:
-* Support me by clicking the :star: button on the upper right of this page. :v:
-* Spread to others to let more people have a better develope expierience :heart:
+  Download the [latest release](https://github.com/zhangruiyu/FlutterJsonBeanFactory/releases/latest) and install it manually using
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
+
+
+---
+Plugin based on the [IntelliJ Platform Plugin Template][template].
+
+[template]: https://github.com/JetBrains/intellij-platform-plugin-template
