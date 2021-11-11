@@ -126,7 +126,7 @@ object FileHelpers {
                 annotationList.asIterable()
             }
         }*/
-        helperClassGeneratorInfos?.imports?.filterNot { it.endsWith("json_convert_content.dart';") || it.endsWith("json_field.dart';") }?.forEach { itemImport ->
+        helperClassGeneratorInfos?.imports?.filterNot { it.endsWith("json_convert_content.dart';") || it.endsWith("json_field.dart';")|| it.endsWith("helper.dart';") }?.forEach { itemImport ->
             content.append(itemImport)
             content.append("\n")
         }

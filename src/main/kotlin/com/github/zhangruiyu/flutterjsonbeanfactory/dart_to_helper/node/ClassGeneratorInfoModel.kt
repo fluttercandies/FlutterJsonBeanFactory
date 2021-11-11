@@ -40,7 +40,8 @@ class HelperClassGeneratorInfo {
     private fun jsonParseFunc(): String {
         val sb = StringBuffer();
         sb.append("\n")
-        sb.append("${className.toLowerCaseFirstOne()}FromJson(${className} data, Map<String, dynamic> json) {\n")
+        sb.append("$className \$${className}FromJson(Map<String, dynamic> json) {\n")
+        sb.append("\t$className data = ${className}();\n")
         fields.forEach { k ->
             //如果deserialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("deserialize") != false) {
@@ -90,18 +91,18 @@ class HelperClassGeneratorInfo {
                 //类名
                 val listSubType = getListSubType(type)
                 "if (json['$getJsonName'] != null) {\n" +
-                        "\t\tdata.$name = (json['$getJsonName'] as List).map((v) => ${listSubType}().fromJson(v)).toList();\n" +
+                        "\t\tdata.$name = (json['$getJsonName'] as List).map((v) => ${listSubType}.fromJson(v)).toList();\n" +
                         "\t}"
             }
             else -> // class
-                "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${type.replace("?","")}().fromJson(json['$getJsonName']);\n\t}"
+                "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${type.replace("?","")}.fromJson(json['$getJsonName']);\n\t}"
         }
     }
 
     //生成tojson方法
     private fun jsonGenFunc(): String {
         val sb = StringBuffer();
-        sb.append("Map<String, dynamic> ${className.toLowerCaseFirstOne()}ToJson(${className} entity) {\n");
+        sb.append("Map<String, dynamic> \$${className}ToJson(${className} entity) {\n");
         sb.append("\tfinal Map<String, dynamic> data = new Map<String, dynamic>();\n");
         fields.forEach { k ->
             //如果serialize不是false,那么就解析,否则不解析

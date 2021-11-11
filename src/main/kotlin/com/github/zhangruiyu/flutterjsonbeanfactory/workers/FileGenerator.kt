@@ -124,6 +124,10 @@ class FileGenerator(private val project: Project) {
         fun getJSONFieldContent(project: Project): String {
             val isNullSafe = YamlHelper.getPubSpecConfig(project)?.isNullSafe ?: true
             return if (isNullSafe) """
+class JsonSerializable{
+    const JsonSerializable();
+}
+
 class JSONField {
   //Specify the parse field name
   final String? name;
@@ -137,6 +141,10 @@ class JSONField {
   const JSONField({this.name, this.serialize, this.deserialize});
 }
 """ else """
+class JsonSerializable{
+    const JsonSerializable();
+}
+
 class JSONField {
   //Specify the parse field name
   final String name;

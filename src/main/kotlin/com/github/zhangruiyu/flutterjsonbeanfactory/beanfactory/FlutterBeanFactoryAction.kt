@@ -99,7 +99,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         allClass.forEach { itemClass ->
                             itemClass.first.classes.forEach { itemFile ->
                                 content.append("\n\t\t\tcase ${itemFile.className}:\n")
-                                content.append("\t\t\t\treturn ${itemFile.className.toLowerCaseFirstOne()}FromJson(data as ${itemFile.className}, json) as T;")
+                                content.append("\t\t\t\treturn \$${itemFile.className}FromJson(json) as T;")
                             }
                         }
                         content.append(
@@ -115,7 +115,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         allClass.forEach {
                             it.first.classes.forEach { itemFile ->
                                 content.append("\n\t\t\tcase ${itemFile.className}:\n")
-                                content.append("\t\t\t\treturn ${itemFile.className.toLowerCaseFirstOne()}ToJson(data as ${itemFile.className});")
+                                content.append("\t\t\t\treturn \$${itemFile.className}ToJson(data as ${itemFile.className});")
                             }
                         }
                         content.append(
@@ -134,7 +134,7 @@ class FlutterBeanFactoryAction : AnAction() {
                             val isFirstIf = allClass.indexOf(itemClass) == 0
                             itemClass.first.classes.forEach { itemFile ->
                                 content.append("\t\tif(type == (${itemFile.className}).toString()){\n")
-                                content.append("\t\t\treturn ${itemFile.className}().fromJson(json);\n")
+                                content.append("\t\t\treturn ${itemFile.className}.fromJson(json);\n")
                                 content.append("\t\t}\n")
                             }
                         }
@@ -152,7 +152,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         allClass.forEach { itemClass ->
                             itemClass.first.classes.forEach { itemFile ->
                                 content.append("\t\tif(<${itemFile.className}>[] is M){\n")
-                                content.append("\t\t\treturn data.map<${itemFile.className}>((e) => ${itemFile.className}().fromJson(e)).toList() as M;\n")
+                                content.append("\t\t\treturn data.map<${itemFile.className}>((e) => ${itemFile.className}.fromJson(e)).toList() as M;\n")
                                 content.append("\t\t}\n")
                             }
                         }

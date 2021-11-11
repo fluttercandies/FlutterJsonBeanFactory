@@ -87,13 +87,16 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
             ""
         } else {
             """
-class $name{
+@JsonSerializable()
+class $name {
 
 $_fieldList
+  
+  ${name}();
 
-factory ${name}.fromJson(Map<String, dynamic> json) => _$${name}FromJson(json);
+  factory ${name}.fromJson(Map<String, dynamic> json) => $${name}FromJson(json);
 
-Map<String, dynamic> toJson() => _$${name}ToJson(this);
+  Map<String, dynamic> toJson() => $${name}ToJson(this);
 
 }
             """.trimIndent();

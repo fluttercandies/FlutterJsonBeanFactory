@@ -74,7 +74,7 @@ class ModelGenerator(
         return allClasses
     }
 
-    fun generateDartClassesToString(): String {
+    fun generateDartClassesToString(fileName: String): String {
         //用阿里的防止int变为double 已解决 还是用google的吧 https://www.codercto.com/a/73857.html
 //        val jsonRawData = JSON.parseObject(collectInfo.userInputJson)
         val originalStr = collectInfo.userInputJson.trim()
@@ -98,20 +98,17 @@ class ModelGenerator(
             collectInfo.firstClassName(), "", JsonUtils.jsonMapMCompletion(jsonRawData)
                 ?: mutableMapOf<String, Any>()
         )
-        val classContent = classContentList.joinToString("\n")
-        classContentList.fold(mutableListOf<TypeDefinition>(), { acc, de ->
+        val classContent = classContentList.joinToString("\n\n")
+        classContentList.fold(mutableListOf<TypeDefinition>()) { acc, de ->
             acc.addAll(de.fields.map { it.value })
             acc
-        })
+        }
         val stringBuilder = StringBuilder()
         //导包
-        stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_convert_content.dart';")
+        stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_field.dart';")
         stringBuilder.append("\n")
-        //说明需要导包json_field.dart
-        if (classContent.contains("@JSONField(")) {
-            stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_field.dart';")
-            stringBuilder.append("\n")
-        }
+        stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/${fileName}_helper.dart';")
+        stringBuilder.append("\n")
         stringBuilder.append("\n")
         stringBuilder.append(classContent)
         //生成helper类

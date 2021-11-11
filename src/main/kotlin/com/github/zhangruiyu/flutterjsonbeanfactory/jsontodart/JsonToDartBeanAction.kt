@@ -10,7 +10,6 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiManager
-import com.intellij.psi.impl.file.PsiDirectoryFactory
 import com.jetbrains.lang.dart.DartFileType
 import com.jetbrains.lang.dart.psi.DartFile
 import com.github.zhangruiyu.flutterjsonbeanfactory.beanfactory.FlutterBeanFactoryAction
@@ -47,8 +46,6 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
 
         try {
             JsonInputDialog(project) { collectInfo ->
-                //生成dart文件的内容
-                val generatorClassContent = ModelGenerator(collectInfo, project).generateDartClassesToString()
                 //文件名字
                 //如果包含那么就提示
                 val fileName = collectInfo.transformInputClassNameToFileName()
@@ -62,6 +59,8 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                         false
                     }
                     else -> {
+                        //生成dart文件的内容
+                        val generatorClassContent = ModelGenerator(collectInfo, project).generateDartClassesToString(fileName)
                         generateDartDataClassFile(
                                 fileName,
                                 generatorClassContent,
