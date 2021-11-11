@@ -39,7 +39,7 @@
     <depends>io.flutter</depends>
     <actions>
         <!-- Add your actions here -->
-        <action id="FlutterBeanFactory.ID" class="com.github.zhangruiyu.flutterjsonbeanfactory.beanfactory.FlutterBeanFactoryAction"
+        <action id="FlutterBeanFactory.ID" class="com.github.zhangruiyu.flutterjsonbeanfactory.dart_to_helper.FlutterBeanFactoryAction"
                 text="FlutterBeanFactory"
                 description="Dart files ending in entity generate dart bean factory for use">
             <add-to-group group-id="BuildMenu" anchor="first"/>

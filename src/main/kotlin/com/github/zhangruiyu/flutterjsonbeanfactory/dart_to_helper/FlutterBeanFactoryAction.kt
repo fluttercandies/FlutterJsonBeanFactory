@@ -1,4 +1,4 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.beanfactory
+package com.github.zhangruiyu.flutterjsonbeanfactory.dart_to_helper
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -10,7 +10,6 @@ import com.intellij.openapi.vfs.newvfs.impl.VirtualFileImpl
 import com.github.zhangruiyu.flutterjsonbeanfactory.file.FileHelpers
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.commitContent
-import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toLowerCaseFirstOne
 import com.github.zhangruiyu.flutterjsonbeanfactory.workers.FileGenerator
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showNotify
 import java.io.File

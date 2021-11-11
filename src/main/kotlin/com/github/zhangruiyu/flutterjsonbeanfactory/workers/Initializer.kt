@@ -6,18 +6,10 @@ package com.github.zhangruiyu.flutterjsonbeanfactory.workers
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
-import com.intellij.openapi.vfs.VirtualFileManager
-import com.intellij.openapi.vfs.newvfs.BulkFileListener
-import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import com.intellij.util.messages.MessageBusConnection
 import com.github.zhangruiyu.flutterjsonbeanfactory.App
 import com.github.zhangruiyu.flutterjsonbeanfactory.Log
-import com.github.zhangruiyu.flutterjsonbeanfactory.beanfactory.FlutterBeanFactoryAction
-import com.github.zhangruiyu.flutterjsonbeanfactory.file.FileHelpers
-import com.github.zhangruiyu.flutterjsonbeanfactory.utils.executeCouldRollBackAction
-import org.jetbrains.annotations.NotNull
 import java.util.regex.Pattern
 
 
