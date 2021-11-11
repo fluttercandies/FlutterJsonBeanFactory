@@ -1,4 +1,4 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.dart_to_helper
+package com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent

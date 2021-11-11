@@ -14,7 +14,7 @@ import com.intellij.ui.layout.CellBuilder
 import com.intellij.ui.layout.panel
 import com.intellij.util.ui.JBDimension
 import com.intellij.util.ui.JBEmptyBorder
-import com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart.CollectInfo
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.CollectInfo
 import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.addComponentIntoVerticalBoxAlignmentLeft
 import java.awt.BorderLayout
@@ -22,7 +22,6 @@ import java.awt.event.ActionEvent
 import javax.swing.*
 import javax.swing.event.DocumentEvent
 import javax.swing.text.JTextComponent
-import kotlin.reflect.KMutableProperty0
 
 /**
  * Dialog widget relative

@@ -1,6 +1,6 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart.utils
+package com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils
 
-import com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart.TypeDefinition
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.TypeDefinition
 //import com.github.zhangruiyu.flutterjsonbeanfactory.utils.DateUtil
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.LogUtil
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toUpperCaseFirstOne

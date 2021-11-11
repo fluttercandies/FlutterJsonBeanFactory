@@ -1,4 +1,4 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart
+package com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart
 
 import com.intellij.openapi.components.ServiceManager
 import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings

@@ -1,12 +1,10 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.dart_to_helper.node
+package com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node
 
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.CompositeElement
 import com.jetbrains.lang.dart.DartElementType
 import com.jetbrains.lang.dart.DartTokenTypes
-import org.jetbrains.kotlin.nj2k.replace
 import org.jetbrains.kotlin.psi.psiUtil.children
-import org.jetbrains.kotlin.utils.addToStdlib.indexOfOrNull
 
 object GeneratorDartClassNodeToHelperInfo {
     val notSupportType = listOf("static", "const")

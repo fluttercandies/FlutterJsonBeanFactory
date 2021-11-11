@@ -1,4 +1,4 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart
+package com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -12,7 +12,7 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiManager
 import com.jetbrains.lang.dart.DartFileType
 import com.jetbrains.lang.dart.psi.DartFile
-import com.github.zhangruiyu.flutterjsonbeanfactory.dart_to_helper.FlutterBeanFactoryAction
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.FlutterBeanFactoryAction
 import com.github.zhangruiyu.flutterjsonbeanfactory.file.FileHelpers
 import com.github.zhangruiyu.flutterjsonbeanfactory.ui.JsonInputDialog
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.executeCouldRollBackAction

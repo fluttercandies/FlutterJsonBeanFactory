@@ -1,7 +1,7 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart
+package com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart
 
 import com.intellij.openapi.components.ServiceManager
-import com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart.utils.*
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
 import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toUpperCaseFirstOne
 

@@ -1,11 +1,11 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart
+package com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart
 
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.intellij.openapi.project.Project
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.GsonUtil.MapTypeAdapter
-import com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart.utils.camelCase
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.camelCase
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.JsonUtils
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toUpperCaseFirstOne
 

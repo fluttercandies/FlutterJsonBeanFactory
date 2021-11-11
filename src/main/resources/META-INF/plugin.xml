@@ -39,7 +39,7 @@
     <depends>io.flutter</depends>
     <actions>
         <!-- Add your actions here -->
-        <action id="FlutterBeanFactory.ID" class="com.github.zhangruiyu.flutterjsonbeanfactory.dart_to_helper.FlutterBeanFactoryAction"
+        <action id="FlutterBeanFactory.ID" class="com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.FlutterBeanFactoryAction"
                 text="FlutterBeanFactory"
                 description="Dart files ending in entity generate dart bean factory for use">
             <add-to-group group-id="BuildMenu" anchor="first"/>
@@ -47,7 +47,7 @@
         </action>
 
         <action id="FlutterBeanFactory.GenerateDartBeanFileAction"
-                class="com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart.JsonToDartBeanAction"
+                class="com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.JsonToDartBeanAction"
                 text="Dart Bean Class File from JSON"
                 icon="/icons/action.png"
                 description="Generate dart bean class File from JSON">
@@ -55,7 +55,6 @@
         </action>
     </actions>
     <extensions defaultExtensionNs="com.intellij">
-        <postStartupActivity implementation="com.github.zhangruiyu.flutterjsonbeanfactory.workers.Initializer"/>
         <applicationService serviceImplementation="com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings"/>
         <projectConfigurable groupId="tools" displayName="FlutterJsonBeanFactory"
                              id="preferences.SingleFileExecutionConfigurable"

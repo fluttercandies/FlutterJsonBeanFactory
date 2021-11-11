@@ -1,7 +1,6 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.dart_to_helper.node
+package com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node
 
-import com.github.zhangruiyu.flutterjsonbeanfactory.jsontodart.utils.*
-import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toLowerCaseFirstOne
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
 
 
 /**

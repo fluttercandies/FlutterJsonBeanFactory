@@ -9,8 +9,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FilenameIndex
-import com.github.zhangruiyu.flutterjsonbeanfactory.dart_to_helper.node.GeneratorDartClassNodeToHelperInfo
-import com.github.zhangruiyu.flutterjsonbeanfactory.dart_to_helper.node.HelperFileGeneratorInfo
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node.GeneratorDartClassNodeToHelperInfo
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node.HelperFileGeneratorInfo
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper.getPubSpecConfig
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.commitContent
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showErrorMessage
