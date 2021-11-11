@@ -10,20 +10,15 @@ object GeneratorDartClassNodeToHelperInfo {
     val notSupportType = listOf("static", "const")
     fun getDartFileHelperClassGeneratorInfo(file: PsiFile): HelperFileGeneratorInfo? {
         //不包含JsonConvert 那么就不转
-        return if ((file.text.contains("JsonConvert<") || file.text.contains("@JsonSerializable")) && file.name != "json_convert_content.dart") {
+        return if (file.text.contains("@JsonSerializable") && file.name != "json_convert_content.dart") {
             val mutableMapOf = mutableListOf<HelperClassGeneratorInfo>()
             val imports: MutableList<String> = mutableListOf()
             file.children.forEach {
                 val text = it.text
                 val classNode = it?.node
                 //是类
-                val isExtendsJsonConvert = (text.contains("with") || text.contains(
-                    "extends"
-                )) && text.contains(
-                    "JsonConvert<"
-                )
                 val isJsonSerializable = text.contains("@JsonSerializable")
-                if (classNode?.elementType == DartTokenTypes.CLASS_DEFINITION && (isExtendsJsonConvert || isJsonSerializable)
+                if (classNode?.elementType == DartTokenTypes.CLASS_DEFINITION && isJsonSerializable
                 ) {
                     if (classNode is CompositeElement) {
                         val helperClassGeneratorInfo = HelperClassGeneratorInfo()
