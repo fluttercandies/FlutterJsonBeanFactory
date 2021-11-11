@@ -18,12 +18,14 @@ import java.util.regex.Pattern
  * Date: 2019/12/22
  * Time: 15:30
  */
+/*
 class Initializer : StartupActivity, DocumentListener {
     private lateinit var documentManager: PsiDocumentManager
 
     override fun runActivity(project: Project) {
         App.project = project
-        /*documentManager = PsiDocumentManager.getInstance(project)
+        */
+/*documentManager = PsiDocumentManager.getInstance(project)
         val connection: MessageBusConnection = project.messageBus.connect()
 
         connection.subscribe(VirtualFileManager.VFS_CHANGES, object : BulkFileListener {
@@ -38,13 +40,19 @@ class Initializer : StartupActivity, DocumentListener {
                             FlutterBeanFactoryAction.generateAllFile(project)
                         }
                     }
-                    *//*for (event in events) {
+                    *//*
+*/
+/*for (event in events) {
                         println("event = $event")
                     }*//*
+*/
+/*
                 }
 
             }
-        })*/
+        })*//*
+
+*/
 /*
         Timer().scheduleAtFixedRate(0, 1000) {
             if (FileHelpers.shouldActivateFor(project)) {
@@ -54,11 +62,13 @@ class Initializer : StartupActivity, DocumentListener {
                     }
                 }
             }
-        }*/
+        }*//*
+
 
     }
 
-    /*   override fun documentChanged(event: DocumentEvent) {
+    */
+/*   override fun documentChanged(event: DocumentEvent) {
            documentManager.commitDocument(event.document)
            val changedFile = documentManager.getPsiFile(event.document) as? JsonFile ?: return
            val undoManager = UndoManager.getInstance(changedFile.project)
@@ -288,7 +298,8 @@ class Initializer : StartupActivity, DocumentListener {
            return MethodItem(builder.toString(), method)
        }
 
-       private fun shouldOverride(clazz: DartClass) = clazz.name != "en"*/
+       private fun shouldOverride(clazz: DartClass) = clazz.name != "en"*//*
+
 
     companion object {
         val log = Log()
@@ -297,4 +308,4 @@ class Initializer : StartupActivity, DocumentListener {
 
         fun getStringFromExpression(expression: PsiElement?): String = expression?.text?.drop(1)?.dropLast(1) ?: ""
     }
-}
+}*/

@@ -1,5 +1,6 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper
 
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.migrate.MigrateOldProject
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
@@ -31,6 +32,7 @@ class FlutterBeanFactoryAction : AnAction() {
             //判断是否是flutter项目
             if (YamlHelper.shouldActivateFor(project)) {
                 try {
+                    MigrateOldProject.getAllEntityFiles(project)
                     //如果没有可以生成的文件,那么就不会生成
                     val allClass = FileHelpers.getAllEntityFiles(project)
                     if (allClass.isEmpty()) {
@@ -75,54 +77,8 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("\n")
 
                         ////
-                        content.append(
-                            """class JsonConvert<T> {
-	T fromJson(Map<String, dynamic> json) {
-		return _getFromJson<T>(runtimeType, this, json);
-	}"""
-                        )
-
-///
-                        //tojson
+                        content.append("class JsonConvert {")
                         content.append("\n\n");
-                        content.append(
-                            """  Map<String, dynamic> toJson() {
-		return _getToJson<T>(runtimeType, this);
-  }"""
-                        )
-                        content.append("\n\n");
-                        content.append(
-                            "  static _getFromJson<T>(Type type, data, json) {\n" +
-                                    "\t\tswitch (type) {"
-                        )
-                        allClass.forEach { itemClass ->
-                            itemClass.first.classes.forEach { itemFile ->
-                                content.append("\n\t\t\tcase ${itemFile.className}:\n")
-                                content.append("\t\t\t\treturn \$${itemFile.className}FromJson(json) as T;")
-                            }
-                        }
-                        content.append(
-                            "    }\n" +
-                                    "\t\treturn data as T;\n" +
-                                    "\t}"
-                        )
-                        content.append("\n\n");
-                        content.append(
-                            "  static _getToJson<T>(Type type, data) {\n" +
-                                    "\t\tswitch (type) {"
-                        )
-                        allClass.forEach {
-                            it.first.classes.forEach { itemFile ->
-                                content.append("\n\t\t\tcase ${itemFile.className}:\n")
-                                content.append("\t\t\t\treturn \$${itemFile.className}ToJson(data as ${itemFile.className});")
-                            }
-                        }
-                        content.append(
-                            "\n\t\t\t}\n" +
-                                    "\t\t\treturn data as T;\n" +
-                                    "\t\t}"
-                        )
-                        content.append("\n");
                         //_fromJsonSingle
                         content.append(
                             "  //Go back to a single instance by type\n" +
