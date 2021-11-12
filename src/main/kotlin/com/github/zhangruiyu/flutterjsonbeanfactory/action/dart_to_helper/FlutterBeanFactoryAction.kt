@@ -145,7 +145,7 @@ T? asT<T extends Object?>(dynamic value) {
                         """.trimIndent())
                         //_fromJsonSingle
                         content.append(
-                            "  //Go back to a single instance by type\n" +
+                            " \n//Go back to a single instance by type\n" +
                                     "\tstatic _fromJsonSingle<M>( json) {\n"
                         )
                         content.append("\t\tString type = M.toString();\n")

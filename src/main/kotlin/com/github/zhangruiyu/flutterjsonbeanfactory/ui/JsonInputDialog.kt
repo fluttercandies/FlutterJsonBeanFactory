@@ -217,25 +217,15 @@ fun createLinearLayoutVertical(): JPanel {
 }
 
 fun createCheckBox(): DialogPanel {
-    val isOpenNullSafety = ServiceManager.getService(Settings::class.java).isOpenNullSafety == true
     val listCheckBox = mutableListOf<CellBuilder<JBCheckBox>?>(null, null, null)
     return panel {
         row {
             checkBoxGroup(null) {
                 listCheckBox[0] =
-                    checkBox("null-safety", isOpenNullSafety).apply {
-//                        component.isSelected = true
-                        component.addItemListener {
-                            listCheckBox[1]?.component?.isVisible = component.isSelected
-                            ServiceManager.getService(Settings::class.java).isOpenNullSafety = component.isSelected
-                        }
-                    }
-                listCheckBox[1] =
                     checkBox(
                         "null-able",
-                        isOpenNullSafety && ServiceManager.getService(Settings::class.java).isOpenNullAble == true
+                        ServiceManager.getService(Settings::class.java).isOpenNullAble == true
                     ).apply {
-                        component.isVisible = isOpenNullSafety
                         component.addItemListener {
                             ServiceManager.getService(Settings::class.java).isOpenNullAble = component.isSelected
                         }

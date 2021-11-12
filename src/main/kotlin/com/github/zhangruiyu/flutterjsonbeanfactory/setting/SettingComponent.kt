@@ -14,7 +14,7 @@ class SettingComponent : Configurable {
             return false
         }
         return getSettings() != Settings(
-                settingLayout!!.getModelSuffix(),null,false)
+                settingLayout!!.getModelSuffix(),false)
     }
 
     override fun getDisplayName(): String {
@@ -30,7 +30,7 @@ class SettingComponent : Configurable {
     }
 
 
-    override fun createComponent(): JComponent? {
+    override fun createComponent(): JComponent {
         settingLayout = SettingLayout(getSettings())
         return settingLayout!!.getRootComponent()
     }
