@@ -109,6 +109,8 @@ class ModelGenerator(
         stringBuilder.append("\n")
         stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/${fileName}.g.dart';")
         stringBuilder.append("\n")
+        stringBuilder.append("import 'dart:convert';")
+        stringBuilder.append("\n")
         stringBuilder.append("\n")
         stringBuilder.append(classContent)
         //生成helper类

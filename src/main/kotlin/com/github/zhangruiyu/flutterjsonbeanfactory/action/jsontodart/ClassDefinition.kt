@@ -97,6 +97,10 @@ $_fieldList
 
   Map<String, dynamic> toJson() => $${name}ToJson(this);
 
+  @override
+  String toString() {
+    return jsonEncode(this);
+  }
 }
             """.trimIndent();
         }
