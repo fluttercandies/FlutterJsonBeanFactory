@@ -20,8 +20,8 @@ class HelperClassGeneratorInfo {
     val fields: MutableList<Filed> = mutableListOf()
 
 
-    fun addFiled(type: String, name: String, isLate: Boolean, annotationValue: List<AnnotationValue>?) {
-        fields.add(Filed(type, name, isLate).apply {
+    fun addFiled(type: String, name: String, isLate: Boolean, isEnum: Boolean, annotationValue: List<AnnotationValue>?) {
+        fields.add(Filed(type, name, isLate, isEnum).apply {
             this.annotationValue = annotationValue
         })
     }
@@ -93,6 +93,9 @@ class HelperClassGeneratorInfo {
                         "\t\tdata.$name = (json['$getJsonName'] as List).map((v) => ${listSubType}().fromJson(v)).toList();\n" +
                         "\t}"
             }
+            filed.isEnum -> {
+                "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${type.replace("?","")}.values[json['$getJsonName']];\n\t}"
+            }
             else -> // class
                 "if (json['$getJsonName'] != null) {\n\t\tdata.$name = ${type.replace("?","")}().fromJson(json['$getJsonName']);\n\t}"
         }
@@ -148,6 +151,9 @@ class HelperClassGeneratorInfo {
                 // class list
                 return "data['$getJsonName'] =  $value;"
             }
+            filed.isEnum -> {
+                return "data['$getJsonName'] = ${thisKey}.index;"
+            }
             else -> {
                 // class
                 return "data['$getJsonName'] = ${thisKey}${isLateCallSymbol(filed.isLate)}toJson();"
@@ -198,7 +204,9 @@ class Filed constructor(
     //字段名字
     var name: String,
     //是否是late修饰
-    var isLate: Boolean
+    var isLate: Boolean,
+    //是否是枚举
+    var isEnum: Boolean
 ) {
 
     //待定
