@@ -77,29 +77,10 @@ fun VirtualFile?.commitContent(project: Project, content: String) {
 }
 
 
-@Suppress("SameParameterValue")
-/**
- * 如果sdk大于2.11开启null safe,默认是true
- */
-private fun isNullSafe(map: Map<*, *>?, name: String): Boolean {
-    return try {
-        val value = ((map?.get(name) as? Map<*, *>)?.get("sdk")?.toString() ?: "").replace(".", "")
-        if (value.contains(">=")) {
-            value.split("=").last().split("<").first().trim().toInt() >= 2120
-        } else {
-            value.split(">").last().split("<").first().trim().toInt() > 2110
-        }
-
-    } catch (e: Exception) {
-        true
-    }
-}
-
 private const val PUBSPEC_KEY = "flutter-json"
 private const val PROJECT_NAME = "name"
 private const val PUBSPEC_ENABLE_PLUGIN_KEY = "enable"
 private const val PUBSPEC_DART_ENABLED_KEY = "enable-for-dart"
-private const val ENVIRONMENT_KEY = "environment"
 
 data class PubSpecConfig(
     val project: Project,
@@ -110,5 +91,4 @@ data class PubSpecConfig(
     val flutterJsonMap: Map<*, *>? = map[PUBSPEC_KEY] as? Map<*, *>,
     val isFlutterModule: Boolean = FlutterModuleUtils.hasFlutterModule(project),
     val isEnabled: Boolean = isOptionTrue(flutterJsonMap, PUBSPEC_ENABLE_PLUGIN_KEY),
-    val isNullSafe: Boolean = isNullSafe(map, ENVIRONMENT_KEY)
 )

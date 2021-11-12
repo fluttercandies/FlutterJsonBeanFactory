@@ -93,7 +93,7 @@ class FlutterBeanFactoryAction : AnAction() {
     try {
       return value.map((e) => asT<T>(value)).toList();
     } catch (e, stackTrace) {
-      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
+      print('convertList<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
       return [];
     }
   }
@@ -105,7 +105,7 @@ class FlutterBeanFactoryAction : AnAction() {
     try {
       return value.map((e) => asT<T>(value)!).toList();
     } catch (e, stackTrace) {
-      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
+      print('convertListNotNull<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
       return [];
     }
   }
