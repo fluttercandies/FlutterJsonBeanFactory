@@ -118,7 +118,7 @@ object FileHelpers {
         //导包
         val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
         //辅助主类的包名
-        content.append("\nimport 'package:${pubSpecConfig?.name}/generated/json/base/json_convert_content.dart';")
+        content.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_convert_content.dart';\n")
         content.append(packageName)
         content.append("\n")
         //所有字段
@@ -129,9 +129,9 @@ object FileHelpers {
                 annotationList.asIterable()
             }
         }*/
-        helperClassGeneratorInfos?.imports?.filterNot {  it.endsWith("json_field.dart';")|| it.endsWith(".g.dart';") }?.forEach { itemImport ->
+        helperClassGeneratorInfos?.imports?.filterNot {  it.endsWith("json_field.dart';")||it.contains("dart:convert")|| it.endsWith(".g.dart';") }?.forEach { itemImport ->
             content.append(itemImport)
-            content.append("\n")
+            content.append("\n\n")
         }
         content.append(helperClassGeneratorInfos?.classes?.joinToString("\n"))
         //创建文件
