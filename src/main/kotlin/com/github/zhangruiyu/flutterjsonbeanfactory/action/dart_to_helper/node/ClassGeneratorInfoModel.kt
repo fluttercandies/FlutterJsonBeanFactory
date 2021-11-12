@@ -72,7 +72,7 @@ class HelperClassGeneratorInfo {
         val stringBuilder = StringBuilder()
         if (isListType) {
             //如果泛型里带null
-            if (getListSubTypeCanNull(type).contains("?")) {
+            if (getListSubTypeCanNull(type).endsWith("?")) {
                 stringBuilder.append("var $classFieldName = jsonConvert.convertList<${getListSubType(type)}>(json['${getJsonName}']);\n")
             } else {
                 stringBuilder.append("var $classFieldName = jsonConvert.convertListNotNull<${getListSubType(type)}>(json['${getJsonName}']);\n")
@@ -86,43 +86,6 @@ class HelperClassGeneratorInfo {
         stringBuilder.append("\n")
         stringBuilder.append("\t}")
         return stringBuilder.toString()
-        /*return when {
-            //是否是基础数据类型
-            isPrimitiveType(type) -> {
-                when {
-                    isListType -> {
-                        "if (json['$getJsonName'] != null) {\n" +
-                                "\t\tdata.$classFieldName = (json['$getJsonName'] as List).map((v) => ${
-                                    buildToType(
-                                        getListSubType(type),
-                                        "v"
-                                    )
-                                }).toList().cast<${getListSubType(type)}>();\n" +
-                                "\t}"
-                    }
-                    type == "DateTime" -> {
-                        "if(json['$getJsonName'] != null){\n\t\tdata.$classFieldName = DateTime.parse(json['$getJsonName']);\n\t}"
-                    }
-                    else -> {
-                        "if (json['$getJsonName'] != null) {\n\t\tdata.$classFieldName = ${
-                            buildToType(
-                                type,
-                                "json['$getJsonName']"
-                            )
-                        };\n\t}"
-                    }
-                }
-            }
-            isListType -> { // list of class  //如果是list,就把名字修改成单数
-                //类名
-                val listSubType = getListSubType(type)
-                "if (json['$getJsonName'] != null) {\n" +
-                        "\t\tdata.$classFieldName = (json['$getJsonName'] as List).map((v) => ${listSubType}.fromJson(v)).toList();\n" +
-                        "\t}"
-            }
-            else -> // class
-                "if (json['$getJsonName'] != null) {\n\t\tdata.$classFieldName = ${type}.fromJson(json['$getJsonName']);\n\t}"
-        }*/
     }
 
     //生成tojson方法
@@ -158,15 +121,14 @@ class HelperClassGeneratorInfo {
                 //1.2判断是否是基础数据类型
                 val value = if (isBaseType(listSubType)) {
                     if (listSubType.replace("?", "") == "DateTime") {
-                        "$thisKey${if (filed.isCanNull) "?." else "."}map((v) => v${if (listSubType.endsWith("?")) "?." else "."}toIso8601String()).toList()"
+                        "$thisKey${if (filed.isCanNull) "?." else "."}map((v) => v${canNullSymbol(listSubType.endsWith("?"))}toIso8601String()).toList()"
                     } else {
                         thisKey
                     }
 
                 } else {
                     //类名
-                    val nullType = if (filed.isCanNull) "?." else "."
-                    "$thisKey${nullType}map((v) => v${if (listSubType.endsWith("?")) "?." else "."}toJson()).toList()"
+                    "$thisKey${canNullSymbol(filed.isCanNull)}map((v) => v${canNullSymbol(listSubType.endsWith("?"))}toJson()).toList()"
                 }
 
                 // class list
@@ -176,18 +138,20 @@ class HelperClassGeneratorInfo {
             isBaseType(type) -> {
                 return when (type) {
                     "DateTime" -> {
-                        val nullType = if (filed.isCanNull) "?." else "."
-                        "data['${getJsonName}'] = ${thisKey}${nullType}toIso8601String();"
+                        "data['${getJsonName}'] = ${thisKey}${canNullSymbol(filed.isCanNull)}toIso8601String();"
                     }
                     else -> "data['$getJsonName'] = $thisKey;"
                 }
             }
             // class
             else -> {
-                val nullType = if (filed.isCanNull) "?." else "."
-                return "data['$getJsonName'] = ${thisKey}${nullType}toJson();"
+                return "data['$getJsonName'] = ${thisKey}${canNullSymbol(filed.isCanNull)}toJson();"
             }
         }
+    }
+
+    private fun canNullSymbol(isCanNull: Boolean): String {
+        return if (isCanNull) "?." else "."
     }
 
 }

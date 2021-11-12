@@ -83,6 +83,9 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("\n\n")
                         content.append("""
   T? convert<T>(dynamic value) {
+    if (value != null) {
+      return null;
+    }
     return asT<T>(value);
   }
 
@@ -93,7 +96,7 @@ class FlutterBeanFactoryAction : AnAction() {
     try {
       return value.map((e) => asT<T>(e)).toList();
     } catch (e, stackTrace) {
-      print('convertList<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
+      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
       return [];
     }
   }
@@ -105,46 +108,43 @@ class FlutterBeanFactoryAction : AnAction() {
     try {
       return value.map((e) => asT<T>(e)!).toList();
     } catch (e, stackTrace) {
-      print('convertListNotNull<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
+      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
       return [];
     }
   }
 
-T? asT<T extends Object?>(dynamic value) {
-	if (value is T) {
-		return value;
-	}
-	try {
-		if (value != null) {
-			final String valueS = value.toString();
-			if (T.runtimeType is String) {
-				return valueS as T;
-			} else if (T.runtimeType is int) {
-				return int.parse(valueS) as T;
-			} else if (T.runtimeType is double) {
-				return double.parse(valueS) as T;
-			} else if (T.runtimeType is DateTime) {
-				return DateTime.parse(valueS) as T;
-			} else if (T.runtimeType is bool) {
-				if (valueS == '0' || valueS == '1') {
-					return (valueS == '1') as T;
-				}
-				return (valueS == 'true') as T;
-			} else {
-				return JsonConvert.fromJsonAsT<T>(value);
-			}
-		}
-	} catch (e, stackTrace) {
-		print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
-		return null;
-	}
-
-	return null;
-}
+  T? asT<T extends Object?>(dynamic value) {
+    if (value is T) {
+      return value;
+    }
+    try {
+      final String valueS = value.toString();
+      if (T.runtimeType is String) {
+        return valueS as T;
+      } else if (T.runtimeType is int) {
+        return int.parse(valueS) as T;
+      } else if (T.runtimeType is double) {
+        return double.parse(valueS) as T;
+      } else if (T.runtimeType is DateTime) {
+        return DateTime.parse(valueS) as T;
+      } else if (T.runtimeType is bool) {
+        if (valueS == '0' || valueS == '1') {
+          return (valueS == '1') as T;
+        }
+        return (valueS == 'true') as T;
+      } else {
+        return JsonConvert.fromJsonAsT<T>(value);
+      }
+    } catch (e, stackTrace) {
+      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
+      return null;
+    }
+  }
+                          
                         """.trimIndent())
                         //_fromJsonSingle
                         content.append(
-                            " \n//Go back to a single instance by type\n" +
+                            " \n\t//Go back to a single instance by type\n" +
                                     "\tstatic _fromJsonSingle<M>( json) {\n"
                         )
                         content.append("\t\tString type = M.toString();\n")
