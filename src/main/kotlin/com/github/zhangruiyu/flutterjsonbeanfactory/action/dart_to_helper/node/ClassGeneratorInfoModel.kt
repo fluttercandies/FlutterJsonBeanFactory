@@ -53,7 +53,7 @@ class HelperClassGeneratorInfo {
         fields.forEach { k ->
             //如果deserialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("deserialize") != false) {
-                sb.append("\t${jsonParseExpression(k,classInstanceName)}\n")
+                sb.append("\t${jsonParseExpression(k, classInstanceName)}\n")
             }
         }
         sb.append("\treturn ${classInstanceName};\n")
@@ -86,7 +86,7 @@ class HelperClassGeneratorInfo {
         stringBuilder.append("\n")
         stringBuilder.append("\t}")
         return stringBuilder.toString()
-        return when {
+        /*return when {
             //是否是基础数据类型
             isPrimitiveType(type) -> {
                 when {
@@ -122,7 +122,7 @@ class HelperClassGeneratorInfo {
             }
             else -> // class
                 "if (json['$getJsonName'] != null) {\n\t\tdata.$classFieldName = ${type}.fromJson(json['$getJsonName']);\n\t}"
-        }
+        }*/
     }
 
     //生成tojson方法
@@ -151,71 +151,44 @@ class HelperClassGeneratorInfo {
         val isListType = isListType(type)
         val thisKey = "entity.$name"
         when {
-            //是否是基础数据类型
-            isPrimitiveType(type) -> {
-                return when {
-                    isListType && getListSubType(type) == "DateTime" -> {
-                        "${thisKey}\n" +
-                                "        ${isLateCallSymbol(filed.isLate)}map((v) => v?.toString())\n" +
-                                "        ${isLateCallSymbol(filed.isLate)}toList()\n" +
-                                "        ${isLateCallSymbol(filed.isLate)}cast<String>();"
+            isListType -> {
+                //1判断是否是基础数据类型
+                //1.1拿到List的泛型
+                val listSubType = getListSubTypeCanNull(type)
+                //1.2判断是否是基础数据类型
+                val value = if (isBaseType(listSubType)) {
+                    if (listSubType.replace("?", "") == "DateTime") {
+                        "$thisKey${if (filed.isCanNull) "?." else "."}map((v) => v${if (listSubType.endsWith("?")) "?." else "."}toIso8601String()).toList()"
+                    } else {
+                        thisKey
                     }
-                    type == "DateTime" -> {
-                        "data['${getJsonName}'] = ${thisKey}?.toIso8601String();"
+
+                } else {
+                    //类名
+                    val nullType = if (filed.isCanNull) "?." else "."
+                    "$thisKey${nullType}map((v) => v${if (listSubType.endsWith("?")) "?." else "."}toJson()).toList()"
+                }
+
+                // class list
+                return "data['$getJsonName'] =  $value;"
+            }
+            //是否是基础数据类型
+            isBaseType(type) -> {
+                return when (type) {
+                    "DateTime" -> {
+                        val nullType = if (filed.isCanNull) "?." else "."
+                        "data['${getJsonName}'] = ${thisKey}${nullType}toIso8601String();"
                     }
                     else -> "data['$getJsonName'] = $thisKey;"
                 }
             }
-            isListType -> {
-                //如果泛型里包含?,那么就需要?调用了
-                val nullType = if (getListSubTypeCanNull(type).last() == '?') "?." else "."
-                //类名
-                val value =
-                    "$thisKey${isLateCallSymbol(filed.isLate)}map((v) => v${nullType}toJson())${isLateCallSymbol(filed.isLate)}toList()"
-                // class list
-                return "data['$getJsonName'] =  $value;"
-            }
+            // class
             else -> {
-                // class
-                return "data['$getJsonName'] = ${thisKey}${isLateCallSymbol(filed.isLate)}toJson();"
+                val nullType = if (filed.isCanNull) "?." else "."
+                return "data['$getJsonName'] = ${thisKey}${nullType}toJson();"
             }
         }
     }
-
-    private fun isLateCallSymbol(isLate: Boolean): String {
-        return if (isLate) {
-            return "."
-        } else "?."
-    }
-
-
-    private fun buildToType(typeName: String, value: String): String {
-        return when {
-            typeName.equals("int", true) -> {
-                "$value is String\n" +
-                        "\t\t\t\t? int.tryParse(${value})\n" +
-                        "\t\t\t\t: ${value}.toInt()"
-            }
-            typeName.equals("double", true) -> {
-                "$value is String\n" +
-                        "\t\t\t\t? double.tryParse(${value})\n" +
-                        "\t\t\t\t: ${value}.toDouble()"
-            }
-            typeName.equals("num", true) -> {
-                "$value is String\n" +
-                        "\t\t\t\t? num.tryParse(${value})\n" +
-                        "\t\t\t\t: $value"
-            }
-            typeName.equals("string", true) -> {
-                "${value}.toString()"
-            }
-            typeName.equals("DateTime", true) -> {
-                "DateTime.parse(${value})"
-            }
-            else -> value
-        }
-    }
-
 
 }
 

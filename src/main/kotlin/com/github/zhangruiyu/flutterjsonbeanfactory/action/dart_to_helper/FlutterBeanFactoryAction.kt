@@ -91,7 +91,7 @@ class FlutterBeanFactoryAction : AnAction() {
       return [];
     }
     try {
-      return value.map((e) => asT<T>(value)).toList();
+      return value.map((e) => asT<T>(e)).toList();
     } catch (e, stackTrace) {
       print('convertList<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
       return [];
@@ -103,7 +103,7 @@ class FlutterBeanFactoryAction : AnAction() {
       return [];
     }
     try {
-      return value.map((e) => asT<T>(value)!).toList();
+      return value.map((e) => asT<T>(e)!).toList();
     } catch (e, stackTrace) {
       print('convertListNotNull<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
       return [];
@@ -111,22 +111,21 @@ class FlutterBeanFactoryAction : AnAction() {
   }
 
 T? asT<T extends Object?>(dynamic value) {
-	String type = T.toString();
 	if (value is T) {
 		return value;
 	}
 	try {
 		if (value != null) {
 			final String valueS = value.toString();
-			if (type == "String") {
+			if (T.runtimeType is String) {
 				return valueS as T;
-			} else if (type == "int") {
+			} else if (T.runtimeType is int) {
 				return int.parse(valueS) as T;
-			} else if (type == "double") {
+			} else if (T.runtimeType is double) {
 				return double.parse(valueS) as T;
-			} else if (type == "DateTime") {
+			} else if (T.runtimeType is DateTime) {
 				return DateTime.parse(valueS) as T;
-			} else if (type == "bool") {
+			} else if (T.runtimeType is bool) {
 				if (valueS == '0' || valueS == '1') {
 					return (valueS == '1') as T;
 				}

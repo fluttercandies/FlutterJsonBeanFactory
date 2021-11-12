@@ -28,11 +28,32 @@ private val PRIMITIVE_TYPES = mapOf(
     "dynamic" to true
 )
 
+//基础类型
+private val BASE_TYPES = mapOf(
+    "int" to true,
+    "num" to true,
+    "double" to true,
+    "String" to true,
+    "bool" to true,
+    "List" to true,
+    "DateTime" to true,
+    "Null" to true,
+    "var" to true,
+    "dynamic" to true
+)
+
 /**
  * 是否是主数据类型
  */
 fun isPrimitiveType(typeName: String): Boolean {
     return PRIMITIVE_TYPES[typeName.replace("?", "")] ?: false
+}
+
+/**
+ * 是否是基础数据类型
+ */
+fun isBaseType(typeName: String): Boolean {
+    return BASE_TYPES[typeName.replace("?", "")] ?: false
 }
 
 
@@ -53,15 +74,7 @@ fun getListSubType(typeName: String): String {
 
 fun getListSubTypeCanNull(typeName: String): String {
     return mapOf(
-        "List<num?>" to "num",
-        "List<int?>" to "int",
-        "List<double?>" to "double",
-        "List<String?>" to "String",
-        "List<DateTime?>" to "DateTime",
-        "List<bool?>" to "bool",
-        "List<dynamic?>" to "dynamic",
         "List" to "dynamic",
-        "List<Null>" to "dynamic"
     )[typeName] ?: typeName.substringAfter("<").substringBefore(">")
 }
 
