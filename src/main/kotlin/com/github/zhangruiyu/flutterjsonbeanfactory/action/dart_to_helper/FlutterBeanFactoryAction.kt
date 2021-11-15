@@ -56,13 +56,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         allClass.forEach { itemNeedFile ->
                             //需要生成包名
                             val helpPackageName = "${File(itemNeedFile.second).nameWithoutExtension}.g.dart"
-                            content.append(
-                                "import 'package:${pubSpecConfig?.name}/${
-                                    itemNeedFile.second.substringAfter(
-                                        "${pubSpecConfig?.name}/"
-                                    )
-                                }"
-                            )
+                            content.append(itemNeedFile.second)
                             content.append("\n")
                             content.append("import 'package:${pubSpecConfig?.name}/generated/json/${helpPackageName}';")
                             content.append("\n")

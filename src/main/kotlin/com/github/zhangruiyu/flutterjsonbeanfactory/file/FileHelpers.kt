@@ -166,7 +166,7 @@ object FileHelpers {
                 null
             } else {
                 //包名
-                val packageName = (it.path).substringAfter("${project.name}/lib/")
+                val packageName = (it.path).substringAfter("/lib/")
                 dartFileHelperClassGeneratorInfo to "import 'package:${pubSpecConfig?.name}/${packageName}';"
             }
 
