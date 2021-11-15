@@ -13,6 +13,7 @@ import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.commitContent
 import com.github.zhangruiyu.flutterjsonbeanfactory.workers.FileGenerator
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showNotify
+import io.flutter.pub.PubRoot
 import java.io.File
 import java.lang.RuntimeException
 

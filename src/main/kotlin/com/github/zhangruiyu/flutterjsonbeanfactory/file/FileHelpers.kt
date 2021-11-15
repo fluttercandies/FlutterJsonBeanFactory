@@ -15,6 +15,7 @@ import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper.getPubSpecConfig
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.commitContent
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showErrorMessage
+import com.intellij.psi.search.GlobalSearchScope
 import io.flutter.pub.PubRoot
 import java.io.File
 
@@ -155,10 +156,7 @@ object FileHelpers {
     fun getAllEntityFiles(project: Project): List<Pair<HelperFileGeneratorInfo, String>> {
         val pubSpecConfig = getPubSpecConfig(project)
         val psiManager = PsiManager.getInstance(project)
-        return FilenameIndex.getAllFilesByExt(project, "dart").filter {
-            //不过滤entity结尾了
-            /*it.path.endsWith("_${ServiceManager.getService(Settings::class.java).state.modelSuffix.toLowerCase()}.dart") && */it.path.contains("${project.name}/lib/")
-        }.sortedBy {
+        return FilenameIndex.getAllFilesByExt(project, "dart",GlobalSearchScope.projectScope(project)).sortedBy {
             it.path
         }.mapNotNull {
             val dartFileHelperClassGeneratorInfo = GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(psiManager.findFile(it)!!)
