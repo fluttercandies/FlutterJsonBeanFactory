@@ -4,7 +4,7 @@
 Hi,Welcome to come to see me!
 What I do is generate dart beans based on json, as well as generics parameters and json build instances
 
-Language: English | [中文(qq群963752388)](https://juejin.cn/post/6938202779085176868)
+Language: English | [中文(qq群963752388)](https://juejin.cn/post/7030739002969817118/)
 
 ### Easy Use
 ![image](.github/beantojson_factory.gif)

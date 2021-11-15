@@ -85,7 +85,7 @@ class FlutterBeanFactoryAction : AnAction() {
                                 "\n" +
                                 "  List<T?>? convertList<T>(List? value) {\n" +
                                 "    if (value == null) {\n" +
-                                "      return null;\n" +
+                                "      return [];\n" +
                                 "    }\n" +
                                 "    try {\n" +
                                 "      return value.map((e) => asT<T>(e)).toList();\n" +
@@ -97,7 +97,7 @@ class FlutterBeanFactoryAction : AnAction() {
                                 "\n" +
                                 "  List<T>? convertListNotNull<T>(List? value) {\n" +
                                 "    if (value == null) {\n" +
-                                "      return null;\n" +
+                                "      return [];\n" +
                                 "    }\n" +
                                 "    try {\n" +
                                 "      return value.map((e) => asT<T>(e)!).toList();\n" +
