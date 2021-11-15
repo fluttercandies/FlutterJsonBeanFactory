@@ -10,10 +10,10 @@ Language: English | [中文(qq群963752388)](https://juejin.cn/post/693820277908
 ![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/beantojson_factory.gif)
 
 ## Template ToDo list
-- [ ] Support for instantiation through generics
-- [ ] Support customized JSON parsing
-- [ ] The supported types are: int double String datetime dynamic var, and List of the above types
-- [x] Two (and more)-dimensional array is not supported
+- [x] Support for instantiation through generics
+- [x] Support customized JSON parsing
+- [x] The supported types are: int double String datetime dynamic var, and List of the above types
+- [ ] Two (and more)-dimensional array is not supported
 
 <!-- Plugin description -->
 ### Usage
