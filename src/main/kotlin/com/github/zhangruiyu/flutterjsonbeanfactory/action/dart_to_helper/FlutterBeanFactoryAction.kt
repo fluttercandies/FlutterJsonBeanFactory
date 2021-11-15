@@ -81,67 +81,64 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("\n\n")
                         content.append("class JsonConvert {")
                         content.append("\n\n")
-                        content.append("""
-  T? convert<T>(dynamic value) {
-    if (value != null) {
-      return null;
-    }
-    return asT<T>(value);
-  }
-
-  List<T?>? convertList<T>(List? value) {
-    if (value == null) {
-      return [];
-    }
-    try {
-      return value.map((e) => asT<T>(e)).toList();
-    } catch (e, stackTrace) {
-      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
-      return [];
-    }
-  }
-
-  List<T>? convertListNotNull<T>(List? value) {
-    if (value == null) {
-      return [];
-    }
-    try {
-      return value.map((e) => asT<T>(e)!).toList();
-    } catch (e, stackTrace) {
-      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
-      return [];
-    }
-  }
-
-  T? asT<T extends Object?>(dynamic value) {
-    if (value is T) {
-      return value;
-    }
-    try {
-      final String valueS = value.toString();
-      if (T.runtimeType is String) {
-        return valueS as T;
-      } else if (T.runtimeType is int) {
-        return int.parse(valueS) as T;
-      } else if (T.runtimeType is double) {
-        return double.parse(valueS) as T;
-      } else if (T.runtimeType is DateTime) {
-        return DateTime.parse(valueS) as T;
-      } else if (T.runtimeType is bool) {
-        if (valueS == '0' || valueS == '1') {
-          return (valueS == '1') as T;
-        }
-        return (valueS == 'true') as T;
-      } else {
-        return JsonConvert.fromJsonAsT<T>(value);
-      }
-    } catch (e, stackTrace) {
-      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');
-      return null;
-    }
-  }
-                          
-                        """.trimIndent())
+                        content.append("  T? convert<T>(dynamic value) {\n" +
+                                "    if (value == null) {\n" +
+                                "      return null;\n" +
+                                "    }\n" +
+                                "    return asT<T>(value);\n" +
+                                "  }\n" +
+                                "\n" +
+                                "  List<T?>? convertList<T>(List? value) {\n" +
+                                "    if (value == null) {\n" +
+                                "      return null;\n" +
+                                "    }\n" +
+                                "    try {\n" +
+                                "      return value.map((e) => asT<T>(e)).toList();\n" +
+                                "    } catch (e, stackTrace) {\n" +
+                                "      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
+                                "      return [];\n" +
+                                "    }\n" +
+                                "  }\n" +
+                                "\n" +
+                                "  List<T>? convertListNotNull<T>(List? value) {\n" +
+                                "    if (value == null) {\n" +
+                                "      return null;\n" +
+                                "    }\n" +
+                                "    try {\n" +
+                                "      return value.map((e) => asT<T>(e)!).toList();\n" +
+                                "    } catch (e, stackTrace) {\n" +
+                                "      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
+                                "      return [];\n" +
+                                "    }\n" +
+                                "  }\n" +
+                                "\n" +
+                                "  T? asT<T extends Object?>(dynamic value) {\n" +
+                                "    if (value is T) {\n" +
+                                "      return value;\n" +
+                                "    }\n" +
+                                "    try {\n" +
+                                "      final String valueS = value.toString();\n" +
+                                "      if (T.runtimeType is String) {\n" +
+                                "        return valueS as T;\n" +
+                                "      } else if (T.runtimeType is int) {\n" +
+                                "        return int.parse(valueS) as T;\n" +
+                                "      } else if (T.runtimeType is double) {\n" +
+                                "        return double.parse(valueS) as T;\n" +
+                                "      } else if (T.runtimeType is DateTime) {\n" +
+                                "        return DateTime.parse(valueS) as T;\n" +
+                                "      } else if (T.runtimeType is bool) {\n" +
+                                "        if (valueS == '0' || valueS == '1') {\n" +
+                                "          return (valueS == '1') as T;\n" +
+                                "        }\n" +
+                                "        return (valueS == 'true') as T;\n" +
+                                "      } else {\n" +
+                                "        return JsonConvert.fromJsonAsT<T>(value);\n" +
+                                "      }\n" +
+                                "    } catch (e, stackTrace) {\n" +
+                                "      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
+                                "      return null;\n" +
+                                "    }\n" +
+                                "  }")
                         //_fromJsonSingle
                         content.append(
                             " \n\t//Go back to a single instance by type\n" +
