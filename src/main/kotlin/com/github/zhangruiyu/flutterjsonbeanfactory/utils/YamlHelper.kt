@@ -35,7 +35,7 @@ object YamlHelper {
         pubSpecConfig?.let {
             // Did the user deactivate for this project?
             // Automatically activated for Flutter projects.
-            return it.isEnabled && it.pubRoot.declaresFlutter()
+            return it.pubRoot.declaresFlutter()
         }
         return pubSpecConfig?.pubRoot?.declaresFlutter() ?: false
     }
@@ -77,7 +77,7 @@ fun VirtualFile?.commitContent(project: Project, content: String) {
 }
 
 
-private const val PUBSPEC_KEY = "flutter-json"
+//private const val PUBSPEC_KEY = "flutter-json"
 private const val PROJECT_NAME = "name"
 private const val PUBSPEC_ENABLE_PLUGIN_KEY = "enable"
 private const val PUBSPEC_DART_ENABLED_KEY = "enable-for-dart"
@@ -88,7 +88,7 @@ data class PubSpecConfig(
     val map: Map<String, Any>,
         //项目名称,导包需要
     val name: String = ((if (map[PROJECT_NAME] == "null") null else map[PROJECT_NAME]) ?: project.name).toString(),
-    val flutterJsonMap: Map<*, *>? = map[PUBSPEC_KEY] as? Map<*, *>,
+//    val flutterJsonMap: Map<*, *>? = map[PUBSPEC_KEY] as? Map<*, *>,
     val isFlutterModule: Boolean = FlutterModuleUtils.hasFlutterModule(project),
-    val isEnabled: Boolean = isOptionTrue(flutterJsonMap, PUBSPEC_ENABLE_PLUGIN_KEY),
+//    val isEnabled: Boolean = isOptionTrue(flutterJsonMap, PUBSPEC_ENABLE_PLUGIN_KEY),
 )
