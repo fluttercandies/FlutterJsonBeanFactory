@@ -1,41 +1,38 @@
+
 # FlutterJsonBeanFactory
 
-![Build](https://github.com/zhangruiyu/FlutterJsonBeanFactory/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
+Hi,Welcome to come to see me!
+What I do is generate dart beans based on json, as well as generics parameters and json build instances
+
+
+### Easy Use
+![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/beantojson_factory.gif)
 
 ## Template ToDo list
-- [x] Create a new [IntelliJ Platform Plugin Template][template] project.
-- [ ] Get known with the [template documentation][template].
-- [ ] Verify the [pluginGroup](/gradle.properties), [plugin ID](/src/main/resources/META-INF/plugin.xml) and [sources package](/src/main/kotlin).
-- [ ] Review the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html).
-- [ ] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate) for the first time.
-- [ ] Set the Plugin ID in the above README badges.
-- [ ] Set the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html).
-- [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
+- [ ] Support for instantiation through generics
+- [ ] Support customized JSON parsing
+- [ ] The supported types are: int double String datetime dynamic var, and List of the above types
+- [x] Two (and more)-dimensional array is not supported
 
 <!-- Plugin description -->
-This Fancy IntelliJ Platform Plugin is going to be your implementation of the brilliant ideas that you have.
-
-This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be extracted by the [Gradle](/build.gradle.kts) during the build process.
-
-To keep everything working, do not remove `<!-- ... -->` sections. 
+### Usage
+* <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "FlutterJsonBeanFactory"</kbd> >
+  <kbd>Install Plugin</kbd>
+* Restart your Develop tools
+* Press shortcut key `alt ` + `j` for mac  , right click on package -> `New`->`Dart bean clas file from JSON`　And Then you will know how to use
+* If you change the fields in the class, just press the shortcut alt + j to regenerate the tojson and fromjson methods. The generated method regenerates all helper classes and JsonConvert classes (the same as the shortcut alt + j) each time an entity file is created in the generated/json directory.
+* If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.
+* If you don't want to use the FlutterJsonBeanFactory in your project, you can add flutter-json: enable: false to the pubspec.yaml file
+* If no helper files are generated, you can delete the .idea directory and restart your idea
+  ![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/filter_json_config.png)
+* 如果你有任何问题,添加QQGroup(963752388)随时提问 [中文移步](https://www.jianshu.com/p/14cbcbaa74b7)
 <!-- Plugin description end -->
 
-## Installation
-
-- Using IDE built-in plugin system:
-  
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "FlutterJsonBeanFactory"</kbd> >
-  <kbd>Install Plugin</kbd>
-  
-- Manually:
-
-  Download the [latest release](https://github.com/zhangruiyu/FlutterJsonBeanFactory/releases/latest) and install it manually using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
-
-
+### Find me useful ? :heart:
+* Support me by clicking the :star: button on the upper right of this page. :v:
+* Spread to others to let more people have a better develope expierience :heart:
 ---
-Plugin based on the [IntelliJ Platform Plugin Template][template].
+Thanks to [JetBrains](https://www.jetbrains.com/?from=fluttercandies) for allocating free open-source licenses for IDEs
+such as [IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies).
 
-[template]: https://github.com/JetBrains/intellij-platform-plugin-template
+[<img src=".github/jetbrains-variant.png" width="200"/>](https://www.jetbrains.com/?from=fluttercandies)
