@@ -7,7 +7,7 @@ What I do is generate dart beans based on json, as well as generics parameters a
 Language: English | [中文(qq群963752388)](https://juejin.cn/post/6938202779085176868)
 
 ### Easy Use
-![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/beantojson_factory.gif)
+![image](.github/beantojson_factory.gif)
 
 ## Template ToDo list
 - [x] Support for instantiation through generics
