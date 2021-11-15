@@ -156,7 +156,10 @@ object FileHelpers {
     fun getAllEntityFiles(project: Project): List<Pair<HelperFileGeneratorInfo, String>> {
         val pubSpecConfig = getPubSpecConfig(project)
         val psiManager = PsiManager.getInstance(project)
-        return FilenameIndex.getAllFilesByExt(project, "dart",GlobalSearchScope.projectScope(project)).sortedBy {
+        return FilenameIndex.getAllFilesByExt(project, "dart",GlobalSearchScope.projectScope(project)).filter {
+            //不过滤entity结尾了
+            it.path.contains("${project.name}/lib/")||it.path.contains("${pubSpecConfig?.name}/lib/")
+        }.sortedBy {
             it.path
         }.mapNotNull {
             val dartFileHelperClassGeneratorInfo = GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(psiManager.findFile(it)!!)
