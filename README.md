@@ -4,6 +4,7 @@
 Hi,Welcome to come to see me!
 What I do is generate dart beans based on json, as well as generics parameters and json build instances
 
+Language: English | [中文(qq群963752388)](https://juejin.cn/post/6938202779085176868)
 
 ### Easy Use
 ![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/beantojson_factory.gif)
@@ -24,8 +25,6 @@ What I do is generate dart beans based on json, as well as generics parameters a
 * If you need generic conversions in your network requests, use the jsonconvert.fromjsonast method directly.
 * If you don't want to use the FlutterJsonBeanFactory in your project, you can add flutter-json: enable: false to the pubspec.yaml file
 * If no helper files are generated, you can delete the .idea directory and restart your idea
-  ![image](https://github.com/zhangruiyu/FlutterJsonBeanFactory/blob/master/filter_json_config.png)
-* 如果你有任何问题,添加QQGroup(963752388)随时提问 [中文移步](https://www.jianshu.com/p/14cbcbaa74b7)
 <!-- Plugin description end -->
 
 ### Find me useful ? :heart:
