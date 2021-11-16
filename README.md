@@ -31,7 +31,8 @@ import 'generated/json/base/json_convert_content.dart';
 class MyJsonConvert extends JsonConvert {
   T? asT<T extends Object?>(dynamic value) {
     try {
-      if (T.runtimeType is DateTime) {
+      String type = T.toString();
+      if (type == "DateTime") {
         return DateFormat("dd.MM.yyyy").parse(value) as T;
       }else{
         return super.asT<T>(value);

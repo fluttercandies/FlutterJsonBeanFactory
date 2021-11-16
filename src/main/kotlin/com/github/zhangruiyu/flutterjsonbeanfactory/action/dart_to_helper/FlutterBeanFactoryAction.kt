@@ -85,7 +85,7 @@ class FlutterBeanFactoryAction : AnAction() {
                                 "\n" +
                                 "  List<T?>? convertList<T>(List? value) {\n" +
                                 "    if (value == null) {\n" +
-                                "      return [];\n" +
+                                "      return null;\n" +
                                 "    }\n" +
                                 "    try {\n" +
                                 "      return value.map((e) => asT<T>(e)).toList();\n" +
@@ -97,7 +97,7 @@ class FlutterBeanFactoryAction : AnAction() {
                                 "\n" +
                                 "  List<T>? convertListNotNull<T>(List? value) {\n" +
                                 "    if (value == null) {\n" +
-                                "      return [];\n" +
+                                "      return null;\n" +
                                 "    }\n" +
                                 "    try {\n" +
                                 "      return value.map((e) => asT<T>(e)!).toList();\n" +
@@ -106,22 +106,22 @@ class FlutterBeanFactoryAction : AnAction() {
                                 "      return [];\n" +
                                 "    }\n" +
                                 "  }\n" +
-                                "\n" +
                                 "  T? asT<T extends Object?>(dynamic value) {\n" +
                                 "    if (value is T) {\n" +
                                 "      return value;\n" +
                                 "    }\n" +
+                                "\t\tString type = T.toString();\n" +
                                 "    try {\n" +
                                 "      final String valueS = value.toString();\n" +
-                                "      if (T.runtimeType is String) {\n" +
+                                "      if (type == \"String\") {\n" +
                                 "        return valueS as T;\n" +
-                                "      } else if (T.runtimeType is int) {\n" +
+                                "      } else if (type == \"int\") {\n" +
                                 "        return int.parse(valueS) as T;\n" +
-                                "      } else if (T.runtimeType is double) {\n" +
+                                "      } else if (type == \"double\") {\n" +
                                 "        return double.parse(valueS) as T;\n" +
-                                "      } else if (T.runtimeType is DateTime) {\n" +
+                                "      } else if (type ==  \"DateTime\") {\n" +
                                 "        return DateTime.parse(valueS) as T;\n" +
-                                "      } else if (T.runtimeType is bool) {\n" +
+                                "      } else if (type ==  \"bool\") {\n" +
                                 "        if (valueS == '0' || valueS == '1') {\n" +
                                 "          return (valueS == '1') as T;\n" +
                                 "        }\n" +
@@ -133,7 +133,8 @@ class FlutterBeanFactoryAction : AnAction() {
                                 "      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
                                 "      return null;\n" +
                                 "    }\n" +
-                                "  }")
+                                "  }"
+                                )
                         //_fromJsonSingle
                         content.append(
                             " \n\t//Go back to a single instance by type\n" +
