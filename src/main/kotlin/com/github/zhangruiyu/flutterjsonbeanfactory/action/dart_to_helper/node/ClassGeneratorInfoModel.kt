@@ -92,7 +92,7 @@ class HelperClassGeneratorInfo {
     private fun jsonGenFunc(): String {
         val sb = StringBuffer();
         sb.append("Map<String, dynamic> \$${className}ToJson(${className} entity) {\n");
-        sb.append("\tfinal Map<String, dynamic> data = new Map<String, dynamic>();\n");
+        sb.append("\tfinal Map<String, dynamic> data =  <String, dynamic>{};\n");
         fields.forEach { k ->
             //如果serialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("serialize") != false) {

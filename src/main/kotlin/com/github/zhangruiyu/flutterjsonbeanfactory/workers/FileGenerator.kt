@@ -107,19 +107,6 @@ class FileGenerator(private val project: Project) {
 
     companion object {
 
-        // @formatter:off
-        private const val JsonConvertContent =
-                """class JsonConvert<T> {
-  T fromJson(Map<String, dynamic> json) {
-    return this as T;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    print(this.runtimeType);
-    return data;
-  }
-}"""
 
         fun getJSONFieldContent(): String {
             return  """
