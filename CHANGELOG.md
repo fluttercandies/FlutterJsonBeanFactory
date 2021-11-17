@@ -2,7 +2,9 @@
 
 # FlutterJsonBeanFactory Changelog
 
-## [Unreleased]
+## [4.2.5]
+### Added
+- When going to int,double is also available
 
 ## [4.2.3]
 ### Added

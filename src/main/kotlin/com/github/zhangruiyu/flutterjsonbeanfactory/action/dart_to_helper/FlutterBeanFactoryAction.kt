@@ -116,7 +116,12 @@ class FlutterBeanFactoryAction : AnAction() {
                                 "      if (type == \"String\") {\n" +
                                 "        return valueS as T;\n" +
                                 "      } else if (type == \"int\") {\n" +
-                                "        return int.parse(valueS) as T;\n" +
+                                "        int? intValue = int.tryParse(valueS);\n" +
+                                "        if (intValue == null) {\n" +
+                                "          return double.tryParse(valueS)?.toInt() as T?;\n" +
+                                "        } else {\n" +
+                                "          return intValue as T;\n" +
+                                "        }"+
                                 "      } else if (type == \"double\") {\n" +
                                 "        return double.parse(valueS) as T;\n" +
                                 "      } else if (type ==  \"DateTime\") {\n" +
