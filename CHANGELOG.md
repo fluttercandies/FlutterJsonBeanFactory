@@ -1,6 +1,9 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
 # FlutterJsonBeanFactory Changelog
+## [Unreleased]
+### Added
+- Make your code more formal
 
 ## [4.2.5]
 ### Added
