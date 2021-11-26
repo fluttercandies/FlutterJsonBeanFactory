@@ -73,7 +73,7 @@ class HelperClassGeneratorInfo {
         if (isListType) {
             //如果泛型里带null
             if (getListSubTypeCanNull(type).endsWith("?")) {
-                stringBuilder.append("final ${getListSubType(type)}? $classFieldName = jsonConvert.convertList<${getListSubType(type)}>(json['${getJsonName}']);\n")
+                stringBuilder.append("final List<${getListSubType(type)}?>? $classFieldName = jsonConvert.convertList<${getListSubType(type)}>(json['${getJsonName}']);\n")
             } else {
                 stringBuilder.append("final List<${getListSubType(type)}>? $classFieldName = jsonConvert.convertListNotNull<${getListSubType(type)}>(json['${getJsonName}']);\n")
             }
