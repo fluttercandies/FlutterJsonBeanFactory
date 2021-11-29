@@ -143,7 +143,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         //_fromJsonSingle
                         content.append(
                             " \n\t//Go back to a single instance by type\n" +
-                                    "\tstatic M _fromJsonSingle<M>(Map<String, dynamic> json) {\n"
+                                    "\tstatic M? _fromJsonSingle<M>(Map<String, dynamic> json) {\n"
                         )
                         content.append("\t\tfinal String type = M.toString();\n")
                         allClass.forEach { itemClass ->
@@ -155,15 +155,17 @@ class FlutterBeanFactoryAction : AnAction() {
                             }
                         }
                         content.append(
-                            "\n\t\tthrow Exception(\"\$type not found\");\n" +
-                                    "\t}"
+                            "\n\t\tprint(\"\$type not found\");\n\t"
+                        )
+                        content.append(
+                            "\n\t\treturn null;\n}"
                         )
 
                         //_getListFromType
                         content.append("\n\n")
                         content.append(
                             "  //list is returned by type\n" +
-                                    "\tstatic M _getListChildType<M>(List<Map<String, dynamic>> data) {\n"
+                                    "\tstatic M? _getListChildType<M>(List<Map<String, dynamic>> data) {\n"
                         )
                         allClass.forEach { itemClass ->
                             itemClass.first.classes.forEach { itemFile ->
@@ -173,13 +175,18 @@ class FlutterBeanFactoryAction : AnAction() {
                             }
                         }
                         content.append(
-                            "\n\t\tthrow Exception(\"\${M.toString()} not found\");\n" +
-                                    "\t}"
+                            "\n\t\tprint(\"\${M.toString()} not found\");\n\t"
+                        )
+                        content.append(
+                            "\n\t\treturn null;\n}"
                         )
                         content.append("\n\n")
                         //fromJsonAsT
                         content.append(
-                            "  static M fromJsonAsT<M>(dynamic json) {\n" +
+                            "  static M? fromJsonAsT<M>(dynamic json) {\n" +
+                                    "\t\tif(json == null){\n" +
+                                    "\t\t\treturn null;\n" +
+                                    "\t\t}"+
                                     "\t\tif (json is List) {\n" +
                                     "\t\t\treturn _getListChildType<M>(json as List<Map<String, dynamic>>);\n" +
                                     "\t\t} else {\n" +
