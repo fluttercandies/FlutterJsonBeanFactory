@@ -3,6 +3,7 @@ package com.github.zhangruiyu.flutterjsonbeanfactory.action.migrate
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.PubSpecConfig
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.commitContent
+import com.github.zhangruiyu.flutterjsonbeanfactory.utils.executeCouldRollBackAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.CompositeElement
@@ -90,12 +91,14 @@ ${
                 }
                 """.trimIndent()
             }
-            file.virtualFile.commitContent(
-                project, """
+            project.executeCouldRollBackAction {
+                file.virtualFile.commitContent(
+                        project, """
 $addImport
 $content
             """.trimIndent()
-            )
+                )
+            }
 
         }
     }
