@@ -2,7 +2,9 @@
 
 # FlutterJsonBeanFactory Changelog
 
-## [Unreleased]
+## [4.3.0]
+### Fixed
+- fix static final will not be generated 
 
 ## [4.2.7]
 ### Added
