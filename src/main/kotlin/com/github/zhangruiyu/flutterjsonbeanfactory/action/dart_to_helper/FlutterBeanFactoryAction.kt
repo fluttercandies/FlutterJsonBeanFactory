@@ -206,6 +206,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         project.showNotify("convert factory is generated")
                     }
                 } catch (e: RuntimeException) {
+                    e.printStackTrace()
                     e.message?.let { project.showNotify(it) }
                 }
 
