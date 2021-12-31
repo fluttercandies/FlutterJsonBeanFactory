@@ -83,45 +83,50 @@ class FlutterBeanFactoryAction : AnAction() {
                                 "    return asT<T>(value);\n" +
                                 "  }\n" +
                                 "\n" +
-                                "  List<T?>? convertList<T>(List? value) {\n" +
+                                "  List<T?>? convertList<T>(List<dynamic>? value) {\n" +
                                 "    if (value == null) {\n" +
                                 "      return null;\n" +
                                 "    }\n" +
                                 "    try {\n" +
-                                "      return value.map((e) => asT<T>(e)).toList();\n" +
+                                "      return value.map((dynamic e) => asT<T>(e)).toList();\n" +
                                 "    } catch (e, stackTrace) {\n" +
                                 "      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
-                                "      return [];\n" +
+                                "      return <T>[];\n" +
                                 "    }\n" +
                                 "  }\n" +
                                 "\n" +
-                                "  List<T>? convertListNotNull<T>(List? value) {\n" +
+                                "  List<T>? convertListNotNull<T>(dynamic value) {\n" +
                                 "    if (value == null) {\n" +
                                 "      return null;\n" +
                                 "    }\n" +
                                 "    try {\n" +
-                                "      return value.map((e) => asT<T>(e)!).toList();\n" +
+                                "      return (value as List<dynamic>).map((dynamic e) => asT<T>(e)!).toList();\n" +
                                 "    } catch (e, stackTrace) {\n" +
                                 "      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
-                                "      return [];\n" +
+                                "      return <T>[];\n" +
                                 "    }\n" +
                                 "  }\n" +
-                                "\n" +
                                 "  T? asT<T extends Object?>(dynamic value) {\n" +
                                 "    if (value is T) {\n" +
                                 "      return value;\n" +
                                 "    }\n" +
+                                "\t\tfinal String type = T.toString();\n" +
                                 "    try {\n" +
                                 "      final String valueS = value.toString();\n" +
-                                "      if (T.runtimeType is String) {\n" +
+                                "      if (type == \"String\") {\n" +
                                 "        return valueS as T;\n" +
-                                "      } else if (T.runtimeType is int) {\n" +
-                                "        return int.parse(valueS) as T;\n" +
-                                "      } else if (T.runtimeType is double) {\n" +
+                                "      } else if (type == \"int\") {\n" +
+                                "        final int? intValue = int.tryParse(valueS);\n" +
+                                "        if (intValue == null) {\n" +
+                                "          return double.tryParse(valueS)?.toInt() as T?;\n" +
+                                "        } else {\n" +
+                                "          return intValue as T;\n" +
+                                "        }"+
+                                "      } else if (type == \"double\") {\n" +
                                 "        return double.parse(valueS) as T;\n" +
-                                "      } else if (T.runtimeType is DateTime) {\n" +
+                                "      } else if (type ==  \"DateTime\") {\n" +
                                 "        return DateTime.parse(valueS) as T;\n" +
-                                "      } else if (T.runtimeType is bool) {\n" +
+                                "      } else if (type ==  \"bool\") {\n" +
                                 "        if (valueS == '0' || valueS == '1') {\n" +
                                 "          return (valueS == '1') as T;\n" +
                                 "        }\n" +
@@ -133,51 +138,59 @@ class FlutterBeanFactoryAction : AnAction() {
                                 "      print('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
                                 "      return null;\n" +
                                 "    }\n" +
-                                "  }")
+                                "  }"
+                                )
                         //_fromJsonSingle
                         content.append(
                             " \n\t//Go back to a single instance by type\n" +
-                                    "\tstatic _fromJsonSingle<M>( json) {\n"
+                                    "\tstatic M? _fromJsonSingle<M>(Map<String, dynamic> json) {\n"
                         )
-                        content.append("\t\tString type = M.toString();\n")
+                        content.append("\t\tfinal String type = M.toString();\n")
                         allClass.forEach { itemClass ->
 //                            val isFirstIf = allClass.indexOf(itemClass) == 0
                             itemClass.first.classes.forEach { itemFile ->
                                 content.append("\t\tif(type == (${itemFile.className}).toString()){\n")
-                                content.append("\t\t\treturn ${itemFile.className}.fromJson(json);\n")
+                                content.append("\t\t\treturn ${itemFile.className}.fromJson(json) as M;\n")
                                 content.append("\t\t}\n")
                             }
                         }
                         content.append(
-                            "\n\t\treturn null;\n" +
-                                    "\t}"
+                            "\n\t\tprint(\"\$type not found\");\n\t"
+                        )
+                        content.append(
+                            "\n\t\treturn null;\n}"
                         )
 
                         //_getListFromType
                         content.append("\n\n")
                         content.append(
                             "  //list is returned by type\n" +
-                                    "\tstatic M _getListChildType<M>(List data) {\n"
+                                    "\tstatic M? _getListChildType<M>(List<Map<String, dynamic>> data) {\n"
                         )
                         allClass.forEach { itemClass ->
                             itemClass.first.classes.forEach { itemFile ->
                                 content.append("\t\tif(<${itemFile.className}>[] is M){\n")
-                                content.append("\t\t\treturn data.map<${itemFile.className}>((e) => ${itemFile.className}.fromJson(e)).toList() as M;\n")
+                                content.append("\t\t\treturn data.map<${itemFile.className}>((Map<String, dynamic> e) => ${itemFile.className}.fromJson(e)).toList() as M;\n")
                                 content.append("\t\t}\n")
                             }
                         }
                         content.append(
-                            "\n\t\tthrow Exception(\"not found\");\n" +
-                                    "\t}"
+                            "\n\t\tprint(\"\${M.toString()} not found\");\n\t"
+                        )
+                        content.append(
+                            "\n\t\treturn null;\n}"
                         )
                         content.append("\n\n")
                         //fromJsonAsT
                         content.append(
-                            "  static M fromJsonAsT<M>(json) {\n" +
+                            "  static M? fromJsonAsT<M>(dynamic json) {\n" +
+                                    "\t\tif(json == null){\n" +
+                                    "\t\t\treturn null;\n" +
+                                    "\t\t}"+
                                     "\t\tif (json is List) {\n" +
-                                    "\t\t\treturn _getListChildType<M>(json);\n" +
+                                    "\t\t\treturn _getListChildType<M>(json as List<Map<String, dynamic>>);\n" +
                                     "\t\t} else {\n" +
-                                    "\t\t\treturn _fromJsonSingle<M>(json) as M;\n" +
+                                    "\t\t\treturn _fromJsonSingle<M>(json as Map<String, dynamic>);\n" +
                                     "\t\t}\n" +
                                     "\t}"
                         )
@@ -198,7 +211,7 @@ class FlutterBeanFactoryAction : AnAction() {
 
 
             } else {
-                project.showNotify("This project is not the flutter project or the flutterJson in pubspec.yaml with the enable set to false")
+                project.showNotify("This project is not the flutter project")
             }
 
 

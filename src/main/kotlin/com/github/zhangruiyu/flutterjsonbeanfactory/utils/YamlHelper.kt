@@ -32,11 +32,6 @@ object YamlHelper {
     @Suppress("DuplicatedCode")
     @JvmStatic
     fun shouldActivateWith(pubSpecConfig: PubSpecConfig?): Boolean {
-        pubSpecConfig?.let {
-            // Did the user deactivate for this project?
-            // Automatically activated for Flutter projects.
-            return it.pubRoot.declaresFlutter()
-        }
         return pubSpecConfig?.pubRoot?.declaresFlutter() ?: false
     }
 }

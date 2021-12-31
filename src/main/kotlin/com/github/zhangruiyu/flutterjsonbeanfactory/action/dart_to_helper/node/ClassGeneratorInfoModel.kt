@@ -49,7 +49,7 @@ class HelperClassGeneratorInfo {
         sb.append("\n")
         sb.append("$className \$${className}FromJson(Map<String, dynamic> json) {\n")
         val classInstanceName = className.toLowerCaseFirstOne()
-        sb.append("\t$className $classInstanceName = ${className}();\n")
+        sb.append("\tfinal $className $classInstanceName = ${className}();\n")
         fields.forEach { k ->
             //如果deserialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("deserialize") != false) {
@@ -73,13 +73,13 @@ class HelperClassGeneratorInfo {
         if (isListType) {
             //如果泛型里带null
             if (getListSubTypeCanNull(type).endsWith("?")) {
-                stringBuilder.append("var $classFieldName = jsonConvert.convertList<${getListSubType(type)}>(json['${getJsonName}']);\n")
+                stringBuilder.append("final List<${getListSubType(type)}?>? $classFieldName = jsonConvert.convertList<${getListSubType(type)}>(json['${getJsonName}']);\n")
             } else {
-                stringBuilder.append("var $classFieldName = jsonConvert.convertListNotNull<${getListSubType(type)}>(json['${getJsonName}']);\n")
+                stringBuilder.append("final List<${getListSubType(type)}>? $classFieldName = jsonConvert.convertListNotNull<${getListSubType(type)}>(json['${getJsonName}']);\n")
             }
 
         } else {
-            stringBuilder.append("var $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}']);\n")
+            stringBuilder.append("final ${type}? $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}']);\n")
         }
         stringBuilder.append("\tif (${classFieldName} != null) {\n")
         stringBuilder.append("\t\t${classInstanceName}.$classFieldName = $classFieldName;")
@@ -92,7 +92,7 @@ class HelperClassGeneratorInfo {
     private fun jsonGenFunc(): String {
         val sb = StringBuffer();
         sb.append("Map<String, dynamic> \$${className}ToJson(${className} entity) {\n");
-        sb.append("\tfinal Map<String, dynamic> data = new Map<String, dynamic>();\n");
+        sb.append("\tfinal Map<String, dynamic> data = <String, dynamic>{};\n");
         fields.forEach { k ->
             //如果serialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("serialize") != false) {

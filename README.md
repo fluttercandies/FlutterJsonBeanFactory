@@ -4,7 +4,7 @@
 Hi,Welcome to come to see me!
 What I do is generate dart beans based on json, as well as generics parameters and json build instances
 
-Language: English | [中文(qq群963752388)](https://juejin.cn/post/6938202779085176868)
+Language: English | [中文(qq群963752388)](https://juejin.cn/post/7030739002969817118/)
 
 ### Easy Use
 ![image](.github/beantojson_factory.gif)
@@ -31,7 +31,8 @@ import 'generated/json/base/json_convert_content.dart';
 class MyJsonConvert extends JsonConvert {
   T? asT<T extends Object?>(dynamic value) {
     try {
-      if (T.runtimeType is DateTime) {
+      String type = T.toString();
+      if (type == "DateTime") {
         return DateFormat("dd.MM.yyyy").parse(value) as T;
       }else{
         return super.asT<T>(value);
