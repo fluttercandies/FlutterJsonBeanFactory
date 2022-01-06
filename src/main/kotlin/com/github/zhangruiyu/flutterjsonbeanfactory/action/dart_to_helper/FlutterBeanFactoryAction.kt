@@ -188,7 +188,7 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "\t\t\treturn null;\n" +
                                     "\t\t}"+
                                     "\t\tif (json is List) {\n" +
-                                    "\t\t\treturn _getListChildType<M>(json as List<Map<String, dynamic>>);\n" +
+                                    "\t\t\treturn _getListChildType<M>(json.map((e) => e as Map<String, dynamic>).toList());\n" +
                                     "\t\t} else {\n" +
                                     "\t\t\treturn _fromJsonSingle<M>(json as Map<String, dynamic>);\n" +
                                     "\t\t}\n" +
