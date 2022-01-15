@@ -2,6 +2,11 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## [Unreleased]
+## [4.3.2]
+### Fixed
+- A single file error does not affect other generated and show error file
+
 ## [4.3.0]
 ### Fixed
 - fix static final will not be generated 
