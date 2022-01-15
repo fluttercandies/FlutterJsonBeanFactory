@@ -15,6 +15,7 @@ import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper.getPubSpecConfig
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.commitContent
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showErrorMessage
+import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showNotify
 import com.intellij.psi.search.GlobalSearchScope
 import io.flutter.pub.PubRoot
 import java.io.File
@@ -26,14 +27,14 @@ object FileHelpers {
     fun getResourceFolder(project: Project): VirtualFile {
         val guessProjectDir = project.guessProjectDir()
         return guessProjectDir?.findChild("res")
-                ?: guessProjectDir!!.createChildDirectory(this, "res")
+            ?: guessProjectDir!!.createChildDirectory(this, "res")
     }
 
     @JvmStatic
     fun getValuesFolder(project: Project): VirtualFile {
         val resFolder = getResourceFolder(project)
         return resFolder.findChild("values")
-                ?: resFolder.createChildDirectory(this, "values")
+            ?: resFolder.createChildDirectory(this, "values")
     }
 
     /**
@@ -62,7 +63,7 @@ object FileHelpers {
     private fun getJsonConvertBaseFile(project: Project): VirtualFile {
         return getGeneratedFile(project).let { json ->
             json.findChild("base")
-                    ?: json.createChildDirectory(this, "base")
+                ?: json.createChildDirectory(this, "base")
         }
     }
 
@@ -83,9 +84,9 @@ object FileHelpers {
     private fun getGeneratedFile(project: Project): VirtualFile {
         return PubRoot.forFile(getProjectIdeaFile(project))?.lib?.let { lib ->
             return@let (lib.findChild("generated")
-                    ?: lib.createChildDirectory(this, "generated")).run {
+                ?: lib.createChildDirectory(this, "generated")).run {
                 return@run (findChild("json")
-                        ?: createChildDirectory(this, "json"))
+                    ?: createChildDirectory(this, "json"))
             }
         }!!
     }
@@ -113,7 +114,11 @@ object FileHelpers {
     /**
      * 自动生成单个文件的辅助文件
      */
-    private fun generateDartEntityHelper(project: Project, packageName: String, helperClassGeneratorInfos: HelperFileGeneratorInfo?) {
+    private fun generateDartEntityHelper(
+        project: Project,
+        packageName: String,
+        helperClassGeneratorInfos: HelperFileGeneratorInfo?
+    ) {
 //        val pubSpecConfig = getPubSpecConfig(project)
         val content = StringBuilder()
         //导包
@@ -123,14 +128,18 @@ object FileHelpers {
         content.append(packageName)
         content.append("\n")
         //所有字段
-       /* val allFields = helperClassGeneratorInfos?.classes?.flatMap {
-            it.fields.mapNotNull { itemFiled ->
-                itemFiled.annotationValue
-            }.flatMap { annotationList ->
-                annotationList.asIterable()
-            }
-        }*/
-        helperClassGeneratorInfos?.imports?.filterNot {  it.endsWith("json_field.dart';")||it.contains("dart:convert")|| it.endsWith(".g.dart';") }?.forEach { itemImport ->
+        /* val allFields = helperClassGeneratorInfos?.classes?.flatMap {
+             it.fields.mapNotNull { itemFiled ->
+                 itemFiled.annotationValue
+             }.flatMap { annotationList ->
+                 annotationList.asIterable()
+             }
+         }*/
+        helperClassGeneratorInfos?.imports?.filterNot {
+            it.endsWith("json_field.dart';") || it.contains("dart:convert") || it.endsWith(
+                ".g.dart';"
+            )
+        }?.forEach { itemImport ->
             content.append(itemImport)
             content.append("\n\n")
         }
@@ -156,23 +165,29 @@ object FileHelpers {
     fun getAllEntityFiles(project: Project): List<Pair<HelperFileGeneratorInfo, String>> {
         val pubSpecConfig = getPubSpecConfig(project)
         val psiManager = PsiManager.getInstance(project)
-        return FilenameIndex.getAllFilesByExt(project, "dart",GlobalSearchScope.projectScope(project)).filter {
+        return FilenameIndex.getAllFilesByExt(project, "dart", GlobalSearchScope.projectScope(project)).filter {
             //不过滤entity结尾了
-            it.path.contains("${project.name}/lib/")||it.path.contains("${pubSpecConfig?.name}/lib/")
+            it.path.contains("${project.name}/lib/") || it.path.contains("${pubSpecConfig?.name}/lib/")
         }.sortedBy {
             it.path
         }.mapNotNull {
-            val dartFileHelperClassGeneratorInfo = GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(psiManager.findFile(it)!!)
-
-            //导包
-            if (dartFileHelperClassGeneratorInfo == null) {
+            try {
+                val dartFileHelperClassGeneratorInfo =
+                    GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(psiManager.findFile(it)!!)
+                //导包
+                if (dartFileHelperClassGeneratorInfo == null) {
+                    null
+                } else {
+                    //包名
+                    val packageName = (it.path).substringAfter("/lib/")
+                    dartFileHelperClassGeneratorInfo to "import 'package:${pubSpecConfig?.name}/${packageName}';"
+                }
+            } catch (e: Exception) {
+                val errorString = "error file: ${it},stackTrace: ${e.stackTraceToString()}"
+                println(errorString)
+                project.showNotify(errorString)
                 null
-            } else {
-                //包名
-                val packageName = (it.path).substringAfter("/lib/")
-                dartFileHelperClassGeneratorInfo to "import 'package:${pubSpecConfig?.name}/${packageName}';"
             }
-
         }
     }
 
@@ -190,7 +205,7 @@ object FileHelpers {
      */
     fun containsDirectoryFile(directory: PsiDirectory, fileName: String): Boolean {
         return directory.files.filter { it.name.endsWith(".dart") }
-                .firstOrNull { it.name.contains(fileName) } != null
+            .firstOrNull { it.name.contains(fileName) } != null
     }
 
 }
