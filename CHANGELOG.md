@@ -2,7 +2,10 @@
 
 # FlutterJsonBeanFactory Changelog
 
-## [Unreleased]
+## [4.3.3]
+### Fixed
+- dynamic type optimization
+
 ## [4.3.2]
 ### Fixed
 - A single file error does not affect other generated and show error file
