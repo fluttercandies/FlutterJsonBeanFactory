@@ -41,16 +41,17 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
         return false
     }
 
-    fun _addTypeDef(typeDef: TypeDefinition, sb: StringBuffer) {
+    fun _addTypeDef(typeDef: TypeDefinition, sb: StringBuffer, prefix: String, suffix: String) {
         if (typeDef.name == "Null") {
             sb.append("dynamic")
         } else {
+            sb.append(prefix)
             sb.append(typeDef.name)
-        }
-
-        if (typeDef.subtype != null) {
-            //如果是list,就把名字修改成单数
-            sb.append("<${typeDef.subtype!!}>")
+            if (typeDef.subtype != null) {
+                //如果是list,就把名字修改成单数
+                sb.append("<${typeDef.subtype!!}>")
+            }
+            sb.append(suffix)
         }
     }
 
@@ -59,8 +60,8 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
         get() {
             val settings = ServiceManager.getService(Settings::class.java)
             val isOpenNullAble = settings.isOpenNullAble == true
-            val prefix = if(!isOpenNullAble) "late " else ""
-            val suffix = if(isOpenNullAble) "?" else ""
+            val prefix = if (!isOpenNullAble) "late " else ""
+            val suffix = if (isOpenNullAble) "?" else ""
             return fields.keys.map { key ->
                 val f = fields[key]
                 val fieldName = fixFieldName(key, f, privateFields)
@@ -71,9 +72,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
                     sb.append("@JSONField(name: \"${key}\")\n")
                 }
                 sb.append('\t')
-                sb.append(prefix)
-                _addTypeDef(f!!, sb)
-                sb.append(suffix)
+                _addTypeDef(f!!, sb, prefix, suffix)
                 sb.append(" $fieldName;")
                 return@map sb.toString()
             }.joinToString("\n")
