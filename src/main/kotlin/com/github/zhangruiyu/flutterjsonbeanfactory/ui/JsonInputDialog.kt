@@ -130,15 +130,15 @@ open class JsonInputDialog(
             }
 
         })
+        //底部按钮栏
         val settingContainer = JPanel()
         settingContainer.border = JBEmptyBorder(0, 5, 5, 7)
         val boxLayout = BoxLayout(settingContainer, BoxLayout.LINE_AXIS)
         settingContainer.layout = boxLayout
         settingContainer.add(Box.createHorizontalGlue())
+        settingContainer.add(createCheckBox())
         settingContainer.add(formatButton)
         messagePanel.add(settingContainer, BorderLayout.SOUTH)
-        messagePanel.add(createCheckBox(), BorderLayout.SOUTH)
-
         return messagePanel
     }
 
