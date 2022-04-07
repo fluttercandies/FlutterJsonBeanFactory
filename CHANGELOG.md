@@ -2,6 +2,12 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## [4.3.4]
+### Fixed
+- remove the if judgment to get generic instances and use Map instead
+### Added
+- add format json button
+
 ## [4.3.3]
 ### Fixed
 - dynamic type optimization
