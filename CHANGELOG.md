@@ -2,6 +2,10 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## [4.3.6]
+### Fixed
+- Faster generation
+
 ## [4.3.5]
 ### Fixed
 - .g.art does not generate problem fixes

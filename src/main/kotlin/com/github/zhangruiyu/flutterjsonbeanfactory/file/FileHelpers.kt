@@ -37,15 +37,6 @@ object FileHelpers {
             ?: resFolder.createChildDirectory(this, "values")
     }
 
-    /**
-     * 获取json_convert_content目录
-     */
-    fun getJsonConvertContentFile(project: Project, callback: (file: VirtualFile) -> Unit) {
-        ApplicationManager.getApplication().runWriteAction {
-            val generated = getJsonConvertBaseFile(project)
-            callback(generated.findOrCreateChildData(this, "json_convert_content.dart"))
-        }
-    }
 
     /**
      * 获取jsonfiled.dart
@@ -60,7 +51,7 @@ object FileHelpers {
     /**
      * 获取generated/json/base目录
      */
-    private fun getJsonConvertBaseFile(project: Project): VirtualFile {
+    fun getJsonConvertBaseFile(project: Project): VirtualFile {
         return getGeneratedFile(project).let { json ->
             json.findChild("base")
                 ?: json.createChildDirectory(this, "base")
