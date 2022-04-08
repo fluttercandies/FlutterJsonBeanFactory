@@ -47,6 +47,10 @@ class FlutterBeanFactoryAction : AnAction() {
                     FileHelpers.getGeneratedFileRun(project) {
                         //上次生成的老旧老文件
                         val oldHelperChildren = it.children.filterIsInstance<VirtualFileImpl>().toMutableList()
+                        //删除多余helper文件
+                        oldHelperChildren.forEach { needDelFile ->
+                            needDelFile.delete(needDelFile)
+                        }
                         //重新生成所有helper类
                         FileHelpers.generateAllDartEntityHelper(project, allClass)
                         val content = StringBuilder()
@@ -58,10 +62,7 @@ class FlutterBeanFactoryAction : AnAction() {
                             content.append(itemNeedFile.second)
                             content.append("\n")
                         }
-                        //删除多余helper文件
-                        oldHelperChildren.forEach { needDelFile ->
-                            needDelFile.delete(needDelFile)
-                        }
+
                         content.append("\n")
 
                         ////

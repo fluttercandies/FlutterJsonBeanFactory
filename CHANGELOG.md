@@ -2,6 +2,10 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## [4.3.5]
+### Fixed
+- .g.art does not generate problem fixes
+
 ## [4.3.4]
 ### Fixed
 - remove the if judgment to get generic instances and use Map instead
