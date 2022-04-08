@@ -152,6 +152,8 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "          return (valueS == '1') as T;\n" +
                                     "        }\n" +
                                     "        return (valueS == 'true') as T;\n" +
+                                    "      } else if (type == \"Map\" || type.startsWith(\"Map<\")) {\n" +
+                                    "        return value as T;\n" +
                                     "      } else {\n" +
                                     "        if (_convertFuncMap.containsKey(type)) {\n" +
                                     "          return _convertFuncMap[type]!(value) as T;\n" +
