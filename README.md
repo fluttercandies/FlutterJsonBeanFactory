@@ -24,6 +24,18 @@ Language: English | [中文(qq群963752388)](https://juejin.cn/post/703073900296
 * <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "FlutterJsonBeanFactory"</kbd> >
   <kbd>Install Plugin</kbd>
 * Restart your Develop tools
+* Modify in the YAML file of the Flutter project
+
+before:
+```
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+```
+after modification:
+```
+environment:
+  sdk: ">=2.15.0 <3.0.0"
+```
 * Press shortcut key `alt ` + `j` for mac  , right click on package -> `New`->`Dart bean clas file from JSON`　And Then you will know how to use
 * If you change the fields in the class, just press the shortcut alt + j to regenerate the tojson and fromjson methods. The generated method regenerates all helper classes and JsonConvert classes (the same as the shortcut alt + j) each time an entity file is created in the generated/json directory.
 * If you need generic conversions in your network requests, use the JsonConvert.fromJsonAsT<T> method directly.
