@@ -56,7 +56,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                                     //@
                                                             annotationWholeNode.text == "@" &&
                                                             //JSONField
-                                                            fieldWholeNode.firstChildNode.treeNext.elementType == DartTokenTypes.REFERENCE_EXPRESSION && fieldWholeNode.firstChildNode.treeNext.text == "JSONField"
+                                                            fieldWholeNode.firstChildNode.treeNext.elementType == DartTokenTypes.REFERENCE_EXPRESSION && fieldWholeNode.firstChildNode.treeNext.text == if(isPrivate) "JsonKey" else "JSONField"
                                                     ) {
 
                                                         if (fieldWholeNode.firstChildNode.treeNext.treeNext.elementType == DartTokenTypes.ARGUMENTS) {
