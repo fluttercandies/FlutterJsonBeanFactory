@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.psi.psiUtil.children
 
 object GeneratorDartClassNodeToHelperInfo {
     val notSupportType = listOf("static", "const")
-    fun getDartFileHelperClassGeneratorInfo(file: PsiFile): HelperFileGeneratorInfo? {
+    fun getDartFileHelperClassGeneratorInfo(file: PsiFile, isPrivate: Boolean = false): HelperFileGeneratorInfo? {
         //不包含JsonConvert 那么就不转
         return if (file.text.contains("@JsonSerializable") && file.name != "json_convert_content.dart") {
             val mutableMapOf = mutableListOf<HelperClassGeneratorInfo>()
@@ -21,7 +21,7 @@ object GeneratorDartClassNodeToHelperInfo {
                 if (classNode?.elementType == DartTokenTypes.CLASS_DEFINITION && isJsonSerializable
                 ) {
                     if (classNode is CompositeElement) {
-                        val helperClassGeneratorInfo = HelperClassGeneratorInfo()
+                        val helperClassGeneratorInfo = HelperClassGeneratorInfo(isPrivate)
                         for (filedAndMethodNode in classNode.children()) {
                             val nodeName = filedAndMethodNode.text
                             //是类里字段
@@ -56,7 +56,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                                     //@
                                                             annotationWholeNode.text == "@" &&
                                                             //JSONField
-                                                            fieldWholeNode.firstChildNode.treeNext.elementType == DartTokenTypes.REFERENCE_EXPRESSION && fieldWholeNode.firstChildNode.treeNext.text == "JSONField"
+                                                            fieldWholeNode.firstChildNode.treeNext.elementType == DartTokenTypes.REFERENCE_EXPRESSION && fieldWholeNode.firstChildNode.treeNext.text == if(isPrivate) "JsonKey" else "JSONField"
                                                     ) {
 
                                                         if (fieldWholeNode.firstChildNode.treeNext.treeNext.elementType == DartTokenTypes.ARGUMENTS) {
@@ -197,7 +197,13 @@ object GeneratorDartClassNodeToHelperInfo {
                  val toString33 = it?.lastChildNode?.toString()
             }*/
             }
-            if (mutableMapOf.isEmpty()) null else HelperFileGeneratorInfo(imports, mutableMapOf)
+            val name = file.name.removeSuffix(".dart")
+//            val parentPath = file.parent?.virtualFile?.path ?: ""
+//            val gPath = "$parentPath/$name.g.dart"
+            if (mutableMapOf.isEmpty()) null else HelperFileGeneratorInfo(
+                file.parent?.virtualFile, "$name.g.dart",
+                "part of '${file.name}';", imports, mutableMapOf
+            )
         } else null
     }
 }
