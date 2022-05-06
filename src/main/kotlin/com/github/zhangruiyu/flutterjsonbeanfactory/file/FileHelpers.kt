@@ -124,7 +124,9 @@ object FileHelpers {
         //导包
         val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
         val hasLibJsonAnnotation = pubSpecConfig?.hasLibJsonAnnotation ?: false
-        if (!hasLibJsonAnnotation) {
+        val isJsonSerializableCompat = pubSpecConfig?.isJsonSerializableCompat ?: false
+        val isCompat = hasLibJsonAnnotation && isJsonSerializableCompat
+        if (!isCompat) {
             //辅助主类的包名
             content.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_convert_content.dart';\n")
             content.append(packageName)
@@ -142,7 +144,7 @@ object FileHelpers {
         // 依赖 json_annotation 采用 part of 方式
         helperClassGeneratorInfos?.partOf?.takeIf { hasLibJsonAnnotation }?.also { partOf ->
             content.append(partOf)
-            content.append("\n\n")
+            content.append("\n")
         }
 
         helperClassGeneratorInfos?.imports?.takeIf { !hasLibJsonAnnotation }?.filterNot {
@@ -183,6 +185,8 @@ object FileHelpers {
     fun getAllEntityFiles(project: Project): List<Pair<HelperFileGeneratorInfo, String>> {
         val pubSpecConfig = getPubSpecConfig(project)
         val hasLibJsonAnnotation = pubSpecConfig?.hasLibJsonAnnotation ?: false
+        val isJsonSerializableCompat = pubSpecConfig?.isJsonSerializableCompat ?: false
+        val isCompat = hasLibJsonAnnotation && isJsonSerializableCompat
         val psiManager = PsiManager.getInstance(project)
         return FilenameIndex.getAllFilesByExt(project, "dart", GlobalSearchScope.projectScope(project)).filter {
             //不过滤entity结尾了
@@ -193,7 +197,7 @@ object FileHelpers {
             try {
                 val dartFileHelperClassGeneratorInfo =
                     GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(
-                        psiManager.findFile(it)!!, hasLibJsonAnnotation)
+                        psiManager.findFile(it)!!, isCompat)
                 //导包
                 if (dartFileHelperClassGeneratorInfo == null) {
                     null

@@ -97,9 +97,11 @@ class ModelGenerator(
 //        val jsonRawData = gson.fromJson<Map<String, Any>>(collectInfo.userInputJson, HashMap::class.java)
         val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
         val hasLibJsonAnnotation = pubSpecConfig?.hasLibJsonAnnotation ?: false
+        val isJsonSerializableCompat = pubSpecConfig?.isJsonSerializableCompat ?: false
+        val isCompat = hasLibJsonAnnotation && isJsonSerializableCompat
         val classContentList = generateClassDefinition(
             collectInfo.firstClassName(), "", JsonUtils.jsonMapMCompletion(jsonRawData)
-                ?: mutableMapOf<String, Any>(), isPrivate = hasLibJsonAnnotation
+                ?: mutableMapOf<String, Any>(), isPrivate = isCompat
         )
         val classContent = classContentList.joinToString("\n\n")
         classContentList.fold(mutableListOf<TypeDefinition>()) { acc, de ->
@@ -110,11 +112,12 @@ class ModelGenerator(
         //导包
         stringBuilder.append("import 'dart:convert';")
         stringBuilder.append("\n")
-        if(pubSpecConfig?.hasLibJsonAnnotation == true) {
+
+        if (isCompat) {
             stringBuilder.append("import 'package:json_annotation/json_annotation.dart';")
             stringBuilder.append("\n")
-            stringBuilder.append("import 'package:${pubSpecConfig.name}/generated/json/base/json_convert_content.dart';")
-            stringBuilder.append("\n")
+            stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_convert_content.dart';")
+            stringBuilder.append("\n\n")
             stringBuilder.append("part '${fileName}.g.dart';")
         } else {
             stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_field.dart';")

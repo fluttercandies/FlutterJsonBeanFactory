@@ -1,4 +1,5 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory.utils
+
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
@@ -50,8 +51,8 @@ object YamlHelper {
 /**
  * 如果没有配置,那么默认是true
  */
-private fun isOptionTrue(map: Map<*, *>?, name: String): Boolean {
-    val value = map?.get(name)?.toString()?.toLowerCase() ?: "true"
+private fun isOptionTrue(map: Map<*, *>?, name: String, default: Boolean = true): Boolean {
+    val value = map?.get(name)?.toString()?.toLowerCase() ?: return default
     return "true" == value
 }
 
@@ -87,6 +88,7 @@ private const val PUBSPEC_ENABLE_PLUGIN_KEY = "enable"
 private const val PUBSPEC_DART_ENABLED_KEY = "enable-for-dart"
 private const val PUBSPEC_DEPENDENCIES = "dependencies"
 private const val PUBSPEC_LIB_JSON_ANNOTATION = "json_annotation"
+private const val PUBSPEC_JSON_SERIALIZABLE_COMPAT = "json_serializable_compat"
 
 data class PubSpecConfig(
     val project: Project,
@@ -99,5 +101,7 @@ data class PubSpecConfig(
     // 是否依赖 json_annotation
     val hasLibJsonAnnotation: Boolean = (map[PUBSPEC_DEPENDENCIES] as? Map<*, *>)
         ?.containsKey(PUBSPEC_LIB_JSON_ANNOTATION) ?: false,
+    // 是否兼容 json_serializable
+    val isJsonSerializableCompat: Boolean = isOptionTrue(map, PUBSPEC_JSON_SERIALIZABLE_COMPAT, false),
 //    val isEnabled: Boolean = isOptionTrue(flutterJsonMap, PUBSPEC_ENABLE_PLUGIN_KEY),
 )
