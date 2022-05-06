@@ -127,6 +127,7 @@ class ModelGenerator(
         stringBuilder.append("\n")
         stringBuilder.append("\n")
         stringBuilder.append(classContent)
+        stringBuilder.append("\n")
         //生成helper类
 
         //生成

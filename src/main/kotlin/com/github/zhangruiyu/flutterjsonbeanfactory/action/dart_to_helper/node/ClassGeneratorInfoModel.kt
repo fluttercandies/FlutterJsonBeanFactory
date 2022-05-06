@@ -1,6 +1,7 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node
 
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
+import com.github.zhangruiyu.flutterjsonbeanfactory.file.FileHelpers
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toLowerCaseFirstOne
 import com.intellij.openapi.vfs.VirtualFile
 
@@ -24,6 +25,7 @@ class HelperClassGeneratorInfo(
     //协助的类名
     lateinit var className: String
     val fields: MutableList<Filed> = mutableListOf()
+    private val indent = FileHelpers.indent
 
 
     fun addFiled(type: String, name: String, isLate: Boolean, annotationValue: List<AnnotationValue>?) {
@@ -55,14 +57,14 @@ class HelperClassGeneratorInfo(
         sb.append("\n")
         sb.append("$className ${"_".takeIf { isPrivate }.orEmpty()}\$${className}FromJson(Map<String, dynamic> json) {\n")
         val classInstanceName = className.toLowerCaseFirstOne()
-        sb.append("\tfinal $className $classInstanceName = ${className}();\n")
+        sb.append("${indent}final $className $classInstanceName = ${className}();\n")
         fields.forEach { k ->
             //如果deserialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("deserialize") != false) {
-                sb.append("\t${jsonParseExpression(k, classInstanceName)}\n")
+                sb.append("${indent}${jsonParseExpression(k, classInstanceName)}\n")
             }
         }
-        sb.append("\treturn ${classInstanceName};\n")
+        sb.append("${indent}return ${classInstanceName};\n")
         sb.append("}")
         return sb.toString()
     }
@@ -99,10 +101,10 @@ class HelperClassGeneratorInfo(
         } else {
             stringBuilder.append("final ${type}? $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}']);\n")
         }
-        stringBuilder.append("\tif (${classFieldName} != null) {\n")
-        stringBuilder.append("\t\t${classInstanceName}.$classFieldName = $classFieldName;")
+        stringBuilder.append("${indent}if (${classFieldName} != null) {\n")
+        stringBuilder.append("${indent}${indent}${classInstanceName}.$classFieldName = $classFieldName;")
         stringBuilder.append("\n")
-        stringBuilder.append("\t}")
+        stringBuilder.append("${indent}}")
         return stringBuilder.toString()
     }
 
@@ -110,14 +112,14 @@ class HelperClassGeneratorInfo(
     private fun jsonGenFunc(): String {
         val sb = StringBuffer();
         sb.append("Map<String, dynamic> ${"_".takeIf { isPrivate }.orEmpty()}\$${className}ToJson(${className} entity) {\n");
-        sb.append("\tfinal Map<String, dynamic> data = <String, dynamic>{};\n");
+        sb.append("${indent}final Map<String, dynamic> data = <String, dynamic>{};\n");
         fields.forEach { k ->
             //如果serialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("serialize") != false) {
-                sb.append("\t${toJsonExpression(k)}\n")
+                sb.append("${indent}${toJsonExpression(k)}\n")
             }
         }
-        sb.append("\treturn data;\n");
+        sb.append("${indent}return data;\n");
         sb.append("}");
         return sb.toString()
 

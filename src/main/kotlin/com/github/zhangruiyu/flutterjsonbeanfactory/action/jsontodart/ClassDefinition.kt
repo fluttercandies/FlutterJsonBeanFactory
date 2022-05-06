@@ -2,6 +2,7 @@ package com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart
 
 import com.intellij.openapi.components.ServiceManager
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
+import com.github.zhangruiyu.flutterjsonbeanfactory.file.FileHelpers
 import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toUpperCaseFirstOne
 
@@ -62,6 +63,7 @@ class ClassDefinition(
     //字段的集合
     val _fieldList: String
         get() {
+            val indent = FileHelpers.indent
             val settings = ServiceManager.getService(Settings::class.java)
             val isOpenNullAble = settings.isOpenNullAble == true
             val prefix = if (!isOpenNullAble) "late " else ""
@@ -72,10 +74,10 @@ class ClassDefinition(
                 val sb = StringBuffer();
                 //如果驼峰命名后不一致,才这样
                 if (fieldName != key) {
-                    sb.append('\t')
+                    sb.append(indent)
                     sb.append("@${if (isPrivate) "JsonKey" else "JSONField"}(name: \"${key}\")\n")
                 }
-                sb.append('\t')
+                sb.append(indent)
                 _addTypeDef(f!!, sb, prefix, suffix)
                 sb.append(" $fieldName;")
                 return@map sb.toString()
@@ -91,9 +93,8 @@ class ClassDefinition(
             """
 @JsonSerializable()
 class $name {
-
 $_fieldList
-  
+
   ${name}();
 
   factory ${name}.fromJson(Map<String, dynamic> json) => ${"_".takeIf { isPrivate }.orEmpty()}$${name}FromJson(json);

@@ -25,6 +25,8 @@ class FlutterBeanFactoryAction : AnAction() {
     }
 
     companion object {
+
+        private val indent = FileHelpers.indent
         /**
          * 生成辅助类
          */
@@ -75,19 +77,19 @@ class FlutterBeanFactoryAction : AnAction() {
 
                         ////
                         content.append("JsonConvert jsonConvert = JsonConvert();")
-                        content.append("\n")
+                        content.append("\n\n")
                         content.append("typedef JsonConvertFunction<T> = T Function(Map<String, dynamic> json);")
                         content.append("\n\n")
                         content.append("class JsonConvert {")
                         content.append("\n")
-                        content.append("\tstatic final Map<String, JsonConvertFunction> _convertFuncMap = {")
+                        content.append("${indent}static final Map<String, JsonConvertFunction> _convertFuncMap = {")
                         content.append("\n")
                         allClass.forEach { itemClass ->
                             itemClass.first.classes.forEach { itemFile ->
-                                content.append("\t\t(${itemFile.className}).toString(): ${itemFile.className}.fromJson,\n")
+                                content.append("${indent}${indent}(${itemFile.className}).toString(): ${itemFile.className}.fromJson,\n")
                             }
                         }
-                        content.append("\t};")
+                        content.append("${indent}};")
                         content.append("\n\n")
                         content.append(
                             "  T? convert<T>(dynamic value) {\n" +
@@ -170,36 +172,37 @@ class FlutterBeanFactoryAction : AnAction() {
                         //_getListFromType
                         content.append("\n\n")
                         content.append(
-                            "\t//list is returned by type\n" +
-                                    "\tstatic M? _getListChildType<M>(List<Map<String, dynamic>> data) {\n"
+                            "${indent}//list is returned by type\n" +
+                                    "${indent}static M? _getListChildType<M>(List<Map<String, dynamic>> data) {\n"
                         )
                         allClass.forEach { itemClass ->
                             itemClass.first.classes.forEach { itemFile ->
-                                content.append("\t\tif(<${itemFile.className}>[] is M){\n")
-                                content.append("\t\t\treturn data.map<${itemFile.className}>((Map<String, dynamic> e) => ${itemFile.className}.fromJson(e)).toList() as M;\n")
-                                content.append("\t\t}\n")
+                                content.append("${indent}${indent}if(<${itemFile.className}>[] is M){\n")
+                                content.append("${indent}${indent}${indent}return data.map<${itemFile.className}>((Map<String, dynamic> e) => ${itemFile.className}.fromJson(e)).toList() as M;\n")
+                                content.append("${indent}${indent}}\n")
                             }
                         }
                         content.append(
-                            "\n\t\tdebugPrint(\"\${M.toString()} not found\");\n\t"
+                            "\n${indent}${indent}debugPrint(\"\${M.toString()} not found\");\n${indent}"
                         )
                         content.append(
-                            "\n\t\treturn null;\n}"
+                            "\n${indent}${indent}return null;\n}"
                         )
                         content.append("\n\n")
                         //fromJsonAsT
                         content.append(
-                            "\tstatic M? fromJsonAsT<M>(dynamic json) {\n" +
-                                    "\t\tif (json is List) {\n" +
-                                    "\t\t\treturn _getListChildType<M>(json.map((e) => e as Map<String, dynamic>).toList());\n" +
-                                    "\t\t} else {\n" +
-                                    "\t\t\treturn jsonConvert.asT<M>(json);\n" +
-                                    "\t\t}\n" +
-                                    "\t}"
+                            "${indent}static M? fromJsonAsT<M>(dynamic json) {\n" +
+                                    "${indent}${indent}if (json is List) {\n" +
+                                    "${indent}${indent}${indent}return _getListChildType<M>(json.map((e) => e as Map<String, dynamic>).toList());\n" +
+                                    "${indent}${indent}} else {\n" +
+                                    "${indent}${indent}${indent}return jsonConvert.asT<M>(json);\n" +
+                                    "${indent}${indent}}\n" +
+                                    "${indent}}"
                         )
 
                         content.append("\n")
                         content.append("}")
+                        content.append("\n")
                         val generated = FileHelpers.getJsonConvertBaseFile(project)
                         //获取json_convert_content目录,并写入
                         generated.findOrCreateChildData(this, "json_convert_content.dart")

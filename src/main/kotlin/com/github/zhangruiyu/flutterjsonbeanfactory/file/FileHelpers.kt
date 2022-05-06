@@ -23,6 +23,8 @@ import java.io.File
 //import io.flutter.utils.FlutterModuleUtils
 
 object FileHelpers {
+    const val indent = "  "
+
     @JvmStatic
     fun getResourceFolder(project: Project): VirtualFile {
         val guessProjectDir = project.guessProjectDir()
@@ -156,6 +158,7 @@ object FileHelpers {
             content.append("\n\n")
         }
         content.append(helperClassGeneratorInfos?.classes?.joinToString("\n"))
+        content.append("\n")
         //创建文件
         if (hasLibJsonAnnotation && helperClassGeneratorInfos?.directory != null) {
             getDirectoryEntityHelperFile(
