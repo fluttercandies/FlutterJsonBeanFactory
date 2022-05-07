@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.psi.psiUtil.children
 
 object GeneratorDartClassNodeToHelperInfo {
     val notSupportType = listOf("static", "const")
-    fun getDartFileHelperClassGeneratorInfo(file: PsiFile, isPrivate: Boolean = false): HelperFileGeneratorInfo? {
+    fun getDartFileHelperClassGeneratorInfo(file: PsiFile, isCompat: Boolean = false): HelperFileGeneratorInfo? {
         //不包含JsonConvert 那么就不转
         return if (file.text.contains("@JsonSerializable") && file.name != "json_convert_content.dart") {
             val mutableMapOf = mutableListOf<HelperClassGeneratorInfo>()
@@ -21,7 +21,7 @@ object GeneratorDartClassNodeToHelperInfo {
                 if (classNode?.elementType == DartTokenTypes.CLASS_DEFINITION && isJsonSerializable
                 ) {
                     if (classNode is CompositeElement) {
-                        val helperClassGeneratorInfo = HelperClassGeneratorInfo(isPrivate)
+                        val helperClassGeneratorInfo = HelperClassGeneratorInfo(isCompat)
                         for (filedAndMethodNode in classNode.children()) {
                             val nodeName = filedAndMethodNode.text
                             //是类里字段
@@ -56,7 +56,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                                     //@
                                                             annotationWholeNode.text == "@" &&
                                                             //JSONField
-                                                            fieldWholeNode.firstChildNode.treeNext.elementType == DartTokenTypes.REFERENCE_EXPRESSION && fieldWholeNode.firstChildNode.treeNext.text == if(isPrivate) "JsonKey" else "JSONField"
+                                                            fieldWholeNode.firstChildNode.treeNext.elementType == DartTokenTypes.REFERENCE_EXPRESSION && fieldWholeNode.firstChildNode.treeNext.text == if(isCompat) "JsonKey" else "JSONField"
                                                     ) {
 
                                                         if (fieldWholeNode.firstChildNode.treeNext.treeNext.elementType == DartTokenTypes.ARGUMENTS) {
@@ -175,6 +175,14 @@ object GeneratorDartClassNodeToHelperInfo {
                                 }
                             } else if (filedAndMethodNode.elementType == DartTokenTypes.COMPONENT_NAME) {
                                 helperClassGeneratorInfo.className = (nodeName)
+                            } else if (filedAndMethodNode.elementType == DartTokenTypes.TYPE_PARAMETERS) {
+                                // 泛型解析
+                                filedAndMethodNode.children().forEach { typeParameters ->
+                                    val typeName = typeParameters.text
+                                    if (typeParameters.elementType == DartTokenTypes.TYPE_PARAMETER) {
+                                        helperClassGeneratorInfo.genericsType.add(typeName)
+                                    }
+                                }
                             } /*else if (filedAndMethodNode.elementType == DartTokenTypes.MIXINS) {
                                 //不包含JsonConvert 那么就不转
                                 if (nodeName.contains("JsonConvert").not()) {

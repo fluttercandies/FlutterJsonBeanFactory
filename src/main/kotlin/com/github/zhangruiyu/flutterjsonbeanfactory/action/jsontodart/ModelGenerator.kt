@@ -23,13 +23,13 @@ class ModelGenerator(
         parentName: String,
         jsonRawData: Any,
         parentType: String = "",
-        isPrivate: Boolean = false,
+        isCompat: Boolean = false,
     ): MutableList<ClassDefinition> {
         val newClassName = parentName + className
         val preName = newClassName
         if (jsonRawData is List<*>) {
             // if first element is an array, start in the first element.
-            generateClassDefinition(newClassName, newClassName, jsonRawData[0]!!, isPrivate = isPrivate)
+            generateClassDefinition(newClassName, newClassName, jsonRawData[0]!!, isCompat = isCompat)
         } else if (jsonRawData is Map<*, *>) {
             val keys = jsonRawData.keys
             //如果是list,就把名字修改成单数
@@ -46,7 +46,7 @@ class ModelGenerator(
                         newClassName
                     }
                 },
-                isPrivate = isPrivate,
+                isCompat = isCompat,
             )
             keys.forEach { key ->
                 val typeDef = TypeDefinition.fromDynamic(jsonRawData[key])
@@ -66,10 +66,10 @@ class ModelGenerator(
                 if (dependency.typeDef.name == "List") {
                     if (((jsonRawData[dependency.name]) as? List<*>)?.isNotEmpty() == true) {
                         val names = (jsonRawData[dependency.name] as List<*>)
-                        generateClassDefinition(dependency.className, newClassName, names[0]!!, "list", isPrivate = isPrivate)
+                        generateClassDefinition(dependency.className, newClassName, names[0]!!, "list", isCompat = isCompat)
                     }
                 } else {
-                    generateClassDefinition(dependency.className, newClassName, jsonRawData[dependency.name]!!, isPrivate = isPrivate)
+                    generateClassDefinition(dependency.className, newClassName, jsonRawData[dependency.name]!!, isCompat = isCompat)
                 }
             }
         }
@@ -101,7 +101,7 @@ class ModelGenerator(
         val isCompat = hasLibJsonAnnotation && isJsonSerializableCompat
         val classContentList = generateClassDefinition(
             collectInfo.firstClassName(), "", JsonUtils.jsonMapMCompletion(jsonRawData)
-                ?: mutableMapOf<String, Any>(), isPrivate = isCompat
+                ?: mutableMapOf<String, Any>(), isCompat = isCompat
         )
         val classContent = classContentList.joinToString("\n\n")
         classContentList.fold(mutableListOf<TypeDefinition>()) { acc, de ->

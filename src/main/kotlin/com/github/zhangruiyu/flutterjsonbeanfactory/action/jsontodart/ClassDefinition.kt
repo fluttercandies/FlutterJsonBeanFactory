@@ -9,7 +9,7 @@ import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toUpperCaseFirstOne
 class ClassDefinition(
     private val name: String,
     private val privateFields: Boolean = false,
-    private val isPrivate: Boolean = false, // class
+    private val isCompat: Boolean = false, // class
 ) {
     val fields = mutableMapOf<String, TypeDefinition>()
     val dependencies: List<Dependency>
@@ -75,7 +75,7 @@ class ClassDefinition(
                 //如果驼峰命名后不一致,才这样
                 if (fieldName != key) {
                     sb.append(indent)
-                    sb.append("@${if (isPrivate) "JsonKey" else "JSONField"}(name: \"${key}\")\n")
+                    sb.append("@${if (isCompat) "JsonKey" else "JSONField"}(name: \"${key}\")\n")
                 }
                 sb.append(indent)
                 _addTypeDef(f!!, sb, prefix, suffix)
@@ -97,9 +97,9 @@ $_fieldList
 
   ${name}();
 
-  factory ${name}.fromJson(Map<String, dynamic> json) => ${"_".takeIf { isPrivate }.orEmpty()}$${name}FromJson(json);
+  factory ${name}.fromJson(Map<String, dynamic> json) => ${"_".takeIf { isCompat }.orEmpty()}$${name}FromJson(json);
 
-  Map<String, dynamic> toJson() => ${"_".takeIf { isPrivate }.orEmpty()}$${name}ToJson(this);
+  Map<String, dynamic> toJson() => ${"_".takeIf { isCompat }.orEmpty()}$${name}ToJson(this);
 
   @override
   String toString() {

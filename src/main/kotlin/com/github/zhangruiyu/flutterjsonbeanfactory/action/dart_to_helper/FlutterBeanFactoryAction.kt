@@ -183,7 +183,7 @@ class FlutterBeanFactoryAction : AnAction() {
                             }
                         }
                         content.append(
-                            "\n${indent}${indent}debugPrint(\"\${M.toString()} not found\");\n${indent}"
+                            "\n${indent}${indent}debugPrint(\"\${M.toString()} not found\");\n"
                         )
                         content.append(
                             "\n${indent}${indent}return null;\n}"
@@ -200,6 +200,28 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "${indent}}"
                         )
 
+                        content.append("\n\n")
+                        content.append(
+                            """
+  static M fromJsonFactory<M>(dynamic json) {
+    final entity = JsonConvert.fromJsonAsT<M>(json);
+    if (entity == null) throw UnimplementedError('${'$'}M unimplemented');
+    return entity;
+  }
+
+  static T? nullableGenericFromJson<T>(
+    Object? input,
+    T Function(Object? json) fromJson,
+  ) =>
+      input == null ? null : fromJson(input);
+
+  static Object? nullableGenericToJson<T>(
+    T? input,
+    Object? Function(T value) toJson,
+  ) =>
+      input == null ? null : toJson(input);
+                        """.trimMargin()
+                        )
                         content.append("\n")
                         content.append("}")
                         content.append("\n")

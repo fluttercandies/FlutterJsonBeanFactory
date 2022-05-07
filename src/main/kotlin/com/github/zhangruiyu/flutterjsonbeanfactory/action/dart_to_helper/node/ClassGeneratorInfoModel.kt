@@ -20,10 +20,13 @@ class HelperFileGeneratorInfo(
 )
 
 class HelperClassGeneratorInfo(
-    private val isPrivate: Boolean = false,
+    private val isCompat: Boolean = false,
 ) {
     //协助的类名
     lateinit var className: String
+
+    //类泛型列表
+    val genericsType: MutableList<String> = mutableListOf()
     val fields: MutableList<Filed> = mutableListOf()
     private val indent = FileHelpers.indent
 
@@ -55,9 +58,20 @@ class HelperClassGeneratorInfo(
     private fun jsonParseFunc(): String {
         val sb = StringBuffer();
         sb.append("\n")
-        sb.append("$className ${"_".takeIf { isPrivate }.orEmpty()}\$${className}FromJson(Map<String, dynamic> json) {\n")
         val classInstanceName = className.toLowerCaseFirstOne()
-        sb.append("${indent}final $className $classInstanceName = ${className}();\n")
+        if (isCompat) {
+            val classGenericType = genericsType.takeIf { it.isNotEmpty() }
+                ?.joinToString(separator = ", ", prefix = "<", postfix = ">")
+                .orEmpty()
+            val genericFactory = genericsType.takeIf { it.isNotEmpty() }
+                ?.joinToString(separator = ", ", prefix = ", ", postfix = "") { "$it Function(Object? json) fromJson$it" }
+                .orEmpty()
+            sb.append("$className$classGenericType _\$${className}FromJson$classGenericType(Map<String, dynamic> json$genericFactory) {\n")
+            sb.append("${indent}final $className$classGenericType $classInstanceName = ${className}${classGenericType}();\n")
+        } else {
+            sb.append("$className \$${className}FromJson(Map<String, dynamic> json) {\n")
+            sb.append("${indent}final $className $classInstanceName = ${className}();\n")
+        }
         fields.forEach { k ->
             //如果deserialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("deserialize") != false) {
@@ -111,7 +125,19 @@ class HelperClassGeneratorInfo(
     //生成tojson方法
     private fun jsonGenFunc(): String {
         val sb = StringBuffer();
-        sb.append("Map<String, dynamic> ${"_".takeIf { isPrivate }.orEmpty()}\$${className}ToJson(${className} entity) {\n");
+        if (isCompat) {
+            val classGenericType = genericsType.takeIf { it.isNotEmpty() }
+                ?.joinToString(separator = ", ", prefix = "<", postfix = ">")
+                .orEmpty()
+            val genericFactory = genericsType.takeIf { it.isNotEmpty() }
+                ?.joinToString(separator = ", ", prefix = ", ", postfix = "") {
+                    "Object? Function($it value) toJson$it"
+                }
+                .orEmpty()
+            sb.append("Map<String, dynamic> _\$${className}ToJson${classGenericType}(${className}${classGenericType} entity$genericFactory) {\n");
+        } else {
+            sb.append("Map<String, dynamic> \$${className}ToJson(${className} entity) {\n");
+        }
         sb.append("${indent}final Map<String, dynamic> data = <String, dynamic>{};\n");
         fields.forEach { k ->
             //如果serialize不是false,那么就解析,否则不解析
@@ -148,7 +174,16 @@ class HelperClassGeneratorInfo(
 
                 } else {
                     //类名
-                    "$thisKey${canNullSymbol(filed.isCanNull)}map((v) => v${canNullSymbol(listSubType.endsWith("?"))}toJson()).toList()"
+                    val filedGenericType = getListSubType(type)
+                    if (isCompat && (filedGenericType in genericsType)) {
+                        if (listSubType.endsWith('?')) {
+                            "$thisKey${canNullSymbol(filed.isCanNull)}map((e) => JsonConvert.nullableGenericToJson(e, toJson${filedGenericType})).toList()"
+                        } else {
+                            "$thisKey${canNullSymbol(filed.isCanNull)}map(toJson${filedGenericType}).toList()"
+                        }
+                    } else {
+                        "$thisKey${canNullSymbol(filed.isCanNull)}map((v) => v${canNullSymbol(listSubType.endsWith("?"))}toJson()).toList()"
+                    }
                 }
 
                 // class list
@@ -166,6 +201,14 @@ class HelperClassGeneratorInfo(
             //是map
             isMapType(type) -> {
                 return "data['$getJsonName'] = $thisKey;"
+            }
+            // 泛型
+            type in genericsType -> {
+                return if (filed.isCanNull) {
+                    "data['$getJsonName'] = JsonConvert.nullableGenericToJson(${thisKey}, toJson$type);"
+                } else {
+                    "data['$getJsonName'] = toJson$type(${thisKey});"
+                }
             }
             // class
             else -> {
