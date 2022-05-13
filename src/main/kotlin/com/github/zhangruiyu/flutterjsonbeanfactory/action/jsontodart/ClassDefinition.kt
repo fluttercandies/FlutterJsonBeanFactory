@@ -5,7 +5,11 @@ import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
 import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toUpperCaseFirstOne
 
-class ClassDefinition(private val name: String, private val privateFields: Boolean = false) {
+class ClassDefinition(
+    private val name: String,
+    private val privateFields: Boolean = false,
+    private val isPrivate: Boolean = false, // class
+) {
     val fields = mutableMapOf<String, TypeDefinition>()
     val dependencies: List<Dependency>
         get() {
@@ -69,7 +73,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
                 //如果驼峰命名后不一致,才这样
                 if (fieldName != key) {
                     sb.append('\t')
-                    sb.append("@JSONField(name: \"${key}\")\n")
+                    sb.append("@${if (isPrivate) "JsonKey" else "JSONField"}(name: \"${key}\")\n")
                 }
                 sb.append('\t')
                 _addTypeDef(f!!, sb, prefix, suffix)
@@ -92,9 +96,9 @@ $_fieldList
   
   ${name}();
 
-  factory ${name}.fromJson(Map<String, dynamic> json) => $${name}FromJson(json);
+  factory ${name}.fromJson(Map<String, dynamic> json) => ${"_".takeIf { isPrivate }.orEmpty()}$${name}FromJson(json);
 
-  Map<String, dynamic> toJson() => $${name}ToJson(this);
+  Map<String, dynamic> toJson() => ${"_".takeIf { isPrivate }.orEmpty()}$${name}ToJson(this);
 
   @override
   String toString() {

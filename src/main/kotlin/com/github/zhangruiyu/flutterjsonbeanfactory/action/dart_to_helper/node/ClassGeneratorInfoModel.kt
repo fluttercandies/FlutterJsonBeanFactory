@@ -2,6 +2,7 @@ package com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node
 
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toLowerCaseFirstOne
+import com.intellij.openapi.vfs.VirtualFile
 
 
 /**
@@ -10,11 +11,16 @@ import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toLowerCaseFirstOne
  * Time: 11:32
  */
 class HelperFileGeneratorInfo(
+    val directory: VirtualFile?,
+    val name: String,
+    val partOf: String?,
     val imports: MutableList<String> = mutableListOf(),
     val classes: MutableList<HelperClassGeneratorInfo> = mutableListOf()
 )
 
-class HelperClassGeneratorInfo {
+class HelperClassGeneratorInfo(
+    private val isPrivate: Boolean = false,
+) {
     //协助的类名
     lateinit var className: String
     val fields: MutableList<Filed> = mutableListOf()
@@ -47,7 +53,7 @@ class HelperClassGeneratorInfo {
     private fun jsonParseFunc(): String {
         val sb = StringBuffer();
         sb.append("\n")
-        sb.append("$className \$${className}FromJson(Map<String, dynamic> json) {\n")
+        sb.append("$className ${"_".takeIf { isPrivate }.orEmpty()}\$${className}FromJson(Map<String, dynamic> json) {\n")
         val classInstanceName = className.toLowerCaseFirstOne()
         sb.append("\tfinal $className $classInstanceName = ${className}();\n")
         fields.forEach { k ->
@@ -103,7 +109,7 @@ class HelperClassGeneratorInfo {
     //生成tojson方法
     private fun jsonGenFunc(): String {
         val sb = StringBuffer();
-        sb.append("Map<String, dynamic> \$${className}ToJson(${className} entity) {\n");
+        sb.append("Map<String, dynamic> ${"_".takeIf { isPrivate }.orEmpty()}\$${className}ToJson(${className} entity) {\n");
         sb.append("\tfinal Map<String, dynamic> data = <String, dynamic>{};\n");
         fields.forEach { k ->
             //如果serialize不是false,那么就解析,否则不解析
