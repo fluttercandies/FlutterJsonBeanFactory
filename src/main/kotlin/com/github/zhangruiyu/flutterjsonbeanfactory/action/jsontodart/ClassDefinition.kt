@@ -5,6 +5,9 @@ import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
 import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toUpperCaseFirstOne
 
+
+val DART_BUILT_IN_TYPE_LIST = listOf("num","int","double","String","bool","List","Map","Set")
+
 class ClassDefinition(private val name: String, private val privateFields: Boolean = false) {
     val fields = mutableMapOf<String, TypeDefinition>()
     val dependencies: List<Dependency>
@@ -41,11 +44,13 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
         return false
     }
 
-    fun _addTypeDef(typeDef: TypeDefinition, sb: StringBuffer, prefix: String, suffix: String) {
+    fun _addTypeDef(typeDef: TypeDefinition, sb: StringBuffer, isOpenNullAble: Boolean, suffix: String) {
         if (typeDef.name == "Null") {
             sb.append("dynamic")
         } else {
-            sb.append(prefix)
+            if (!isOpenNullAble&& !DART_BUILT_IN_TYPE_LIST.contains(typeDef.name)){
+                sb.append("late ")
+            }
             sb.append(typeDef.name)
             if (typeDef.subtype != null) {
                 //如果是list,就把名字修改成单数
@@ -60,20 +65,29 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
         get() {
             val settings = ServiceManager.getService(Settings::class.java)
             val isOpenNullAble = settings.isOpenNullAble == true
-            val prefix = if (!isOpenNullAble) "late " else ""
+//            val prefix = if (!isOpenNullAble) "late " else ""
             val suffix = if (isOpenNullAble) "?" else ""
             return fields.keys.map { key ->
                 val f = fields[key]
                 val fieldName = fixFieldName(key, f, privateFields)
-                val sb = StringBuffer();
+                val sb = StringBuffer()
                 //如果驼峰命名后不一致,才这样
                 if (fieldName != key) {
                     sb.append('\t')
                     sb.append("@JSONField(name: \"${key}\")\n")
                 }
                 sb.append('\t')
-                _addTypeDef(f!!, sb, prefix, suffix)
-                sb.append(" $fieldName;")
+                _addTypeDef(f!!, sb, isOpenNullAble, suffix)
+                sb.append(" $fieldName")
+                when(f.name){
+                    "int"->sb.append(" = 0;")
+                    "num","double"->sb.append(" = 0.0;")
+                        "String"->sb.append(" = '';")
+                        "bool"->sb.append(" = false;")
+                        "List"->sb.append(" = [];")
+                        "Map","Set"->sb.append(" = {};")
+                    else-> sb.append(";")
+                }
                 return@map sb.toString()
             }.joinToString("\n")
         }
