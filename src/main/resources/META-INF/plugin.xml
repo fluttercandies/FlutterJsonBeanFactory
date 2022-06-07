@@ -1,6 +1,6 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.ruiyu.ruiyu</id>
+    <id>com.ruiyu.ruiyu.void</id>
     <name>FlutterJsonBeanFactory(Only Null Safety)</name>
     <vendor email="157418979@qq.com" url="https://github.com/zhangruiyu/FlutterJsonBeanFactory">ruiyu-QQGroup(963752388)</vendor>
 
