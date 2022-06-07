@@ -167,6 +167,7 @@ object FileHelpers {
         val psiManager = PsiManager.getInstance(project)
         return FilenameIndex.getAllFilesByExt(project, "dart", GlobalSearchScope.projectScope(project)).filter {
             //不过滤entity结尾了
+            //这里有一个问题是项目的根目录名必须与项目名一致,否则都是false,比如目录叫projectAa,而yaml里的项目叫projectaa 那肯定找不到的
             it.path.contains("${project.name}/lib/") || it.path.contains("${pubSpecConfig?.name}/lib/")
         }.sortedBy {
             it.path

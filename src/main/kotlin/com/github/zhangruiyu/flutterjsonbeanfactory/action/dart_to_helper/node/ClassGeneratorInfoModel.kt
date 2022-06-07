@@ -143,6 +143,9 @@ class HelperClassGeneratorInfo {
                     else -> "data['$getJsonName'] = $thisKey;"
                 }
             }
+            type.startsWith("Map")||type.startsWith("Set")->{
+                return "data['$getJsonName'] = $thisKey;"
+            }
             // class
             else -> {
                 return "data['$getJsonName'] = ${thisKey}${canNullSymbol(filed.isCanNull)}toJson();"
