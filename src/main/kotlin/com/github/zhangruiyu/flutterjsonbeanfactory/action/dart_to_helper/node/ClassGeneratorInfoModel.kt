@@ -53,7 +53,11 @@ class HelperClassGeneratorInfo(
     private fun jsonParseFunc(): String {
         val sb = StringBuffer();
         sb.append("\n")
-        sb.append("$className ${"_".takeIf { isPrivate }.orEmpty()}\$${className}FromJson(Map<String, dynamic> json) {\n")
+        sb.append(
+            "$className ${
+                "_".takeIf { isPrivate }.orEmpty()
+            }\$${className}FromJson(Map<String, dynamic> json) {\n"
+        )
         val classInstanceName = className.toLowerCaseFirstOne()
         sb.append("\tfinal $className $classInstanceName = ${className}();\n")
         fields.forEach { k ->
@@ -109,7 +113,11 @@ class HelperClassGeneratorInfo(
     //生成tojson方法
     private fun jsonGenFunc(): String {
         val sb = StringBuffer();
-        sb.append("Map<String, dynamic> ${"_".takeIf { isPrivate }.orEmpty()}\$${className}ToJson(${className} entity) {\n");
+        sb.append(
+            "Map<String, dynamic> ${
+                "_".takeIf { isPrivate }.orEmpty()
+            }\$${className}ToJson(${className} entity) {\n"
+        );
         sb.append("\tfinal Map<String, dynamic> data = <String, dynamic>{};\n");
         fields.forEach { k ->
             //如果serialize不是false,那么就解析,否则不解析
@@ -161,8 +169,8 @@ class HelperClassGeneratorInfo(
                     else -> "data['$getJsonName'] = $thisKey;"
                 }
             }
-            //是map
-            isMapType(type) -> {
+            //是map或者set
+            isMapType(type) || isSetType(type) -> {
                 return "data['$getJsonName'] = $thisKey;"
             }
             // class
