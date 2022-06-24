@@ -2,6 +2,9 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## [4.4.4]
+### Fixed
+- bugfix
 ## [4.4.1]
 ### Added
 - Support map and set

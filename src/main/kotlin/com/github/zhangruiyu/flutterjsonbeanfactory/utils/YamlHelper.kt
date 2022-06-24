@@ -35,14 +35,6 @@ object YamlHelper {
         return pubSpecConfig?.pubRoot?.declaresFlutter() ?: false
     }
 
-    @Suppress("DuplicatedCode")
-    @JvmStatic
-    fun hasLibJsonAnnotation(project: Project) = hasLibJsonAnnotation(getPubSpecConfig(project))
-
-    @Suppress("DuplicatedCode")
-    @JvmStatic
-    fun hasLibJsonAnnotation(pubSpecConfig: PubSpecConfig?) =
-        pubSpecConfig?.hasLibJsonAnnotation ?: false
 }
 
 
@@ -85,8 +77,6 @@ fun VirtualFile?.commitContent(project: Project, content: String) {
 private const val PROJECT_NAME = "name"
 private const val PUBSPEC_ENABLE_PLUGIN_KEY = "enable"
 private const val PUBSPEC_DART_ENABLED_KEY = "enable-for-dart"
-private const val PUBSPEC_DEPENDENCIES = "dependencies"
-private const val PUBSPEC_LIB_JSON_ANNOTATION = "json_annotation"
 
 data class PubSpecConfig(
     val project: Project,
@@ -96,8 +86,5 @@ data class PubSpecConfig(
     val name: String = ((if (map[PROJECT_NAME] == "null") null else map[PROJECT_NAME]) ?: project.name).toString(),
 //    val flutterJsonMap: Map<*, *>? = map[PUBSPEC_KEY] as? Map<*, *>,
     val isFlutterModule: Boolean = FlutterModuleUtils.hasFlutterModule(project),
-    // 是否依赖 json_annotation
-    val hasLibJsonAnnotation: Boolean = (map[PUBSPEC_DEPENDENCIES] as? Map<*, *>)
-        ?.containsKey(PUBSPEC_LIB_JSON_ANNOTATION) ?: false,
 //    val isEnabled: Boolean = isOptionTrue(flutterJsonMap, PUBSPEC_ENABLE_PLUGIN_KEY),
 )

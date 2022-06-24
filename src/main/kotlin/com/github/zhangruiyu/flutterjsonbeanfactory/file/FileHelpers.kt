@@ -37,6 +37,15 @@ object FileHelpers {
             ?: resFolder.createChildDirectory(this, "values")
     }
 
+    /**
+     * 获取json_convert_content目录
+     */
+    fun getJsonConvertContentFile(project: Project, callback: (file: VirtualFile) -> Unit) {
+        ApplicationManager.getApplication().runWriteAction {
+            val generated = getJsonConvertBaseFile(project)
+            callback(generated.findOrCreateChildData(this, "json_convert_content.dart"))
+        }
+    }
 
     /**
      * 获取jsonfiled.dart
@@ -51,7 +60,7 @@ object FileHelpers {
     /**
      * 获取generated/json/base目录
      */
-    fun getJsonConvertBaseFile(project: Project): VirtualFile {
+    private fun getJsonConvertBaseFile(project: Project): VirtualFile {
         return getGeneratedFile(project).let { json ->
             json.findChild("base")
                 ?: json.createChildDirectory(this, "base")
@@ -65,15 +74,6 @@ object FileHelpers {
         ApplicationManager.getApplication().runWriteAction {
             val generated = getGeneratedFile(project)
             callback(generated.findOrCreateChildData(this, fileName))
-        }
-    }
-
-    /**
-     *
-     */
-    private fun getDirectoryEntityHelperFile(directory: VirtualFile, fileName: String, callback: (file: VirtualFile) -> Unit) {
-        ApplicationManager.getApplication().runWriteAction {
-            callback(directory.findOrCreateChildData(this, fileName))
         }
     }
 
@@ -123,13 +123,10 @@ object FileHelpers {
         val content = StringBuilder()
         //导包
         val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
-        val hasLibJsonAnnotation = pubSpecConfig?.hasLibJsonAnnotation ?: false
-        if (!hasLibJsonAnnotation) {
-            //辅助主类的包名
-            content.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_convert_content.dart';\n")
-            content.append(packageName)
-            content.append("\n")
-        }
+        //辅助主类的包名
+        content.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_convert_content.dart';\n")
+        content.append(packageName)
+        content.append("\n")
         //所有字段
         /* val allFields = helperClassGeneratorInfos?.classes?.flatMap {
              it.fields.mapNotNull { itemFiled ->
@@ -138,14 +135,7 @@ object FileHelpers {
                  annotationList.asIterable()
              }
          }*/
-
-        // 依赖 json_annotation 采用 part of 方式
-        helperClassGeneratorInfos?.partOf?.takeIf { hasLibJsonAnnotation }?.also { partOf ->
-            content.append(partOf)
-            content.append("\n\n")
-        }
-
-        helperClassGeneratorInfos?.imports?.takeIf { !hasLibJsonAnnotation }?.filterNot {
+        helperClassGeneratorInfos?.imports?.filterNot {
             it.endsWith("json_field.dart';") || it.contains("dart:convert") || it.endsWith(
                 ".g.dart';"
             )
@@ -155,16 +145,8 @@ object FileHelpers {
         }
         content.append(helperClassGeneratorInfos?.classes?.joinToString("\n"))
         //创建文件
-        if (hasLibJsonAnnotation && helperClassGeneratorInfos?.directory != null) {
-            getDirectoryEntityHelperFile(
-                helperClassGeneratorInfos.directory, helperClassGeneratorInfos.name
-            ) { file ->
-                file.commitContent(project, content.toString())
-            }
-        } else {
-            getEntityHelperFile(project, "${File(packageName).nameWithoutExtension}.g.dart") { file ->
-                file.commitContent(project, content.toString())
-            }
+        getEntityHelperFile(project, "${File(packageName).nameWithoutExtension}.g.dart") { file ->
+            file.commitContent(project, content.toString())
         }
     }
 
@@ -182,7 +164,6 @@ object FileHelpers {
      */
     fun getAllEntityFiles(project: Project): List<Pair<HelperFileGeneratorInfo, String>> {
         val pubSpecConfig = getPubSpecConfig(project)
-        val hasLibJsonAnnotation = pubSpecConfig?.hasLibJsonAnnotation ?: false
         val psiManager = PsiManager.getInstance(project)
         return FilenameIndex.getAllFilesByExt(project, "dart", GlobalSearchScope.projectScope(project)).filter {
             //不过滤entity结尾了
@@ -192,8 +173,7 @@ object FileHelpers {
         }.mapNotNull {
             try {
                 val dartFileHelperClassGeneratorInfo =
-                    GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(
-                        psiManager.findFile(it)!!, hasLibJsonAnnotation)
+                    GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(psiManager.findFile(it)!!)
                 //导包
                 if (dartFileHelperClassGeneratorInfo == null) {
                     null
