@@ -128,6 +128,9 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("\n\n")
                         content.append(
                             "  T? asT<T extends Object?>(dynamic value) {\n" +
+                                    "    if(value == null){\n" +
+                                    "      return null;\n" +
+                                    "    }\n"+
                                     "    if (value is T) {\n" +
                                     "      return value;\n" +
                                     "    }\n" +
