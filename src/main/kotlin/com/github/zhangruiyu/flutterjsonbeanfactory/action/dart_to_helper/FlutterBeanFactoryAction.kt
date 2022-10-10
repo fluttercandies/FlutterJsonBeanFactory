@@ -80,7 +80,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("\n\n")
                         content.append("class JsonConvert {")
                         content.append("\n")
-                        content.append("\tstatic final Map<String, JsonConvertFunction> _convertFuncMap = {")
+                        content.append("\tstatic final Map<String, JsonConvertFunction> convertFuncMap = {")
                         content.append("\n")
                         allClass.forEach { itemClass ->
                             itemClass.first.classes.forEach { itemFile ->
@@ -158,8 +158,8 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "      } else if (type == \"Map\" || type.startsWith(\"Map<\")) {\n" +
                                     "        return value as T;\n" +
                                     "      } else {\n" +
-                                    "        if (_convertFuncMap.containsKey(type)) {\n" +
-                                    "          return _convertFuncMap[type]!(value) as T;\n" +
+                                    "        if (convertFuncMap.containsKey(type)) {\n" +
+                                    "          return convertFuncMap[type]!(Map<String, dynamic>.from(value)) as T;\n" +
                                     "        } else {\n" +
                                     "          throw UnimplementedError('${"\$type"} unimplemented');\n" +
                                     "        }\n" +
