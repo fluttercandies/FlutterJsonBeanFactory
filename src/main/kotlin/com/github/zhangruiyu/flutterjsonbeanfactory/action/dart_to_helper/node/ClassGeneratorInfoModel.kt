@@ -92,7 +92,11 @@ class HelperClassGeneratorInfo {
             }
 
         } else {
-            stringBuilder.append("final ${type}? $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}']);\n")
+            if (type == "dynamic" || type == "var") {
+                stringBuilder.append("final $type $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}']);\n")
+            } else {
+                stringBuilder.append("final ${type}? $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}']);\n")
+            }
         }
         stringBuilder.append("\tif (${classFieldName} != null) {\n")
         stringBuilder.append("\t\t${classInstanceName}.$classFieldName = $classFieldName;")
@@ -153,6 +157,7 @@ class HelperClassGeneratorInfo {
                     "DateTime" -> {
                         "data['${getJsonName}'] = ${thisKey}${canNullSymbol(filed.isCanNull)}toIso8601String();"
                     }
+
                     else -> "data['$getJsonName'] = $thisKey;"
                 }
             }

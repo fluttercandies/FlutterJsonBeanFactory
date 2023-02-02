@@ -1,6 +1,5 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper
 
-import com.github.zhangruiyu.flutterjsonbeanfactory.action.migrate.MigrateOldProject
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
@@ -13,7 +12,6 @@ import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.commitContent
 import com.github.zhangruiyu.flutterjsonbeanfactory.workers.FileGenerator
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showNotify
-import io.flutter.pub.PubRoot
 import java.io.File
 import java.lang.RuntimeException
 
@@ -33,7 +31,6 @@ class FlutterBeanFactoryAction : AnAction() {
             //判断是否是flutter项目
             if (YamlHelper.shouldActivateFor(project)) {
                 try {
-                    MigrateOldProject.getAllEntityFiles(project)
                     //如果没有可以生成的文件,那么就不会生成
                     val allClass = FileHelpers.getAllEntityFiles(project)
                     if (allClass.isEmpty()) {
