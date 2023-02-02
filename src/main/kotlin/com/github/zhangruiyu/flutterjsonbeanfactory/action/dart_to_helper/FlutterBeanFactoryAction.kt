@@ -74,6 +74,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("JsonConvert jsonConvert = JsonConvert();")
                         content.append("\n")
                         content.append("typedef JsonConvertFunction<T> = T Function(Map<String, dynamic> json);")
+                        content.append("typedef EnumConvertFunction<T> = T Function(String value);")
                         content.append("\n\n")
                         content.append("class JsonConvert {")
                         content.append("\n")
@@ -87,83 +88,83 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("\t};")
                         content.append("\n\n")
                         content.append(
-                            "  T? convert<T>(dynamic value) {\n" +
+                            "  T? convert<T>(dynamic value, {EnumConvertFunction? enumConvert}) {\n" +
                                     "    if (value == null) {\n" +
                                     "      return null;\n" +
                                     "    }\n" +
-                                    "    return asT<T>(value);\n" +
-                                    "  }"
-                        )
-                        content.append("\n\n")
-                        content.append(
-                            "  List<T?>? convertList<T>(List<dynamic>? value) {\n" +
-                                    "    if (value == null) {\n" +
-                                    "      return null;\n" +
-                                    "    }\n" +
-                                    "    try {\n" +
-                                    "      return value.map((dynamic e) => asT<T>(e)).toList();\n" +
-                                    "    } catch (e, stackTrace) {\n" +
-                                    "      debugPrint('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
-                                    "      return <T>[];\n" +
-                                    "    }\n" +
-                                    "  }"
-                        )
-                        content.append("\n\n")
-                        content.append(
-                            "  List<T>? convertListNotNull<T>(dynamic value) {\n" +
-                                    "    if (value == null) {\n" +
-                                    "      return null;\n" +
-                                    "    }\n" +
-                                    "    try {\n" +
-                                    "      return (value as List<dynamic>).map((dynamic e) => asT<T>(e)!).toList();\n" +
-                                    "    } catch (e, stackTrace) {\n" +
-                                    "      debugPrint('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
-                                    "      return <T>[];\n" +
-                                    "    }\n" +
-                                    "  }"
-                        )
-                        content.append("\n\n")
-                        content.append(
-                            "  T? asT<T extends Object?>(dynamic value) {\n" +
-                                    "    if(value == null){\n" +
-                                    "      return null;\n" +
-                                    "    }\n"+
                                     "    if (value is T) {\n" +
                                     "      return value;\n" +
                                     "    }\n" +
-                                    "    final String type = T.toString();\n" +
                                     "    try {\n" +
-                                    "      final String valueS = value.toString();\n" +
-                                    "      if (type == \"String\") {\n" +
-                                    "        return valueS as T;\n" +
-                                    "      } else if (type == \"int\") {\n" +
-                                    "        final int? intValue = int.tryParse(valueS);\n" +
-                                    "        if (intValue == null) {\n" +
-                                    "          return double.tryParse(valueS)?.toInt() as T?;\n" +
-                                    "        } else {\n" +
-                                    "          return intValue as T;\n" +
-                                    "        }\n" +
-                                    "      } else if (type == \"double\") {\n" +
-                                    "        return double.parse(valueS) as T;\n" +
-                                    "      } else if (type == \"DateTime\") {\n" +
-                                    "        return DateTime.parse(valueS) as T;\n" +
-                                    "      } else if (type == \"bool\") {\n" +
-                                    "        if (valueS == '0' || valueS == '1') {\n" +
-                                    "          return (valueS == '1') as T;\n" +
-                                    "        }\n" +
-                                    "        return (valueS == 'true') as T;\n" +
-                                    "      } else if (type == \"Map\" || type.startsWith(\"Map<\")) {\n" +
-                                    "        return value as T;\n" +
-                                    "      } else {\n" +
-                                    "        if (convertFuncMap.containsKey(type)) {\n" +
-                                    "          return convertFuncMap[type]!(Map<String, dynamic>.from(value)) as T;\n" +
-                                    "        } else {\n" +
-                                    "          throw UnimplementedError('${"\$type"} unimplemented');\n" +
-                                    "        }\n" +
-                                    "      }\n" +
+                                    "      return _asT<T>(value, enumConvert: enumConvert);\n" +
                                     "    } catch (e, stackTrace) {\n" +
                                     "      debugPrint('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
                                     "      return null;\n" +
+                                    "    }\n" +
+                                    "  }"
+                        )
+                        content.append("\n\n")
+                        content.append(
+                            "  List<T?>? convertList<T>(List<dynamic>? value, {EnumConvertFunction? enumConvert}) {\n" +
+                                    "    if (value == null) {\n" +
+                                    "      return null;\n" +
+                                    "    }\n" +
+                                    "    try {\n" +
+                                    "      return value.map((dynamic e) => _asT<T>(e,enumConvert: enumConvert)).toList();\n" +
+                                    "    } catch (e, stackTrace) {\n" +
+                                    "      debugPrint('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
+                                    "      return <T>[];\n" +
+                                    "    }\n" +
+                                    "  }"
+                        )
+                        content.append("\n\n")
+                        content.append(
+                            "List<T>? convertListNotNull<T>(dynamic value, {EnumConvertFunction? enumConvert}) {\n" +
+                                    "    if (value == null) {\n" +
+                                    "      return null;\n" +
+                                    "    }\n" +
+                                    "    try {\n" +
+                                    "      return (value as List<dynamic>).map((dynamic e) => _asT<T>(e,enumConvert: enumConvert)!).toList();\n" +
+                                    "    } catch (e, stackTrace) {\n" +
+                                    "      debugPrint('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
+                                    "      return <T>[];\n" +
+                                    "    }\n" +
+                                    "  }"
+                        )
+                        content.append("\n\n")
+                        content.append(
+                            "  T? _asT<T extends Object?>(dynamic value,\n" +
+                                    "      {EnumConvertFunction? enumConvert}) {\n" +
+                                    "    final String type = T.toString();\n" +
+                                    "    final String valueS = value.toString();\n" +
+                                    "    if (enumConvert != null) {\n" +
+                                    "      return enumConvert(valueS) as T;\n" +
+                                    "    } else if (type == \"String\") {\n" +
+                                    "      return valueS as T;\n" +
+                                    "    } else if (type == \"int\") {\n" +
+                                    "      final int? intValue = int.tryParse(valueS);\n" +
+                                    "      if (intValue == null) {\n" +
+                                    "        return double.tryParse(valueS)?.toInt() as T?;\n" +
+                                    "      } else {\n" +
+                                    "        return intValue as T;\n" +
+                                    "      }\n" +
+                                    "    } else if (type == \"double\") {\n" +
+                                    "      return double.parse(valueS) as T;\n" +
+                                    "    } else if (type == \"DateTime\") {\n" +
+                                    "      return DateTime.parse(valueS) as T;\n" +
+                                    "    } else if (type == \"bool\") {\n" +
+                                    "      if (valueS == '0' || valueS == '1') {\n" +
+                                    "        return (valueS == '1') as T;\n" +
+                                    "      }\n" +
+                                    "      return (valueS == 'true') as T;\n" +
+                                    "    } else if (type == \"Map\" || type.startsWith(\"Map<\")) {\n" +
+                                    "      return value as T;\n" +
+                                    "    } else {\n" +
+                                    "      if (convertFuncMap.containsKey(type)) {\n" +
+                                    "        return convertFuncMap[type]!(Map<String, dynamic>.from(value)) as T;\n" +
+                                    "      } else {\n" +
+                                    "        throw UnimplementedError('${"\$type"} unimplemented');\n" +
+                                    "      }\n" +
                                     "    }\n" +
                                     "  }"
                         )
@@ -193,7 +194,7 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "\t\tif (json is List) {\n" +
                                     "\t\t\treturn _getListChildType<M>(json.map((e) => e as Map<String, dynamic>).toList());\n" +
                                     "\t\t} else {\n" +
-                                    "\t\t\treturn jsonConvert.asT<M>(json);\n" +
+                                    "\t\t\treturn jsonConvert.convert<M>(json);\n" +
                                     "\t\t}\n" +
                                     "\t}"
                         )

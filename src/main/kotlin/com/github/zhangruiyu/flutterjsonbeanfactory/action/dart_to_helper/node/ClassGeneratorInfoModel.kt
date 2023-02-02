@@ -71,28 +71,29 @@ class HelperClassGeneratorInfo {
         //是否是list
         val isListType = isListType(type)
         val stringBuilder = StringBuilder()
+        val isEnum = filed.getValueByName<Boolean>("isEnum") == true
         if (isListType) {
+            val listSubType = getListSubType(
+                type
+            )
+            val enumText = if (isEnum) {
+                ", enumConvert: (v) => ${listSubType}.values.byName(v)"
+            } else ""
             //如果泛型里带null
             if (getListSubTypeCanNull(type).endsWith("?")) {
                 stringBuilder.append(
-                    "final List<${getListSubType(type)}?>? $classFieldName = jsonConvert.convertList<${
-                        getListSubType(
-                            type
-                        )
-                    }>(json['${getJsonName}']);\n"
+                    "final List<$listSubType?>? $classFieldName = jsonConvert.convertList<$listSubType>(json['${getJsonName}']${enumText});\n"
                 )
             } else {
                 stringBuilder.append(
-                    "final List<${getListSubType(type)}>? $classFieldName = jsonConvert.convertListNotNull<${
-                        getListSubType(
-                            type
-                        )
-                    }>(json['${getJsonName}']);\n"
+                    "final List<$listSubType>? $classFieldName = jsonConvert.convertListNotNull<$listSubType>(json['${getJsonName}']${enumText});\n"
                 )
             }
 
         } else {
-            if (type == "dynamic" || type == "var") {
+            if (isEnum) {
+                stringBuilder.append("final ${type}? $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}'], enumConvert: (v) => $type.values.byName(v));\n")
+            } else if (type == "dynamic" || type == "var") {
                 stringBuilder.append("final $type $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}']);\n")
             } else {
                 stringBuilder.append("final ${type}? $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}']);\n")
@@ -130,13 +131,16 @@ class HelperClassGeneratorInfo {
         //是否是list
         val isListType = isListType(type)
         val thisKey = "entity.$name"
+        val isEnum = filed.getValueByName<Boolean>("isEnum") == true
         when {
             isListType -> {
                 //1判断是否是基础数据类型
                 //1.1拿到List的泛型
                 val listSubType = getListSubTypeCanNull(type)
                 //1.2判断是否是基础数据类型
-                val value = if (isBaseType(listSubType)) {
+                val value = if (isEnum) {
+                    "$thisKey${canNullSymbol(filed.isCanNull)}map((v) => v${canNullSymbol(listSubType.endsWith("?"))}name).toList()"
+                } else if (isBaseType(listSubType)) {
                     if (listSubType.replace("?", "") == "DateTime") {
                         "$thisKey${if (filed.isCanNull) "?." else "."}map((v) => v${canNullSymbol(listSubType.endsWith("?"))}toIso8601String()).toList()"
                     } else {
@@ -150,6 +154,10 @@ class HelperClassGeneratorInfo {
 
                 // class list
                 return "data['$getJsonName'] =  $value;"
+            }
+            //是否是枚举
+            isEnum -> {
+                return "data['$getJsonName'] = $thisKey${canNullSymbol(filed.isCanNull)}name;"
             }
             //是否是基础数据类型
             isBaseType(type) -> {
