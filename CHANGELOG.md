@@ -4,6 +4,10 @@
 
 ## [4.4.6]
 ### Added
+- add copyWith method
+- enum parse support
+## [4.4.6]
+### Added
 - asT null bugfix
 ## [4.4.1]
 ### Added
