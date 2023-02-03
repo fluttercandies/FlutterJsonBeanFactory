@@ -74,6 +74,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("JsonConvert jsonConvert = JsonConvert();")
                         content.append("\n")
                         content.append("typedef JsonConvertFunction<T> = T Function(Map<String, dynamic> json);")
+                        content.append("\n")
                         content.append("typedef EnumConvertFunction<T> = T Function(String value);")
                         content.append("\n\n")
                         content.append("class JsonConvert {")

@@ -55,6 +55,19 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
         }
     }
 
+    fun _addCopyWithTypeDef(typeDef: TypeDefinition, sb: StringBuffer, suffix: String) {
+        if (typeDef.name == "Null") {
+            sb.append("dynamic")
+        } else {
+            sb.append(typeDef.name)
+            if (typeDef.subtype != null) {
+                //如果是list,就把名字修改成单数
+                sb.append("<${typeDef.subtype!!}>")
+            }
+            sb.append(suffix)
+        }
+    }
+
     //字段的集合
     val _fieldList: String
         get() {
@@ -96,6 +109,24 @@ $_fieldList
 
   Map<String, dynamic> toJson() => $${name}ToJson(this);
 
+  $name copyWith({${
+                fields.keys.joinToString { key ->
+                    val f = fields[key]
+                    val fieldName = fixFieldName(key, f, privateFields)
+                    val sb = StringBuffer();
+                    _addCopyWithTypeDef(f!!, sb, "?")
+                    sb.append(" $fieldName")
+                }
+            }}) {
+      return $name()${
+                fields.keys.joinToString ("\n\t\t\t"){ key ->
+                    val f = fields[key]
+                    val fieldName = fixFieldName(key, f, privateFields)
+                    "..$fieldName= $fieldName ?? this.$fieldName"
+                }
+            };
+  }
+    
   @override
   String toString() {
     return jsonEncode(this);
