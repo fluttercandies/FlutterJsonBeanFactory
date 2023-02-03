@@ -27,7 +27,7 @@ open class DartGenerateCopyFix(dartClass: DartClass) : BaseCreateMethodsFix<Dart
         return ""
     }
 
-    protected fun buildFunctionsText(
+    private fun buildFunctionsText(
         templateManager: TemplateManager,
         elementsToProcess: Set<DartComponent>
     ): Template {
@@ -41,7 +41,9 @@ open class DartGenerateCopyFix(dartClass: DartClass) : BaseCreateMethodsFix<Dart
         elementsToProcess.forEach {
             if (it is DartVarAccessDeclaration) {
                 var type: DartType? = it.type
-                if (null == type) {
+                if (null == type || it.type!!.text == "dynamic") {
+                    template.addTextSegment("dynamic " + it.name!!)
+                } else if (it.type!!.text == "var") {
                     template.addTextSegment("var " + it.name!!)
                 } else {
                     template.addTextSegment(it.type!!.text.replace("?", "") + "? " + it.name!!)
@@ -61,7 +63,7 @@ open class DartGenerateCopyFix(dartClass: DartClass) : BaseCreateMethodsFix<Dart
         template.addTextSegment(";")
         template.addEndVariable()
         template.addTextSegment(" }")
-        template.addTextSegment(" ")
+        template.addTextSegment("\n")
         return template
     }
 
