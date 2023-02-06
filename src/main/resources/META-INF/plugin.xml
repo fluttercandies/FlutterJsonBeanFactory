@@ -53,7 +53,7 @@
                 description="Generate dart bean class File from JSON">
             <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
         </action>
-        <group id="FlutterBeanFactory.GenerateDartBeanFileAction" icon="/icons/action.png" popup="true" text="FlutterBeanFactory">
+        <group id="FlutterBeanFactory.GenerateDartCopyWithFileAction" icon="/icons/action.png" popup="true" text="FlutterBeanFactory">
             <add-to-group anchor="after" relative-to-action="Generate.Constructor.Dart" group-id="GenerateGroup"/>
             <action id="Dart.Generate.Copy.With.Action" icon="/icons/action.png"
                     class="com.github.zhangruiyu.flutterjsonbeanfactory.action.with.DartGenerateCopyAction"

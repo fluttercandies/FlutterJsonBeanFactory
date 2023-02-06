@@ -2,7 +2,7 @@
 
 # FlutterJsonBeanFactory Changelog
 
-## [4.4.6]
+## [4.4.9]
 ### Added
 - add copyWith method
 - enum parse support
