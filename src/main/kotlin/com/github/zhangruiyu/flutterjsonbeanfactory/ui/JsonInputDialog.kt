@@ -230,6 +230,15 @@ fun createCheckBox(): DialogPanel {
                             ServiceManager.getService(Settings::class.java).isOpenNullAble = component.isSelected
                         }
                     }
+                listCheckBox[1] =
+                    checkBox(
+                        "copyWith",
+                        ServiceManager.getService(Settings::class.java).copyWith == true
+                    ).apply {
+                        component.addItemListener {
+                            ServiceManager.getService(Settings::class.java).copyWith = component.isSelected
+                        }
+                    }
             }
         }
     }

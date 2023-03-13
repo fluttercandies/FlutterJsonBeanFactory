@@ -14,7 +14,8 @@ class SettingComponent : Configurable {
             return false
         }
         return getSettings() != Settings(
-                settingLayout!!.getModelSuffix(),false)
+                settingLayout!!.getModelSuffix(), isOpenNullAble = false, copyWith = false
+        )
     }
 
     override fun getDisplayName(): String {

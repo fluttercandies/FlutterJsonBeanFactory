@@ -97,42 +97,51 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
 //            "class $name {\n$_fieldList\n\n$_defaultPrivateConstructor\n\n$_gettersSetters\n\n$_jsonParseFunc\n\n$_jsonGenFunc\n}\n";
             ""
         } else {
-            """
-@JsonSerializable()
-class $name {
-
-$_fieldList
-  
-  ${name}();
-
-  factory ${name}.fromJson(Map<String, dynamic> json) => $${name}FromJson(json);
-
-  Map<String, dynamic> toJson() => $${name}ToJson(this);
-
-  $name copyWith({${
-                fields.keys.joinToString { key ->
+            val sb = StringBuffer()
+            sb.append("@JsonSerializable()")
+            sb.append("\n")
+            sb.append("class $name {")
+            sb.append("\n")
+            sb.append(_fieldList)
+            sb.append("\n\n")
+            sb.append("\t${name}();")
+            sb.append("\n\n")
+            sb.append("\tfactory ${name}.fromJson(Map<String, dynamic> json) => \$${name}FromJson(json);")
+            sb.append("\n\n")
+            sb.append("\tMap<String, dynamic> toJson() => \$${name}ToJson(this);")
+            sb.append("\n")
+            if (ServiceManager.getService(Settings::class.java).copyWith == true) {
+                sb.append("\n")
+                sb.append("\t$name copyWith({${
+                    fields.keys.joinToString { key ->
+                        val f = fields[key]
+                        val fieldName = fixFieldName(key, f, privateFields)
+                        val tempSb = StringBuffer();
+                        _addCopyWithTypeDef(f!!, tempSb, "?")
+                        tempSb.append(" $fieldName")
+                    }
+                }}) {")
+                sb.append("\n")
+                sb.append("\t\treturn $name()")
+                sb.append(fields.keys.joinToString("") { key ->
                     val f = fields[key]
                     val fieldName = fixFieldName(key, f, privateFields)
-                    val sb = StringBuffer();
-                    _addCopyWithTypeDef(f!!, sb, "?")
-                    sb.append(" $fieldName")
-                }
-            }}) {
-      return $name()${
-                fields.keys.joinToString ("\n\t\t\t"){ key ->
-                    val f = fields[key]
-                    val fieldName = fixFieldName(key, f, privateFields)
-                    "..$fieldName= $fieldName ?? this.$fieldName"
-                }
-            };
-  }
-    
-  @override
-  String toString() {
-    return jsonEncode(this);
-  }
-}
-            """.trimIndent();
+                    "\n\t\t\t..$fieldName= $fieldName ?? this.$fieldName"
+                })
+                sb.append(";")
+                sb.append("\n\t}\n")
+            }
+            sb.append("\n")
+            sb.append("\t@override")
+            sb.append("\n")
+            sb.append("\tString toString() {")
+            sb.append("\n")
+            sb.append("\t\treturn jsonEncode(this);")
+            sb.append("\n")
+            sb.append("\t}")
+            sb.append("\n")
+            sb.append("}")
+            sb.toString()
         }
     }
 }
