@@ -1,4 +1,4 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.action.with
+package com.github.zhangruiyu.flutterjsonbeanfactory.action.json_generate
 
 import com.intellij.util.containers.ContainerUtil
 import com.jetbrains.lang.dart.DartComponentType
@@ -7,7 +7,7 @@ import com.jetbrains.lang.dart.ide.generation.BaseDartGenerateHandler
 import com.jetbrains.lang.dart.psi.DartClass
 import com.jetbrains.lang.dart.psi.DartComponent
 
-class DartGenerateCopyHandler : BaseDartGenerateHandler() {
+class DartGenerateToFromJsonHandler : BaseDartGenerateHandler() {
 
     override fun getTitle(): String {
         return "Generate Name"
@@ -18,7 +18,7 @@ class DartGenerateCopyHandler : BaseDartGenerateHandler() {
             //            $$$reportNull$$$0(1);
         }
 
-        val var10000 = DartGenerateCopyFix(dartClass)
+        val var10000 = DartGenerateToFromJsonFix(dartClass)
         if (var10000 == null) {
             //            $$$reportNull$$$0(2);
         }
@@ -35,10 +35,6 @@ class DartGenerateCopyHandler : BaseDartGenerateHandler() {
             //            $$$reportNull$$$0(4);
         }
 
-        ///此处选择字段
-        candidates.addAll(ContainerUtil.findAll(this.computeClassMembersMap(dartClass, false).values) { component ->
-            DartComponentType.typeOf(component) === DartComponentType.FIELD && 0 != component.name!!.indexOf("_")
-        })
     }
 
     override fun doAllowEmptySelection(): Boolean {

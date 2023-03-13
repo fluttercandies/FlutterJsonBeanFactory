@@ -60,6 +60,13 @@
                     text="Dart Generate CopyWith">
             </action>
         </group>
+        <group id="FlutterBeanFactory.GenerateDartToJsonAndFromJsonFileAction" icon="/icons/action.png" popup="true" text="FlutterBeanFactory">
+            <add-to-group anchor="after" relative-to-action="Generate.Constructor.Dart" group-id="GenerateGroup"/>
+            <action id="Dart.Generate.ToFromJson.Action" icon="/icons/action.png"
+                    class="com.github.zhangruiyu.flutterjsonbeanfactory.action.json_generate.DartGenerateToFromJsonAction"
+                    text="ToJson And FromJson">
+            </action>
+        </group>
     </actions>
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings"/>
