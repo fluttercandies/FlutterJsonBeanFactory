@@ -76,7 +76,9 @@
         <applicationService serviceImplementation="com.github.zhangruiyu.flutterjsonbeanfactory.services.MyApplicationService"/>
         <projectService serviceImplementation="com.github.zhangruiyu.flutterjsonbeanfactory.services.MyProjectService"/>
     </extensions>
-
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="flutterJsonNotification" displayType="BALLOON"/>
+    </extensions>
     <applicationListeners>
         <listener class="com.github.zhangruiyu.flutterjsonbeanfactory.listeners.MyProjectManagerListener"
                   topic="com.intellij.openapi.project.ProjectManagerListener"/>

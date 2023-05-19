@@ -16,7 +16,6 @@ import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper.getPubSpecC
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.commitContent
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showErrorMessage
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showNotify
-import com.intellij.psi.search.GlobalSearchScope
 import io.flutter.pub.PubRoot
 import java.io.File
 

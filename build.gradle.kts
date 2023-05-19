@@ -22,6 +22,7 @@ version = properties("pluginVersion")
 // Configure project's dependencies
 repositories {
     mavenCentral()
+    google()
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
@@ -35,6 +36,11 @@ intellij {
     // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
     plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
 }
+
+dependencies {
+    implementation("org.apache.commons:commons-lang3:3.12.0")
+}
+
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
