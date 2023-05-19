@@ -1,9 +1,10 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart
 
-import com.intellij.openapi.components.ServiceManager
+import com.intellij.openapi.application.ApplicationManager
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
 import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toUpperCaseFirstOne
+import org.apache.commons.lang.WordUtils
 
 class ClassDefinition(private val name: String, private val privateFields: Boolean = false) {
     val fields = mutableMapOf<String, TypeDefinition>()
@@ -41,7 +42,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
         return false
     }
 
-    fun _addTypeDef(typeDef: TypeDefinition, sb: StringBuffer, prefix: String, suffix: String) {
+    private fun _addTypeDef(typeDef: TypeDefinition, sb: StringBuffer, prefix: String, suffix: String) {
         if (typeDef.name == "Null") {
             sb.append("dynamic")
         } else {
@@ -55,7 +56,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
         }
     }
 
-    fun _addCopyWithTypeDef(typeDef: TypeDefinition, sb: StringBuffer, suffix: String) {
+    private fun _addCopyWithTypeDef(typeDef: TypeDefinition, sb: StringBuffer, suffix: String) {
         if (typeDef.name == "Null") {
             sb.append("dynamic")
         } else {
@@ -69,14 +70,14 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
     }
 
     //字段的集合
-    val _fieldList: String
+    private val _fieldList: String
         get() {
-            val settings = ServiceManager.getService(Settings::class.java)
+            val settings = ApplicationManager.getApplication().getService(Settings::class.java)
             val isOpenNullAble = settings.isOpenNullAble == true
             val prefix = if (!isOpenNullAble) "late " else ""
             val suffix = if (isOpenNullAble) "?" else ""
             return fields.keys.map { key ->
-                val f = fields[key]
+                val f = fields[key]!!
                 val fieldName = fixFieldName(key, f, privateFields)
                 val sb = StringBuffer();
                 //如果驼峰命名后不一致,才这样
@@ -85,8 +86,20 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
                     sb.append("@JSONField(name: \"${key}\")\n")
                 }
                 sb.append('\t')
-                _addTypeDef(f!!, sb, prefix, suffix)
-                sb.append(" $fieldName;")
+                _addTypeDef(f, sb, prefix, suffix)
+                sb.append(" $fieldName")
+                if (settings.setDefault == true) {
+                    if (f.subtype == null) {
+                        if (f.name == "String" && settings.stringFieldDefaultValue()?.isNotEmpty() == true) {
+                            sb.append(" = ${settings.stringFieldDefaultValue()}")
+                        } else if (f.name == "bool" && settings.stringFieldDefaultValue()?.isNotEmpty() == true) {
+                            sb.append(" = ${settings.boolFieldDefaultValue()}")
+                        } else if (f.name == "int" && settings.stringFieldDefaultValue()?.isNotEmpty() == true) {
+                            sb.append(" = ${settings.intFieldDefaultValue()}")
+                        }
+                    }
+                }
+                sb.append(";")
                 return@map sb.toString()
             }.joinToString("\n")
         }
@@ -110,7 +123,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
             sb.append("\n\n")
             sb.append("\tMap<String, dynamic> toJson() => \$${name}ToJson(this);")
             sb.append("\n")
-            if (ServiceManager.getService(Settings::class.java).copyWith == true) {
+            if (ApplicationManager.getApplication().getService(Settings::class.java).copyWith == true) {
                 sb.append("\n")
                 sb.append("\t$name copyWith({${
                     fields.keys.joinToString { key ->
@@ -166,7 +179,7 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
     } else {
         isPrimitiveType("$name<${subtype!!.toUpperCaseFirstOne()}>")
     }
-    private val isPrimitiveList: Boolean
+    private val isPrimitiveList: Boolean = isPrimitive && name == "List"
 
     companion object {
         fun fromDynamic(obj: Any?): TypeDefinition {
@@ -183,10 +196,6 @@ class TypeDefinition(var name: String, var subtype: String? = null) {
             }
             return TypeDefinition(type)
         }
-    }
-
-    init {
-        isPrimitiveList = isPrimitive && name == "List"
     }
 
 

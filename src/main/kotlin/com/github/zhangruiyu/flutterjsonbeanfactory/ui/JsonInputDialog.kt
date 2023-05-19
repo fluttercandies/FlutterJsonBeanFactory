@@ -17,7 +17,12 @@ import com.intellij.util.ui.JBEmptyBorder
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.CollectInfo
 import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.addComponentIntoVerticalBoxAlignmentLeft
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
+import java.awt.Component
+import java.awt.FlowLayout
+import java.awt.Insets
 import java.awt.event.ActionEvent
 import javax.swing.*
 import javax.swing.event.DocumentEvent
@@ -72,6 +77,7 @@ open class JsonInputDialog(
 ) {
 
     private lateinit var classNameInput: JTextField
+    private var defaultValueContainer: JPanel? = null
 
     private val prettyGson: Gson = GsonBuilder().setPrettyPrinting().serializeNulls().create()
 
@@ -81,9 +87,10 @@ open class JsonInputDialog(
 
     override fun createMessagePanel(): JPanel {
         val messagePanel = JPanel(BorderLayout())
+        messagePanel.layout = VerticalFlowLayout()
         if (myMessage != null) {
             val textComponent = createTextComponent()
-            messagePanel.add(textComponent, BorderLayout.NORTH)
+            messagePanel.add(textComponent)
         }
         myField = createTextFieldComponent()
 
@@ -121,16 +128,26 @@ open class JsonInputDialog(
         centerContainer.layout = centerBoxLayout
         centerContainer.addComponentIntoVerticalBoxAlignmentLeft(classNameInputContainer)
         centerContainer.addComponentIntoVerticalBoxAlignmentLeft(jsonInputContainer)
-        messagePanel.add(centerContainer, BorderLayout.CENTER)
+        messagePanel.add(centerContainer)
+
+        //底部按钮栏
+
+        messagePanel.add(settingsContainer())
+
+        //底部默认值
+        defaultValueContainer = defaultValueContainer()
+        messagePanel.add(defaultValueContainer)
+        return messagePanel
+    }
+
+    private fun settingsContainer(): JPanel {
         val formatButton = JButton("Format")
         formatButton.horizontalAlignment = SwingConstants.CENTER
         formatButton.addActionListener(object : AbstractAction() {
             override fun actionPerformed(p0: ActionEvent?) {
                 handleFormatJSONString()
             }
-
         })
-        //底部按钮栏
         val settingContainer = JPanel()
         settingContainer.border = JBEmptyBorder(0, 5, 5, 7)
         val boxLayout = BoxLayout(settingContainer, BoxLayout.LINE_AXIS)
@@ -138,8 +155,49 @@ open class JsonInputDialog(
         settingContainer.add(Box.createHorizontalGlue())
         settingContainer.add(createCheckBox())
         settingContainer.add(formatButton)
-        messagePanel.add(settingContainer, BorderLayout.SOUTH)
-        return messagePanel
+        return settingContainer
+    }
+
+    private fun defaultValueContainer(): JPanel {
+        val settings = ApplicationManager.getApplication().getService(Settings::class.java)
+        //string
+        val defaultContainer = JPanel()
+        defaultContainer.layout = BoxLayout(defaultContainer, BoxLayout.X_AXIS)
+        buildDefaultItem("String", { newText ->
+            settings.stringDefaultValue = newText
+        }, settings.stringDefaultValue).forEach {
+            defaultContainer.add(it)
+        }
+        buildDefaultItem("int", { newText ->
+            settings.intDefaultValue = newText
+        }, settings.intDefaultValue).forEach {
+            defaultContainer.add(it)
+        }
+        buildDefaultItem("bool", { newText ->
+            settings.boolDefaultValue = newText
+        }, settings.boolDefaultValue).forEach {
+            defaultContainer.add(it)
+        }
+        defaultContainer.add(Box.createHorizontalGlue())
+        return defaultContainer
+    }
+
+    private fun buildDefaultItem(
+        title: String,
+        newTextCallback: (newText: String) -> Unit,
+        defaultValue: String
+    ): List<Component> {
+        val stringDefaultInput = JTextField(defaultValue)
+        stringDefaultInput.preferredSize = JBDimension(50, 30)
+//        stringDefaultInput.margin = JBUI.insetsRight(20)
+        stringDefaultInput.document.addDocumentListener(object : DocumentAdapter() {
+            override fun textChanged(e: DocumentEvent) {
+                newTextCallback(stringDefaultInput.text)
+            }
+        })
+        val stringDefaultInputLabel = JLabel("${title}:")
+
+        return listOf(stringDefaultInputLabel, stringDefaultInput)
     }
 
     override fun createTextFieldComponent(): JTextComponent {
@@ -189,6 +247,47 @@ open class JsonInputDialog(
 //        Thread { sendActionInfo(prettyGson.toJson(FormatJSONAction())) }.start()
     }
 
+    private fun createCheckBox(): DialogPanel {
+        val listCheckBox = mutableListOf<CellBuilder<JBCheckBox>?>(null, null, null)
+        return panel {
+            row {
+                checkBoxGroup(null) {
+                    listCheckBox[0] =
+                        checkBox(
+                            "null-able",
+                            ApplicationManager.getApplication().getService(Settings::class.java).isOpenNullAble == true
+                        ).apply {
+                            component.addItemListener {
+                                ApplicationManager.getApplication().getService(Settings::class.java).isOpenNullAble =
+                                    component.isSelected
+                            }
+                        }
+                    listCheckBox[1] =
+                        checkBox(
+                            "copyWith",
+                            ApplicationManager.getApplication().getService(Settings::class.java).copyWith == true
+                        ).apply {
+                            component.addItemListener {
+                                ApplicationManager.getApplication().getService(Settings::class.java).copyWith =
+                                    component.isSelected
+                            }
+                        }
+                    listCheckBox[2] =
+                        checkBox(
+                            "default value",
+                            ApplicationManager.getApplication().getService(Settings::class.java).setDefault == true
+                        ).apply {
+                            component.addItemListener {
+                                defaultValueContainer?.isVisible = component.isSelected
+                                ApplicationManager.getApplication().getService(Settings::class.java).setDefault =
+                                    component.isSelected
+                            }
+                        }
+                }
+            }
+        }
+    }
+
     override fun doOKAction() {
 
         val collectInfo = CollectInfo().apply {
@@ -214,32 +313,4 @@ fun createLinearLayoutVertical(): JPanel {
     val boxLayout = BoxLayout(container, BoxLayout.PAGE_AXIS)
     container.layout = boxLayout
     return container
-}
-
-fun createCheckBox(): DialogPanel {
-    val listCheckBox = mutableListOf<CellBuilder<JBCheckBox>?>(null, null, null)
-    return panel {
-        row {
-            checkBoxGroup(null) {
-                listCheckBox[0] =
-                    checkBox(
-                        "null-able",
-                        ServiceManager.getService(Settings::class.java).isOpenNullAble == true
-                    ).apply {
-                        component.addItemListener {
-                            ServiceManager.getService(Settings::class.java).isOpenNullAble = component.isSelected
-                        }
-                    }
-                listCheckBox[1] =
-                    checkBox(
-                        "copyWith",
-                        ServiceManager.getService(Settings::class.java).copyWith == true
-                    ).apply {
-                        component.addItemListener {
-                            ServiceManager.getService(Settings::class.java).copyWith = component.isSelected
-                        }
-                    }
-            }
-        }
-    }
 }
