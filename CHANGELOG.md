@@ -22,6 +22,12 @@
 
 - asT null bugfix
 
+## [4.5.2]
+
+### Added
+
+- Support default value(string,int,bool),😭next version will support map,list
+
 ## [4.4.1]
 
 ### Added
