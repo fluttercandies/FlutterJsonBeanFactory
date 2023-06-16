@@ -27,7 +27,11 @@ object GeneratorDartClassNodeToHelperInfo {
                             //是类里字段
                             if (filedAndMethodNode.elementType == DartTokenTypes.CLASS_BODY) {
                                 filedAndMethodNode.children().forEach { itemFile ->
+                                    //debug看数据用
+                                    val itemFileText = itemFile.text
                                     itemFile.children().forEach { itemFileNode ->
+                                        //debug看数据用
+                                        val itemFileNodeText = itemFileNode.text
                                         //itemFileNode text : int code
                                         if (itemFileNode.elementType == DartTokenTypes.VAR_DECLARATION_LIST) {
                                             var nameNode: String? = null
@@ -49,7 +53,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                                     return@lit
                                                 } else if (isStatic) {
                                                     return@lit
-                                                } else if (fieldWholeNode.elementType == DartTokenTypes.METADATA) {
+                                                } else if (fieldWholeNode.elementType == DartTokenTypes.METADATA) {///如果包含注解
                                                     val annotationWholeNode = fieldWholeNode.firstChildNode;
                                                     //@JSONField(name: 'app',serialize:true) 为例
                                                     if (
@@ -87,6 +91,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                                                                                             ""
                                                                                                         )
                                                                                                 }
+
                                                                                                 DartTokenTypes.STRING_LITERAL_EXPRESSION -> {
                                                                                                     annotationValue =
                                                                                                         onlyItemNamedArgumentValueDataNode.text.replace(
@@ -97,6 +102,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                                                                                             ""
                                                                                                         )
                                                                                                 }
+
                                                                                                 DartTokenTypes.LITERAL_EXPRESSION -> {
                                                                                                     annotationValue =
                                                                                                         (onlyItemNamedArgumentValueDataNode.text == "true")
@@ -134,9 +140,11 @@ object GeneratorDartClassNodeToHelperInfo {
                                                         fieldWholeNode.text == "late" || fieldWholeNode.text == "=" -> {
                                                             isLate = true
                                                         }
+
                                                         fieldWholeNode.elementType == DartTokenTypes.TYPE || isVar -> {
                                                             typeNode = fieldWholeNode.text
                                                         }
+
                                                         fieldWholeNode.elementType == DartTokenTypes.COMPONENT_NAME -> {
                                                             nameNode = fieldWholeNode.text
                                                         }
@@ -158,7 +166,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                             if (!isLate && itemFileNode.lastChildNode.text.contains("=")) {
                                                 isLate = true
                                             }
-                                            if(nameNode != null && typeNode != null) {
+                                            if (nameNode != null && typeNode != null) {
                                                 helperClassGeneratorInfo.addFiled(
                                                     typeNode!!,
                                                     nameNode!!,

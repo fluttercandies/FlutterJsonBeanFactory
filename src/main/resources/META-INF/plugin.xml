@@ -63,7 +63,7 @@
         <group id="FlutterBeanFactory.GenerateDartToJsonAndFromJsonFileAction" icon="/icons/action.png" popup="true" text="FlutterBeanFactory">
             <add-to-group anchor="after" relative-to-action="Generate.Constructor.Dart" group-id="GenerateGroup"/>
             <action id="Dart.Generate.ToFromJson.Action" icon="/icons/action.png"
-                    class="com.github.zhangruiyu.flutterjsonbeanfactory.action.json_generate.DartGenerateToFromJsonAction"
+                    class="com.github.zhangruiyu.flutterjsonbeanfactory.action.class_body_generate.DartGenerateToFromJsonAction"
                     text="ToJson And FromJson">
             </action>
         </group>

@@ -1,4 +1,4 @@
-package com.github.zhangruiyu.flutterjsonbeanfactory.action.json_generate
+package com.github.zhangruiyu.flutterjsonbeanfactory.action.class_body_generate
 
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateManager
@@ -8,8 +8,6 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.lang.dart.ide.generation.BaseCreateMethodsFix
 import com.jetbrains.lang.dart.psi.DartClass
 import com.jetbrains.lang.dart.psi.DartComponent
-import com.jetbrains.lang.dart.psi.DartType
-import com.jetbrains.lang.dart.psi.DartVarAccessDeclaration
 
 open class DartGenerateToFromJsonFix(dartClass: DartClass) : BaseCreateMethodsFix<DartComponent>(dartClass) {
 
