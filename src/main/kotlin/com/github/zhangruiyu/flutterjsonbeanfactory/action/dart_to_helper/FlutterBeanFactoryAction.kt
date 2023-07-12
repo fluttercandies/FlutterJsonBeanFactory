@@ -162,6 +162,9 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "      return value as T;\n" +
                                     "    } else {\n" +
                                     "      if (convertFuncMap.containsKey(type)) {\n" +
+                                    "        if (value == null) {\n" +
+                                    "          return null;\n" +
+                                    "        }\n" +
                                     "        return convertFuncMap[type]!(Map<String, dynamic>.from(value)) as T;\n" +
                                     "      } else {\n" +
                                     "        throw UnimplementedError('${"\$type"} unimplemented');\n" +
