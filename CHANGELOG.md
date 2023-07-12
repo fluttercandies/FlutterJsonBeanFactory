@@ -2,6 +2,12 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## [4.5.3]
+
+### Bugfix
+
+- asObj bugfix
+
 ## [4.5.0]
 
 ### Added
