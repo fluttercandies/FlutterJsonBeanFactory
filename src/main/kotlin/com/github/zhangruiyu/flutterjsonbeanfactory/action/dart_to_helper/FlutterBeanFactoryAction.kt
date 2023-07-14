@@ -189,12 +189,18 @@ class FlutterBeanFactoryAction : AnAction() {
                             "\n\t\tdebugPrint(\"\${M.toString()} not found\");\n\t"
                         )
                         content.append(
-                            "\n\t\treturn null;\n}"
+                            "\n\t\treturn null;\n"
+                        )
+                        content.append(
+                            "\t}"
                         )
                         content.append("\n\n")
                         //fromJsonAsT
                         content.append(
                             "\tstatic M? fromJsonAsT<M>(dynamic json) {\n" +
+                                    "\t\tif (json is M) {\n" +
+                                    "\t\t\treturn json;\n" +
+                                    "\t\t}\n" +
                                     "\t\tif (json is List) {\n" +
                                     "\t\t\treturn _getListChildType<M>(json.map((e) => e as Map<String, dynamic>).toList());\n" +
                                     "\t\t} else {\n" +
