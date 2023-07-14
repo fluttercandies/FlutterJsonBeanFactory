@@ -195,7 +195,7 @@ object FileHelpers {
      */
     fun containsProjectFile(project: Project, fileName: String): Boolean {
         return FilenameIndex.getAllFilesByExt(project, "dart").firstOrNull {
-            it.path.endsWith(fileName)
+            File(it.path).name == fileName
         } != null
     }
 
@@ -204,7 +204,7 @@ object FileHelpers {
      */
     fun containsDirectoryFile(directory: PsiDirectory, fileName: String): Boolean {
         return directory.files.filter { it.name.endsWith(".dart") }
-            .firstOrNull { it.name.contains(fileName) } != null
+            .firstOrNull { it.name == fileName } != null
     }
 
 }

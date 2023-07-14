@@ -2,6 +2,12 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## [4.5.5]
+
+### Bugfix
+
+- fix [issues/142](https://github.com/fluttercandies/FlutterJsonBeanFactory/issues/142)
+
 ## [4.5.3]
 
 ### Bugfix
