@@ -3,12 +3,9 @@ package com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.model.FieldClassTypeInfo
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.CompositeElement
-import com.intellij.psi.util.elementType
 import com.jetbrains.lang.dart.DartElementType
 import com.jetbrains.lang.dart.DartTokenTypes
-import com.jetbrains.lang.dart.psi.DartClass
 import com.jetbrains.lang.dart.psi.DartFile
-import com.jetbrains.lang.dart.psi.impl.DartVarDeclarationListImpl
 import org.jetbrains.kotlin.psi.psiUtil.children
 
 
@@ -23,49 +20,49 @@ object GeneratorDartClassNodeToHelperInfo {
         //不包含JsonConvert 那么就不转
         return if (file.text.contains("@JsonSerializable") && file.name != "json_convert_content.dart") {
             val classDefinition = dartFile.children
-            classDefinition.forEach {
-//                println(it)
-                if (it is DartClass) {
-                    val children = it.children
-                    children.forEach { itemClass ->
-//                        if(fieldAndFunc)
-//                        println("是类 ${fieldAndFunc.text} ${fieldAndFunc.elementType}")
-                        itemClass.children.forEach { fieldAndFunc ->
-                            fieldAndFunc.children.forEach { fieldDeclaration ->
-                                if (fieldDeclaration is DartVarDeclarationListImpl) {
+            /*  classDefinition.forEach {
+  //                println(it)
+                  if (it is DartClass) {
+                      val children = it.children
+                      children.forEach { itemClass ->
+  //                        if(fieldAndFunc)
+  //                        println("是类 ${fieldAndFunc.text} ${fieldAndFunc.elementType}")
+                          itemClass.children.forEach { fieldAndFunc ->
+                              fieldAndFunc.children.forEach { fieldDeclaration ->
+                                  if (fieldDeclaration is DartVarDeclarationListImpl) {
 
-                                    // 获取字段名称
+                                      // 获取字段名称
 
-                                    // 获取字段名称
-//                                    val componentName = fieldDeclaration.componentName
-//                                    val fieldName = fieldDeclaration.name!!
+                                      // 获取字段名称
+  //                                    val componentName = fieldDeclaration.componentName
+  //                                    val fieldName = fieldDeclaration.name!!
 
-                                    // 获取字段类型
+                                      // 获取字段类型
 
-                                    // 获取字段类型
-                                    val tokenType = fieldDeclaration.tokenType
-                                    val elementType = fieldDeclaration.elementType
-//                                    val dartType: DartType = fieldDeclaration.getDartType()
-//                                    val fieldTypeName = if (dartType != null) dartType.text else "dynamic"
-//
-//                                    // 输出字段类型
-                                    fieldDeclaration.children.forEach { itemFieldType ->
-                                        println("Field Name: ${itemFieldType.text} ${itemFieldType::class.java.name}")
-                                    }
-//                                    // 输出字段类型
+                                      // 获取字段类型
+                                      val tokenType = fieldDeclaration.tokenType
+                                      val elementType = fieldDeclaration.elementType
+  //                                    val dartType: DartType = fieldDeclaration.getDartType()
+  //                                    val fieldTypeName = if (dartType != null) dartType.text else "dynamic"
+  //
+  //                                    // 输出字段类型
+                                      fieldDeclaration.children.forEach { itemFieldType ->
+                                          println("Field Name: ${itemFieldType.text} ${itemFieldType::class.java.name}")
+                                      }
+  //                                    // 输出字段类型
 
-//                                    println("Field Type: $fieldTypeName")
-//                                    println("是类 ${fieldDeclaration.text} ${fieldDeclaration.elementType}")
-                                }
-                                println("是类 ${fieldDeclaration.text} ${fieldDeclaration.elementType} ${fieldDeclaration::class.java.name}")
-                            }
+  //                                    println("Field Type: $fieldTypeName")
+  //                                    println("是类 ${fieldDeclaration.text} ${fieldDeclaration.elementType}")
+                                  }
+                                  println("是类 ${fieldDeclaration.text} ${fieldDeclaration.elementType} ${fieldDeclaration::class.java.name}")
+                              }
 
-                        }
-                    }
+                          }
+                      }
 
-                }
-            }
-
+                  }
+              }
+  */
 
             val mutableMapOf = mutableListOf<HelperClassGeneratorInfo>()
             val imports: MutableList<String> = mutableListOf()
@@ -92,6 +89,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                         if (itemFileNode.elementType == DartTokenTypes.VAR_DECLARATION_LIST) {
                                             var nameNode: String? = null
                                             var typeNode: String? = null
+                                            var typeNodeInfo: FieldClassTypeInfo? = null
                                             var isLate = false
                                             var isStatic = false
                                             //当前字段的所有注解
@@ -207,17 +205,13 @@ object GeneratorDartClassNodeToHelperInfo {
                                                         fieldWholeNode.elementType == DartTokenTypes.TYPE -> {
                                                             ///说明有泛型
                                                             if (fieldWholeNode.children().toList().isNotEmpty()) {
-                                                                fieldWholeNode.children().forEach {
-                                                                    val parseFieldClassTypeInfo =
-                                                                        FieldClassTypeInfo.parseFieldClassTypeInfo(
-                                                                            it.children().toList()
-                                                                        )
-                                                                    println(parseFieldClassTypeInfo)
-                                                                    it.children().forEach { it2 ->
-                                                                        println("普通解析22222 ${it2.text} ${it2::class.java.name}")
-                                                                    }
-                                                                    println("普通解析222 ${it.firstChildNode.text} ${it}")
-                                                                }
+                                                                typeNodeInfo =
+                                                                    FieldClassTypeInfo.parseFieldClassTypeInfo(
+                                                                        fieldWholeNode.children().first().children()
+                                                                            .toList()
+                                                                    )
+                                                                println(typeNodeInfo)
+                                                                println("普通解析222 ${fieldWholeNode.text}")
                                                             } else {
                                                                 println("没有泛型")
                                                             }
@@ -249,6 +243,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                             if (nameNode != null && typeNode != null) {
                                                 helperClassGeneratorInfo.addFiled(
                                                     typeNode!!,
+                                                    typeNodeInfo!!,
                                                     nameNode!!,
                                                     isLate,
                                                     allAnnotation

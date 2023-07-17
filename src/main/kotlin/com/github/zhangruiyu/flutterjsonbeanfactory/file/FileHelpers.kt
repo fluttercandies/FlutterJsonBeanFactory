@@ -2,13 +2,7 @@ package com.github.zhangruiyu.flutterjsonbeanfactory.file
 
 //import org.jetbrains.kotlin.idea.core.util.toPsiFile
 //import org.jetbrains.kotlin.idea.refactoring.toPsiFile
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.guessProjectDir
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiManager
-import com.intellij.psi.search.FilenameIndex
+
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node.GeneratorDartClassNodeToHelperInfo
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node.HelperFileGeneratorInfo
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper
@@ -16,8 +10,16 @@ import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper.getPubSpecC
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.commitContent
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showErrorMessage
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showNotify
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiManager
+import com.intellij.psi.search.FilenameIndex
 import io.flutter.pub.PubRoot
 import java.io.File
+
 
 //import io.flutter.utils.FlutterModuleUtils
 

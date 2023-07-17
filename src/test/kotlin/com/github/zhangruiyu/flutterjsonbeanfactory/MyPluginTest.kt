@@ -1,26 +1,46 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory
 
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node.GeneratorDartClassNodeToHelperInfo
 import com.intellij.ide.highlighter.XmlFileType
 import com.intellij.psi.xml.XmlFile
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.PsiErrorElementUtil
+import com.jetbrains.lang.dart.DartFileType
 
 @TestDataPath("\$CONTENT_ROOT/src/test/testData")
 class MyPluginTest : BasePlatformTestCase() {
 
-    fun testXMLFile() {
-        val psiFile = myFixture.configureByText(XmlFileType.INSTANCE, "<foo>bar</foo>")
-        val xmlFile = assertInstanceOf(psiFile, XmlFile::class.java)
+    fun testDartFile() {
+        val psiFile = myFixture.configureByText(
+            DartFileType.INSTANCE, """import 'package:testjson/generated/json/base/json_field.dart';
+import 'dart:convert';
 
-        assertFalse(PsiErrorElementUtil.hasErrors(project, xmlFile.virtualFile))
+import 'package:testjson/generated/json/map_entity.g.dart';
 
-        assertNotNull(xmlFile.rootTag)
+@JsonSerializable()
+class MapEntity {
+  
+  String? titleMap2;
 
-        xmlFile.rootTag?.let {
-            assertEquals("foo", it.name)
-            assertEquals("bar", it.value.text)
-        }
+  MapEntity();
+
+  factory MapEntity.fromJson(Map<String, dynamic> json) =>
+      ${"\$"}MapEntityFromJson(json);
+
+  Map<String, dynamic> toJson() => ${"\$"}MapEntityToJson(this);
+
+  @override
+  String toString() {
+    return jsonEncode(this);
+  }
+}
+
+"""
+        )
+        GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(psiFile)
+        println(psiFile.text)
+        assertNotNull(psiFile.text.isNotEmpty())
     }
 
     override fun getTestDataPath() = "src/test/testData/rename"

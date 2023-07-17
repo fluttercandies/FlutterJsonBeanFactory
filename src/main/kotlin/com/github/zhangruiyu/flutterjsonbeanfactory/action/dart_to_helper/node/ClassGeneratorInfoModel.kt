@@ -1,8 +1,10 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node
 
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.model.FieldClassTypeInfo
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toLowerCaseFirstOne
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.impl.source.tree.LeafPsiElement
 
 
 /**
@@ -21,17 +23,27 @@ class HelperClassGeneratorInfo {
     val fields: MutableList<Filed> = mutableListOf()
 
 
-    fun addFiled(type: String, name: String, isLate: Boolean, annotationValue: List<AnnotationValue>?) {
+    fun addFiled(
+        type: String,
+        typeNodeInfo: FieldClassTypeInfo,
+        name: String,
+        isLate: Boolean,
+        annotationValue: List<AnnotationValue>?
+    ) {
         //如果是?结尾是可空类型
         fields.add(
             Filed(
                 if (type.endsWith("?")) type.take(type.length - 1) else type,
+                typeNodeInfo,
                 name,
                 isLate,
                 type.endsWith("?")
             ).apply {
                 this.annotationValue = annotationValue
             })
+        fields.forEach {
+            it.genFromJson()
+        }
     }
 
 
@@ -54,7 +66,8 @@ class HelperClassGeneratorInfo {
         fields.forEach { k ->
             //如果deserialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("deserialize") != false) {
-                sb.append("\t${jsonParseExpression(k, classInstanceName)}\n")
+//                sb.append("\t${jsonParseExpression(k, classInstanceName)}\n")
+                sb.append("\t${k.genFromJson()}\n")
             }
         }
         sb.append("\treturn ${classInstanceName};\n")
@@ -189,6 +202,7 @@ class HelperClassGeneratorInfo {
 class Filed constructor(
     //字段类型
     var type: String,
+    var typeNodeInfo: FieldClassTypeInfo,
     //字段名字
     var name: String,
     //是否是late修饰
@@ -205,6 +219,75 @@ class Filed constructor(
 
     fun <T> getValueByName(name: String): T? {
         return annotationValue?.firstOrNull { it.name == name }?.getValueByName()
+    }
+
+    /**
+     * 生成formJson方法
+     */
+    fun genFromJson(): String {
+        val sb = StringBuffer()
+        val a = "final ${typeNodeInfo.primaryType + typeNodeInfo.genericityString}? $name = ${
+            genFromType(
+                "json['${name}']",
+                typeNodeInfo
+            )
+        };"
+        println("打印\n")
+        println(a)
+        sb.append(a)
+        return sb.toString()
+    }
+
+    fun genFromType(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
+
+        println("genFromType\n ${value}")
+        println("genFromType\n ${typeNodeInfo}")
+        return if (typeNodeInfo?.isMap() == true) {
+            val a = genMap(value, typeNodeInfo)
+            println("打印\n")
+            println(a)
+            a
+        } else if (typeNodeInfo?.isList() == true) {
+            genList(value, typeNodeInfo)
+        } else {
+            "jsonConvert.convert<${typeNodeInfo?.primaryType}>(${value})"
+        }
+    }
+
+    fun genMap(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
+        val sb = StringBuffer()
+        sb.append("\n")
+        sb.append("\t\t")
+        sb.append("(${value} as Map<String, dynamic>?)?.map(")
+        sb.append("\n")
+        sb.append("\t")
+        sb.append("(k, e) => MapEntry(k,")
+        if (typeNodeInfo?.nullable == true) {
+            sb.append("\te == null ? null : ")
+        }
+        sb.append(
+            genFromType(
+                "e",
+                typeNodeInfo?.genericityChildType?.genericityChildType
+            )
+        )
+        sb.append(")")
+        return sb.toString()
+    }
+
+    fun genList(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
+        val sb = StringBuffer()
+        val nullString = if (typeNodeInfo?.nullable == true) {
+            "?"
+        } else {
+            ""
+        }
+        sb.append("(${value} as List<dynamic>${nullString})${nullString}.map(")
+        sb.append("\n")
+        sb.append("\t")
+        sb.append("(e) => ${genFromType("e", typeNodeInfo?.genericityChildType)})")
+        sb.append(".toList())")
+        return sb.toString()
     }
 }
 
