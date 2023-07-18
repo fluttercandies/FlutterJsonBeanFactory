@@ -1,0 +1,15 @@
+name: No Free usage issue checker  # Action名字。可以自定义
+on:
+  issues:
+    types: [opened, reopened]  # 在issue打开和重新打开时调用
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: fluttercandies/no-free-usage-action@master  # 使用最新版本的action
+      - name: Check issue actor  # 步骤名字。可以自定义。
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # 由GitHub提供的临时Token，必须在此处进行传递，且必须为这个值。
