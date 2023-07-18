@@ -17,7 +17,7 @@ Language: English | [中文(qq群963752388)](https://juejin.cn/post/703073900296
 - [x] Support for instantiation through generics
 - [x] Support customized JSON parsing
 - [x] The supported types are: int double String datetime dynamic var, and List of the above types
-- [ ] Two (and more)-dimensional array is not supported
+- [x] Two (and more)-dimensional array is supported (v4.5.6~)
 
 <!-- Plugin description -->
 ### Usage
