@@ -268,7 +268,7 @@ class Filed(
         val thisKey = "entity.$name"
         val isEnum = getValueByName<Boolean>("isEnum") == true
         when {
-            typeNodeInfo.isList() -> {
+            typeNodeInfo.isList() || typeNodeInfo.isSet() -> {
                 //1判断是否是基础数据类型
                 //1.1拿到List的泛型
                 val listSubType = typeNodeInfo.genericityChildType?.primaryType ?: "dynamic"
