@@ -155,7 +155,7 @@ class Filed(
             println("打印\n")
             println(a)
             a
-        } else if (typeNodeInfo?.isList() == true) {
+        } else if (typeNodeInfo?.isList() == true || typeNodeInfo?.isSet() == true) {
             generateFromJsonList(value, typeNodeInfo)
         } else {
             if (typeNodeInfo?.primaryType == "dynamic" || typeNodeInfo?.primaryType == "var") {
@@ -225,7 +225,7 @@ class Filed(
     fun generateFromJsonList(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
         val sb = StringBuffer()
         val nullString = nullString(typeNodeInfo?.nullable == true)
-        sb.append("(${value} as List<dynamic>${nullString})${nullString}.map(")
+        sb.append("(${value} as ${typeNodeInfo?.primaryType}<dynamic>${nullString})${nullString}.map(")
         sb.append("\n")
         sb.append("\t")
         val genericityChildType = typeNodeInfo?.genericityChildType
@@ -245,7 +245,7 @@ class Filed(
 //
 //        }
         sb.append(")")
-        sb.append(".toList()")
+        sb.append(".to${typeNodeInfo?.primaryType}()")
         return sb.toString()
     }
 
