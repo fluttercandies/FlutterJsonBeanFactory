@@ -1,9 +1,7 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory.utils
 
 import com.github.zhangruiyu.flutterjsonbeanfactory.file.FileHelpers
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.command.CommandProcessor
-import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
@@ -64,17 +62,19 @@ private fun isOptionFalse(map: Map<*, *>?, name: String): Boolean {
  *判断文件内容是否一致 不一致则覆盖
  */
 fun VirtualFile?.commitContent(project: Project, content: String) {
-    CommandProcessor.getInstance().runUndoTransparentAction {
-        val documentManager = PsiDocumentManager.getInstance(project)
-        val psiManager = PsiManager.getInstance(project)
-        this?.let { file ->
-            psiManager.findFile(file)?.let { dartFile ->
-                documentManager.getDocument(dartFile)?.let { document ->
-                    if (document.text != content) {
-                        document.setText(content)
-                        documentManager.commitDocument(document)
-                        ///格式化下代码
-                        CodeStyleManager.getInstance(project).reformat(dartFile)
+    val documentManager = PsiDocumentManager.getInstance(project)
+    val psiManager = PsiManager.getInstance(project)
+    this?.let { file ->
+        psiManager.findFile(file)?.let { dartFile ->
+            documentManager.getDocument(dartFile)?.let { document ->
+                if (document.text != content) {
+                    document.setText(content)
+                    documentManager.commitDocument(document)
+                    ///格式化下代码
+                    ApplicationManager.getApplication().invokeLater {
+                        ApplicationManager.getApplication().executeOnPooledThread {
+                            CodeStyleManager.getInstance(project).reformat(dartFile)
+                        }
                     }
                 }
             }
