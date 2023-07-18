@@ -93,18 +93,6 @@ fun getListSubTypeCanNull(typeName: String): String {
 }
 
 
-//是否是List类型
-fun isListType(typeName: String): Boolean {
-    return when {
-        typeName.contains("List<") -> {
-            true
-        }
-        else -> {
-            typeName == "List"
-        }
-    }
-}
-
 fun getTypeName(obj: Any?): String {
     return when (obj) {
         is String -> /*if (DateUtil.canParseDate(obj.toString())) "DateTime" else*/ "String"

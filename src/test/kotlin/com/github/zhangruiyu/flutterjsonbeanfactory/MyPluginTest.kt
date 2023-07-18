@@ -21,7 +21,7 @@ import 'package:testjson/generated/json/map_entity.g.dart';
 @JsonSerializable()
 class MapEntity {
   
-  String? titleMap2;
+  late List<CodeType?> codeTypesNull;
 
   MapEntity();
 

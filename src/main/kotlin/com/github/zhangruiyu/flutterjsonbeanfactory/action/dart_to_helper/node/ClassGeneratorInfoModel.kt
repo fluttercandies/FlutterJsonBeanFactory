@@ -65,7 +65,7 @@ class HelperClassGeneratorInfo {
             //如果deserialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("deserialize") != false) {
 //                sb.append("\t${jsonParseExpression(k, classInstanceName)}\n")
-                sb.append(k.genFromJson(classInstanceName))
+                sb.append(k.generateFromJsonField(classInstanceName))
             }
         }
         sb.append("\treturn ${classInstanceName};\n")
@@ -73,49 +73,6 @@ class HelperClassGeneratorInfo {
         return sb.toString()
     }
 
-    private fun jsonParseExpression(filed: Filed, classInstanceName: String): String {
-        val type = filed.type
-        //class里的字段名
-        val classFieldName = filed.name
-        //从json里取值的名称
-        val getJsonName = filed.getValueByName("name") ?: classFieldName
-        //是否是list
-        val isListType = isListType(type)
-        val stringBuilder = StringBuilder()
-        val isEnum = filed.getValueByName<Boolean>("isEnum") == true
-        if (isListType) {
-            val listSubType = getListSubType(
-                type
-            )
-            val enumText = if (isEnum) {
-                ", enumConvert: (v) => ${listSubType}.values.byName(v)"
-            } else ""
-            //如果泛型里带null
-            if (getListSubTypeCanNull(type).endsWith("?")) {
-                stringBuilder.append(
-                    "final List<$listSubType?>? $classFieldName = jsonConvert.convertList<$listSubType>(json['${getJsonName}']${enumText});\n"
-                )
-            } else {
-                stringBuilder.append(
-                    "final List<$listSubType>? $classFieldName = jsonConvert.convertListNotNull<$listSubType>(json['${getJsonName}']${enumText});\n"
-                )
-            }
-
-        } else {
-            if (isEnum) {
-                stringBuilder.append("final ${type}? $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}'], enumConvert: (v) => $type.values.byName(v));\n")
-            } else if (type == "dynamic" || type == "var") {
-                stringBuilder.append("final $type $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}']);\n")
-            } else {
-                stringBuilder.append("final ${type}? $classFieldName = jsonConvert.convert<${type}>(json['${getJsonName}']);\n")
-            }
-        }
-        stringBuilder.append("\tif (${classFieldName} != null) {\n")
-        stringBuilder.append("\t\t${classInstanceName}.$classFieldName = $classFieldName;")
-        stringBuilder.append("\n")
-        stringBuilder.append("\t}")
-        return stringBuilder.toString()
-    }
 
     //生成tojson方法
     private fun jsonGenFunc(): String {
@@ -220,14 +177,16 @@ class Filed(
     }
 
     /**
-     * 生成formJson方法
+     * 生成formJson 字段
      */
-    fun genFromJson(classInstanceName: String): String {
+    fun generateFromJsonField(classInstanceName: String): String {
         val sb = StringBuffer()
         //class里的字段名
         //从json里取值的名称
         val jsonName = getValueByName("name") ?: name
-        val a = "final ${typeNodeInfo.primaryType + (typeNodeInfo.genericityString ?: "")}? $name = ${
+        ///如果是dynamic那么不写?
+        val typeNullString = if(typeNodeInfo.primaryType == "dynamic" || typeNodeInfo.primaryType == "var") "" else "?"
+        val a = "final ${typeNodeInfo.primaryType + (typeNodeInfo.genericityString ?: "")}${typeNullString} $name = ${
             genFromType(
                 "json['${jsonName}']",
                 typeNodeInfo
@@ -243,7 +202,7 @@ class Filed(
         return sb.toString()
     }
 
-    fun genFromType(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
+    private fun genFromType(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
 
         println("genFromType\n ${value}")
         println("genFromType\n ${typeNodeInfo}")
@@ -255,26 +214,38 @@ class Filed(
         } else if (typeNodeInfo?.isList() == true) {
             genList(value, typeNodeInfo)
         } else {
-            val sb = StringBuffer()
-            sb.append("jsonConvert.convert<${typeNodeInfo?.primaryType}>(${value})")
-            if (typeNodeInfo?.nullable != true) {
-                sb.append(
-                    " as ${typeNodeInfo?.primaryType}${
-                        nullString(
-                            typeNodeInfo?.nullable
-                        )
-                    }"
-                )
+            if (typeNodeInfo?.primaryType == "dynamic" || typeNodeInfo?.primaryType == "var") {
+                value
+            } else {
+                val sb = StringBuffer()
+
+                sb.append("jsonConvert.convert<${typeNodeInfo?.primaryType}>(${value}")
+                ///是否是枚举
+                val isEnum = getValueByName<Boolean>("isEnum") == true
+                if (isEnum) {
+                    sb.append(", enumConvert: (v) => ${typeNodeInfo?.primaryType}.values.byName(v)")
+                }
+                sb.append(")")
+                if (typeNodeInfo?.nullable != true) {
+                    sb.append(
+                        " as ${typeNodeInfo?.primaryType}${
+                            nullString(
+                                typeNodeInfo?.nullable
+                            )
+                        }"
+                    )
+                }
+                sb.toString()
             }
-            sb.toString()
         }
     }
 
     fun genMap(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
+        val nullString = nullString(typeNodeInfo?.nullable == true)
         val sb = StringBuffer()
         sb.append("\n")
         sb.append("\t\t")
-        sb.append("(${value} as Map<String, dynamic>?)?.map(")
+        sb.append("(${value} as Map<String, dynamic>${nullString})${nullString}.map(")
         sb.append("\n")
         sb.append("\t")
         sb.append("(k, e) => MapEntry(k,")

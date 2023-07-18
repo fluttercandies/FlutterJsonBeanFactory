@@ -23,18 +23,33 @@ data class FieldClassTypeInfo(
     }
 
     companion object {
+        fun findChild(node: ASTNode): List<ASTNode> {
+            return if (node.textContains('<') || node.text.endsWith('?')) {
+                val astNodes = node.children().toList()
+                if (astNodes.size == 1) {
+                    findChild(astNodes.first())
+                } else {
+                    astNodes
+                }
+            } else {
+                node.children().toList()
+            }
+
+        }
+
         fun parseFieldClassTypeInfo(typeList: List<ASTNode>): FieldClassTypeInfo? {
             println("泛型的文案之前 ${typeList.joinToString { it.text }}")
             val filterTypeList = typeList.filterIsInstance<CompositeElement>()
             ///是否可以是null
             val canNull = typeList.filterIsInstance<LeafPsiElement>().firstOrNull()?.text == "?"
-            println("泛型的文案去除不需要的后 ${filterTypeList.joinToString { it.text }}")
+            println("泛型的文案去除不需要的后 ${filterTypeList.size} ${filterTypeList.joinToString { it.text }}")
             if (filterTypeList.isEmpty() || filterTypeList.size == 1) {
                 val firstChild = filterTypeList.first()
-                val firstChildChild = firstChild.children().toList()
-                if(firstChildChild.size > 1){
+                println("firstChild ${firstChild.text}")
+                val firstChildChild = findChild(firstChild)
+                if (firstChildChild.size > 1) {
                     return parseFieldClassTypeInfo(firstChildChild)
-                }else{
+                } else {
                     println("泛型的文案个数1 ${firstChild.text}")
                     return FieldClassTypeInfo(firstChild.text, canNull)
                 }
@@ -45,7 +60,7 @@ data class FieldClassTypeInfo(
                 return FieldClassTypeInfo(
                     filterTypeList.first().text,
                     canNull,
-                    genericityChildType = parseFieldClassTypeInfo(filterTypeList[1].children().toList()),
+                    genericityChildType = parseFieldClassTypeInfo(findChild(filterTypeList[1])),
                     genericityString = typeList[1].text
                 )
             } else if (filterTypeList.size == 3) {
@@ -59,6 +74,7 @@ data class FieldClassTypeInfo(
             }
         }
     }
+
     fun ASTNode.typeChild(): List<CompositeElement> {
         return children().filterIsInstance<CompositeElement>().toList()
     }
