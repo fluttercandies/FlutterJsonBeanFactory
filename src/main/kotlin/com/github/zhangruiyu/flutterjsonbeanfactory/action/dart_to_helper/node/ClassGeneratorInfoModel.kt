@@ -129,6 +129,7 @@ class Filed(
         val a = "final ${typeNodeInfo.primaryType + (typeNodeInfo.genericityString ?: "")}${typeNullString} $name = ${
             generateFromJsonByType(
                 "json['${jsonName}']",
+                true,
                 typeNodeInfo
             )
         };"
@@ -142,7 +143,10 @@ class Filed(
         return sb.toString()
     }
 
-    private fun generateFromJsonByType(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
+    /**
+     * isRoot 如果是最外层的话,那么不写as
+     */
+    private fun generateFromJsonByType(value: String, isRoot: Boolean, typeNodeInfo: FieldClassTypeInfo?): String {
 
         println("genFromType\n $value")
         println("genFromType\n $typeNodeInfo")
@@ -166,7 +170,7 @@ class Filed(
                     sb.append(", enumConvert: (v) => ${typeNodeInfo?.primaryType}.values.byName(v)")
                 }
                 sb.append(")")
-                if (typeNodeInfo?.nullable != true) {
+                if (typeNodeInfo?.nullable != true && !isRoot) {
                     sb.append(
                         " as ${typeNodeInfo?.primaryType}${
                             nullString(
@@ -192,12 +196,25 @@ class Filed(
         if (typeNodeInfo?.nullable == true) {
             sb.append("\te == null ? null : ")
         }
+        val genericityChildType = typeNodeInfo?.genericityChildType?.genericityChildType
         sb.append(
             generateFromJsonByType(
                 "e",
-                typeNodeInfo?.genericityChildType?.genericityChildType
+                false,
+                genericityChildType
             )
         )
+        ///上面generateFromJsonByType已经添加了 那么这里就需要写了
+//        ///并且不是list,如果是list的话那么就会有警告,因为不用转list了
+//        if (genericityChildType?.nullable != true && genericityChildType?.isList() != true) {
+//            sb.append(
+//                " as ${genericityChildType?.primaryType}${
+//                    nullString(
+//                        genericityChildType?.nullable
+//                    )
+//                }"
+//            )
+//        }
         //MapEntry的括号
         sb.append(")")
         //map的括号
@@ -211,7 +228,23 @@ class Filed(
         sb.append("(${value} as List<dynamic>${nullString})${nullString}.map(")
         sb.append("\n")
         sb.append("\t")
-        sb.append("(e) => ${generateFromJsonByType("e", typeNodeInfo?.genericityChildType)})")
+        val genericityChildType = typeNodeInfo?.genericityChildType
+        sb.append("(e) => ${generateFromJsonByType("e", false, genericityChildType)}")
+        ///上面generateFromJsonByType已经添加了 那么这里就需要写了
+//        if (genericityChildType?.nullable != true) {
+//            ///并且不是map,list,如果是的话那么就会有警告,因为不用转了
+//            if (genericityChildType?.isMap() != true && genericityChildType?.isList() != true) {
+//                sb.append(
+//                    " as ${genericityChildType?.primaryType}${genericityChildType?.genericityString ?: ""}${
+//                        nullString(
+//                            genericityChildType?.nullable
+//                        )
+//                    }"
+//                )
+//            }
+//
+//        }
+        sb.append(")")
         sb.append(".toList()")
         return sb.toString()
     }
@@ -238,7 +271,7 @@ class Filed(
             typeNodeInfo.isList() -> {
                 //1判断是否是基础数据类型
                 //1.1拿到List的泛型
-                val listSubType = typeNodeInfo.genericityChildType?.primaryType?:"dynamic"
+                val listSubType = typeNodeInfo.genericityChildType?.primaryType ?: "dynamic"
                 //1.2判断是否是基础数据类型
                 val value = if (isEnum) {
                     "$thisKey${nullString(typeNodeInfo.nullable)}.map((v) => v${nullString(typeNodeInfo.genericityChildType?.nullable)}.name).toList()"
