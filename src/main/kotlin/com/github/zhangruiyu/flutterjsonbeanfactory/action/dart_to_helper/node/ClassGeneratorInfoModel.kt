@@ -274,17 +274,17 @@ class Filed(
                 val listSubType = typeNodeInfo.genericityChildType?.primaryType ?: "dynamic"
                 //1.2判断是否是基础数据类型
                 val value = if (isEnum) {
-                    "$thisKey${nullString(typeNodeInfo.nullable)}.map((v) => v${nullString(typeNodeInfo.genericityChildType?.nullable)}.name).toList()"
+                    "$thisKey${nullString(typeNodeInfo.nullable)}.map((v) => v${nullString(typeNodeInfo.genericityChildType?.nullable)}.name).to${typeNodeInfo.primaryType}()"
                 } else if (isBaseType(listSubType)) {
                     if (listSubType == "DateTime") {
-                        "$thisKey${nullString(typeNodeInfo.nullable)}.map((v) => v${nullString(typeNodeInfo.genericityChildType?.nullable)}.toIso8601String()).toList()"
+                        "$thisKey${nullString(typeNodeInfo.nullable)}.map((v) => v${nullString(typeNodeInfo.genericityChildType?.nullable)}.toIso8601String()).to${typeNodeInfo.primaryType}()"
                     } else {
                         thisKey
                     }
 
                 } else {
                     //类名
-                    "$thisKey${nullString(typeNodeInfo.nullable)}.map((v) => v${nullString(typeNodeInfo.genericityChildType?.nullable)}.toJson()).toList()"
+                    "$thisKey${nullString(typeNodeInfo.nullable)}.map((v) => v${nullString(typeNodeInfo.genericityChildType?.nullable)}.toJson()).to${typeNodeInfo.primaryType}()"
                 }
 
                 // class list
