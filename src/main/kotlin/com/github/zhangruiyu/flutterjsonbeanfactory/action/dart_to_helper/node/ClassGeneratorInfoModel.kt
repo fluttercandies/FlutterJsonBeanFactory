@@ -82,7 +82,7 @@ class HelperClassGeneratorInfo {
         fields.forEach { k ->
             //如果serialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("serialize") != false) {
-                sb.append("\t${toJsonExpression(k)}\n")
+                sb.append("\t${k.toJsonExpression()}\n")
             }
         }
         sb.append("\treturn data;\n");
@@ -91,66 +91,6 @@ class HelperClassGeneratorInfo {
 
     }
 
-    private fun toJsonExpression(filed: Filed): String {
-        val type = filed.type
-        val name = filed.name
-        //从json里取值的名称
-        val getJsonName = filed.getValueByName("name") ?: name
-        //是否是list
-        val isListType = isListType(type)
-        val thisKey = "entity.$name"
-        val isEnum = filed.getValueByName<Boolean>("isEnum") == true
-        when {
-            isListType -> {
-                //1判断是否是基础数据类型
-                //1.1拿到List的泛型
-                val listSubType = getListSubTypeCanNull(type)
-                //1.2判断是否是基础数据类型
-                val value = if (isEnum) {
-                    "$thisKey${canNullSymbol(filed.isCanNull)}map((v) => v${canNullSymbol(listSubType.endsWith("?"))}name).toList()"
-                } else if (isBaseType(listSubType)) {
-                    if (listSubType.replace("?", "") == "DateTime") {
-                        "$thisKey${if (filed.isCanNull) "?." else "."}map((v) => v${canNullSymbol(listSubType.endsWith("?"))}toIso8601String()).toList()"
-                    } else {
-                        thisKey
-                    }
-
-                } else {
-                    //类名
-                    "$thisKey${canNullSymbol(filed.isCanNull)}map((v) => v${canNullSymbol(listSubType.endsWith("?"))}toJson()).toList()"
-                }
-
-                // class list
-                return "data['$getJsonName'] =  $value;"
-            }
-            //是否是枚举
-            isEnum -> {
-                return "data['$getJsonName'] = $thisKey${canNullSymbol(filed.isCanNull)}name;"
-            }
-            //是否是基础数据类型
-            isBaseType(type) -> {
-                return when (type) {
-                    "DateTime" -> {
-                        "data['${getJsonName}'] = ${thisKey}${canNullSymbol(filed.isCanNull)}toIso8601String();"
-                    }
-
-                    else -> "data['$getJsonName'] = $thisKey;"
-                }
-            }
-            //是map或者set
-            isMapType(type) || isSetType(type) -> {
-                return "data['$getJsonName'] = $thisKey;"
-            }
-            // class
-            else -> {
-                return "data['$getJsonName'] = ${thisKey}${canNullSymbol(filed.isCanNull)}toJson();"
-            }
-        }
-    }
-
-    private fun canNullSymbol(isCanNull: Boolean): String {
-        return if (isCanNull) "?." else "."
-    }
 
 }
 
@@ -185,9 +125,9 @@ class Filed(
         //从json里取值的名称
         val jsonName = getValueByName("name") ?: name
         ///如果是dynamic那么不写?
-        val typeNullString = if(typeNodeInfo.primaryType == "dynamic" || typeNodeInfo.primaryType == "var") "" else "?"
+        val typeNullString = if (typeNodeInfo.primaryType == "dynamic" || typeNodeInfo.primaryType == "var") "" else "?"
         val a = "final ${typeNodeInfo.primaryType + (typeNodeInfo.genericityString ?: "")}${typeNullString} $name = ${
-            genFromType(
+            generateFromJsonByType(
                 "json['${jsonName}']",
                 typeNodeInfo
             )
@@ -202,17 +142,17 @@ class Filed(
         return sb.toString()
     }
 
-    private fun genFromType(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
+    private fun generateFromJsonByType(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
 
-        println("genFromType\n ${value}")
-        println("genFromType\n ${typeNodeInfo}")
+        println("genFromType\n $value")
+        println("genFromType\n $typeNodeInfo")
         return if (typeNodeInfo?.isMap() == true) {
-            val a = genMap(value, typeNodeInfo)
+            val a = generateFromJsonMap(value, typeNodeInfo)
             println("打印\n")
             println(a)
             a
         } else if (typeNodeInfo?.isList() == true) {
-            genList(value, typeNodeInfo)
+            generateFromJsonList(value, typeNodeInfo)
         } else {
             if (typeNodeInfo?.primaryType == "dynamic" || typeNodeInfo?.primaryType == "var") {
                 value
@@ -240,7 +180,7 @@ class Filed(
         }
     }
 
-    fun genMap(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
+    fun generateFromJsonMap(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
         val nullString = nullString(typeNodeInfo?.nullable == true)
         val sb = StringBuffer()
         sb.append("\n")
@@ -253,7 +193,7 @@ class Filed(
             sb.append("\te == null ? null : ")
         }
         sb.append(
-            genFromType(
+            generateFromJsonByType(
                 "e",
                 typeNodeInfo?.genericityChildType?.genericityChildType
             )
@@ -265,13 +205,13 @@ class Filed(
         return sb.toString()
     }
 
-    fun genList(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
+    fun generateFromJsonList(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
         val sb = StringBuffer()
         val nullString = nullString(typeNodeInfo?.nullable == true)
         sb.append("(${value} as List<dynamic>${nullString})${nullString}.map(")
         sb.append("\n")
         sb.append("\t")
-        sb.append("(e) => ${genFromType("e", typeNodeInfo?.genericityChildType)})")
+        sb.append("(e) => ${generateFromJsonByType("e", typeNodeInfo?.genericityChildType)})")
         sb.append(".toList()")
         return sb.toString()
     }
@@ -286,6 +226,62 @@ class Filed(
             ""
         }
     }
+
+    fun toJsonExpression(): String {
+        val type = type
+        val name = name
+        //从json里取值的名称
+        val getJsonName = getValueByName("name") ?: name
+        val thisKey = "entity.$name"
+        val isEnum = getValueByName<Boolean>("isEnum") == true
+        when {
+            typeNodeInfo.isList() -> {
+                //1判断是否是基础数据类型
+                //1.1拿到List的泛型
+                val listSubType = typeNodeInfo.genericityChildType?.primaryType?:"dynamic"
+                //1.2判断是否是基础数据类型
+                val value = if (isEnum) {
+                    "$thisKey${nullString(typeNodeInfo.nullable)}.map((v) => v${nullString(typeNodeInfo.genericityChildType?.nullable)}.name).toList()"
+                } else if (isBaseType(listSubType)) {
+                    if (listSubType == "DateTime") {
+                        "$thisKey${nullString(typeNodeInfo.nullable)}.map((v) => v${nullString(typeNodeInfo.genericityChildType?.nullable)}.toIso8601String()).toList()"
+                    } else {
+                        thisKey
+                    }
+
+                } else {
+                    //类名
+                    "$thisKey${nullString(typeNodeInfo.nullable)}.map((v) => v${nullString(typeNodeInfo.genericityChildType?.nullable)}.toJson()).toList()"
+                }
+
+                // class list
+                return "data['$getJsonName'] =  $value;"
+            }
+            //是否是枚举
+            isEnum -> {
+                return "data['$getJsonName'] = $thisKey${nullString(typeNodeInfo.nullable)}.name;"
+            }
+            //是否是基础数据类型
+            isBaseType(type) -> {
+                return when (type) {
+                    "DateTime" -> {
+                        "data['${getJsonName}'] = ${thisKey}${nullString(typeNodeInfo.nullable)}.toIso8601String();"
+                    }
+
+                    else -> "data['$getJsonName'] = $thisKey;"
+                }
+            }
+            //是map或者set
+            typeNodeInfo.isMap() || typeNodeInfo.isSet() -> {
+                return "data['$getJsonName'] = $thisKey;"
+            }
+            // class
+            else -> {
+                return "data['$getJsonName'] = ${thisKey}${nullString(typeNodeInfo.nullable)}.toJson();"
+            }
+        }
+    }
+
 }
 
 @Suppress("UNCHECKED_CAST")

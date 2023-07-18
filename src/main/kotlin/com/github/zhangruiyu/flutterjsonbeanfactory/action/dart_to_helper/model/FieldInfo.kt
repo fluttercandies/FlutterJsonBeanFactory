@@ -22,6 +22,10 @@ data class FieldClassTypeInfo(
         return primaryType == "List"
     }
 
+    fun isSet(): Boolean {
+        return primaryType == "Set"
+    }
+
     companion object {
         fun findChild(node: ASTNode): List<ASTNode> {
             return if (node.textContains('<') || node.text.endsWith('?')) {

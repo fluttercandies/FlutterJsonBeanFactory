@@ -53,7 +53,7 @@ fun isPrimitiveType(typeName: String): Boolean {
  * 是否是基础数据类型
  */
 fun isBaseType(typeName: String): Boolean {
-    return BASE_TYPES[typeName.replace("?", "")] ?: false
+    return BASE_TYPES[typeName] ?: false
 }
 
 /**
