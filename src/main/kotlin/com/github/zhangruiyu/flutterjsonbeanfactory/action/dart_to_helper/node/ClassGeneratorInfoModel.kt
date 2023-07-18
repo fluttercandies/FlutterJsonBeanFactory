@@ -3,8 +3,6 @@ package com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.model.FieldClassTypeInfo
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toLowerCaseFirstOne
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.impl.source.tree.LeafPsiElement
 
 
 /**
@@ -41,9 +39,9 @@ class HelperClassGeneratorInfo {
             ).apply {
                 this.annotationValue = annotationValue
             })
-        fields.forEach {
-            it.genFromJson()
-        }
+//        fields.forEach {
+//            it.genFromJson()
+//        }
     }
 
 
@@ -67,7 +65,7 @@ class HelperClassGeneratorInfo {
             //如果deserialize不是false,那么就解析,否则不解析
             if (k.getValueByName<Boolean>("deserialize") != false) {
 //                sb.append("\t${jsonParseExpression(k, classInstanceName)}\n")
-                sb.append("\t${k.genFromJson()}\n")
+                sb.append(k.genFromJson(classInstanceName))
             }
         }
         sb.append("\treturn ${classInstanceName};\n")
@@ -199,7 +197,7 @@ class HelperClassGeneratorInfo {
 
 }
 
-class Filed constructor(
+class Filed(
     //字段类型
     var type: String,
     var typeNodeInfo: FieldClassTypeInfo,
@@ -224,17 +222,24 @@ class Filed constructor(
     /**
      * 生成formJson方法
      */
-    fun genFromJson(): String {
+    fun genFromJson(classInstanceName: String): String {
         val sb = StringBuffer()
-        val a = "final ${typeNodeInfo.primaryType + typeNodeInfo.genericityString}? $name = ${
+        //class里的字段名
+        //从json里取值的名称
+        val jsonName = getValueByName("name") ?: name
+        val a = "final ${typeNodeInfo.primaryType + (typeNodeInfo.genericityString ?: "")}? $name = ${
             genFromType(
-                "json['${name}']",
+                "json['${jsonName}']",
                 typeNodeInfo
             )
         };"
         println("打印\n")
         println(a)
         sb.append(a)
+        sb.append("\tif (${name} != null) {\n")
+        sb.append("\t\t${classInstanceName}.$name = $name;")
+        sb.append("\n")
+        sb.append("\t}")
         return sb.toString()
     }
 
@@ -250,7 +255,18 @@ class Filed constructor(
         } else if (typeNodeInfo?.isList() == true) {
             genList(value, typeNodeInfo)
         } else {
-            "jsonConvert.convert<${typeNodeInfo?.primaryType}>(${value})"
+            val sb = StringBuffer()
+            sb.append("jsonConvert.convert<${typeNodeInfo?.primaryType}>(${value})")
+            if (typeNodeInfo?.nullable != true) {
+                sb.append(
+                    " as ${typeNodeInfo?.primaryType}${
+                        nullString(
+                            typeNodeInfo?.nullable
+                        )
+                    }"
+                )
+            }
+            sb.toString()
         }
     }
 
@@ -271,23 +287,33 @@ class Filed constructor(
                 typeNodeInfo?.genericityChildType?.genericityChildType
             )
         )
+        //MapEntry的括号
+        sb.append(")")
+        //map的括号
         sb.append(")")
         return sb.toString()
     }
 
     fun genList(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
         val sb = StringBuffer()
-        val nullString = if (typeNodeInfo?.nullable == true) {
-            "?"
-        } else {
-            ""
-        }
+        val nullString = nullString(typeNodeInfo?.nullable == true)
         sb.append("(${value} as List<dynamic>${nullString})${nullString}.map(")
         sb.append("\n")
         sb.append("\t")
         sb.append("(e) => ${genFromType("e", typeNodeInfo?.genericityChildType)})")
-        sb.append(".toList())")
+        sb.append(".toList()")
         return sb.toString()
+    }
+
+    /**
+     * 是否为null的字符串
+     */
+    private fun nullString(nullable: Boolean?): String {
+        return if (nullable == true) {
+            "?"
+        } else {
+            ""
+        }
     }
 }
 
