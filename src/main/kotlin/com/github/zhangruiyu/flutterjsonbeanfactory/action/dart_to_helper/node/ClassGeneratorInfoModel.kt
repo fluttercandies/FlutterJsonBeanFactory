@@ -158,25 +158,21 @@ class Filed(
         } else if (typeNodeInfo?.isList() == true || typeNodeInfo?.isSet() == true) {
             generateFromJsonList(value, typeNodeInfo)
         } else {
-            if (typeNodeInfo?.primaryType == "dynamic" || typeNodeInfo?.primaryType == "var") {
+            if (typeNodeInfo?.primaryType == null || typeNodeInfo.primaryType == "dynamic" || typeNodeInfo.primaryType == "var") {
                 value
             } else {
                 val sb = StringBuffer()
 
-                sb.append("jsonConvert.convert<${typeNodeInfo?.primaryType}>(${value}")
+                sb.append("jsonConvert.convert<${typeNodeInfo.primaryType}>(${value}")
                 ///是否是枚举
                 val isEnum = getValueByName<Boolean>("isEnum") == true
                 if (isEnum) {
-                    sb.append(", enumConvert: (v) => ${typeNodeInfo?.primaryType}.values.byName(v)")
+                    sb.append(", enumConvert: (v) => ${typeNodeInfo.primaryType}.values.byName(v)")
                 }
                 sb.append(")")
-                if (typeNodeInfo?.nullable != true && !isRoot) {
+                if (!typeNodeInfo.nullable && !isRoot) {
                     sb.append(
-                        " as ${typeNodeInfo?.primaryType}${
-                            nullString(
-                                typeNodeInfo?.nullable
-                            )
-                        }"
+                        " as ${typeNodeInfo.primaryType}"
                     )
                 }
                 sb.toString()
