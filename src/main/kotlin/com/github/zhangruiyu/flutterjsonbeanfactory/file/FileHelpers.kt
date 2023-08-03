@@ -116,7 +116,6 @@ object FileHelpers {
     fun generateAllDartEntityHelper(project: Project, allClass: List<Pair<HelperFileGeneratorInfo, String>>) {
         // 使用 WriteCommandAction 包装整个循环操作
         WriteCommandAction.runWriteCommandAction(project) {
-            CommandProcessor.getInstance().runUndoTransparentAction {
                 allClass.forEach {
                     val packageName = it.second
                     val helperClassGeneratorInfos = it.first
@@ -149,7 +148,6 @@ object FileHelpers {
                         file.commitContent(project, content.toString())
                     }
                 }
-            }
         }
 
     }

@@ -2,6 +2,7 @@ package com.github.zhangruiyu.flutterjsonbeanfactory.utils
 
 import com.github.zhangruiyu.flutterjsonbeanfactory.file.FileHelpers
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
@@ -71,11 +72,11 @@ fun VirtualFile?.commitContent(project: Project, content: String) {
                     document.setText(content)
                     documentManager.commitDocument(document)
                     ///格式化下代码
-                    ApplicationManager.getApplication().invokeLater {
-                        ApplicationManager.getApplication().executeOnPooledThread {
-                            CodeStyleManager.getInstance(project).reformat(dartFile)
-                        }
+                    CommandProcessor.getInstance().runUndoTransparentAction {
+                        CodeStyleManager.getInstance(project).reformat(dartFile)
                     }
+                } else {
+                    LogUtil.i("${dartFile.name}内容一致,无需修改和格式化")
                 }
             }
         }
