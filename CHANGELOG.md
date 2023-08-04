@@ -2,6 +2,13 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## [5.0.0]
+
+### Added
+
+- supper map list<map<*,*>>
+- custom generated path
+
 ## [4.5.5]
 
 ### Bugfix
