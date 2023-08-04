@@ -18,6 +18,7 @@ Language: English | [中文(qq群963752388)](https://juejin.cn/post/703073900296
 - [x] Support customized JSON parsing
 - [x] The supported types are: int double String datetime dynamic var, and List of the above types
 - [x] Two (and more)-dimensional array is supported (v4.5.6~)
+- [x] Support custom generated path
 
 <!-- Plugin description -->
 ### Usage
@@ -65,6 +66,13 @@ Future<void> main() async {
   runApp(Text("OK"));
 }
 ```
+
+custom generated path->(pubspec.yaml)
+```yaml 
+flutter_json:
+  generated_path: src/json/**
+```
+
 <!-- Plugin description end -->
 
 ### Find me useful ? :heart:
