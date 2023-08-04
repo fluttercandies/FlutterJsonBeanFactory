@@ -38,21 +38,11 @@ object FileHelpers {
     }
 
     /**
-     * 获取json_convert_content目录
-     */
-    fun getJsonConvertContentFile(project: Project, callback: (file: VirtualFile) -> Unit) {
-        ApplicationManager.getApplication().runWriteAction {
-            val generated = getJsonConvertBaseFile(project)
-            callback(generated.findOrCreateChildData(this, "json_convert_content.dart"))
-        }
-    }
-
-    /**
      * 获取jsonfiled.dart
      */
-    fun getJsonConvertJsonFiledFile(project: Project, callback: (file: VirtualFile) -> Unit) {
+    fun getJsonConvertJsonFiledFile(project: Project, generatedPath: String, callback: (file: VirtualFile) -> Unit) {
         ApplicationManager.getApplication().runWriteAction {
-            val generated = getJsonConvertBaseFile(project)
+            val generated = getJsonConvertBaseFile(project, generatedPath)
             callback(generated.findOrCreateChildData(this, "json_field.dart"))
         }
     }
@@ -60,8 +50,8 @@ object FileHelpers {
     /**
      * 获取generated/json/base目录
      */
-    fun getJsonConvertBaseFile(project: Project): VirtualFile {
-        return getGeneratedFile(project).let { json ->
+    fun getJsonConvertBaseFile(project: Project, generatedPath: String): VirtualFile {
+        return getGeneratedFile(project, generatedPath).let { json ->
             json.findChild("base")
                 ?: json.createChildDirectory(this, "base")
         }
@@ -70,8 +60,13 @@ object FileHelpers {
     /**
      *
      */
-    private fun getEntityHelperFile(project: Project, fileName: String, callback: (file: VirtualFile) -> Unit) {
-        val generated = getGeneratedFile(project)
+    private fun getEntityHelperFile(
+        project: Project,
+        fileName: String,
+        generatedPath: String,
+        callback: (file: VirtualFile) -> Unit
+    ) {
+        val generated = getGeneratedFile(project, generatedPath)
         callback(generated.findOrCreateChildData(this, fileName))
     }
 
@@ -79,14 +74,14 @@ object FileHelpers {
     /**
      * 获取generated/json自动生成目录
      */
-    fun getGeneratedFile(project: Project): VirtualFile {
-        return PubRoot.forFile(getProjectIdeaFile(project))?.lib?.let { lib ->
-            return@let (lib.findChild("generated")
-                ?: lib.createChildDirectory(this, "generated")).run {
-                return@run (findChild("json")
-                    ?: createChildDirectory(this, "json"))
-            }
-        }!!
+    fun getGeneratedFile(project: Project, generatedPath: String): VirtualFile {
+        val libFile = PubRoot.forFile(getProjectIdeaFile(project))?.lib!!
+        var targetFile: VirtualFile = libFile
+        generatedPath.split("/").forEach {
+            targetFile = (targetFile.findChild(it)
+                ?: targetFile.createChildDirectory(targetFile, it))
+        }
+        return targetFile
     }
 
     /**
@@ -103,9 +98,9 @@ object FileHelpers {
     /**
      * 获取generated/json自动生成目录
      */
-    fun getGeneratedFileRun(project: Project, callback: (file: VirtualFile) -> Unit) {
+    fun getGeneratedFileRun(project: Project, generatedPath: String, callback: (file: VirtualFile) -> Unit) {
         ApplicationManager.getApplication().runWriteAction {
-            callback(getGeneratedFile(project))
+            callback(getGeneratedFile(project, generatedPath))
         }
     }
 
@@ -113,41 +108,49 @@ object FileHelpers {
     /**
      * 自动生成所有文件的辅助文件
      */
-    fun generateAllDartEntityHelper(project: Project, allClass: List<Pair<HelperFileGeneratorInfo, String>>) {
+    fun generateAllDartEntityHelper(
+        project: Project,
+        generatedPath: String,
+        allClass: List<Pair<HelperFileGeneratorInfo, String>>
+    ) {
         // 使用 WriteCommandAction 包装整个循环操作
         WriteCommandAction.runWriteCommandAction(project) {
-                allClass.forEach {
-                    val packageName = it.second
-                    val helperClassGeneratorInfos = it.first
-                    val content = StringBuilder()
-                    //导包
-                    val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
-                    //辅助主类的包名
-                    content.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_convert_content.dart';\n")
-                    content.append(packageName)
-                    content.append("\n")
-                    //所有字段
-                    /* val allFields = helperClassGeneratorInfos?.classes?.flatMap {
-                         it.fields.mapNotNull { itemFiled ->
-                             itemFiled.annotationValue
-                         }.flatMap { annotationList ->
-                             annotationList.asIterable()
-                         }
-                     }*/
-                    helperClassGeneratorInfos.imports.filterNot {
-                        it.endsWith("json_field.dart';") || it.contains("dart:convert") || it.endsWith(
-                            ".g.dart';"
-                        )
-                    }.forEach { itemImport ->
-                        content.append(itemImport)
-                        content.append("\n\n")
-                    }
-                    content.append(helperClassGeneratorInfos.classes.joinToString("\n"))
-                    //创建文件
-                    getEntityHelperFile(project, "${File(packageName).nameWithoutExtension}.g.dart") { file ->
-                        file.commitContent(project, content.toString())
-                    }
+            allClass.forEach {
+                val packageName = it.second
+                val helperClassGeneratorInfos = it.first
+                val content = StringBuilder()
+                //导包
+                val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
+                //辅助主类的包名
+                content.append("import 'package:${pubSpecConfig?.name}/${generatedPath}/base/json_convert_content.dart';\n")
+                content.append(packageName)
+                content.append("\n")
+                //所有字段
+                /* val allFields = helperClassGeneratorInfos?.classes?.flatMap {
+                     it.fields.mapNotNull { itemFiled ->
+                         itemFiled.annotationValue
+                     }.flatMap { annotationList ->
+                         annotationList.asIterable()
+                     }
+                 }*/
+                helperClassGeneratorInfos.imports.filterNot {
+                    it.endsWith("json_field.dart';") || it.contains("dart:convert") || it.endsWith(
+                        ".g.dart';"
+                    )
+                }.forEach { itemImport ->
+                    content.append(itemImport)
+                    content.append("\n\n")
                 }
+                content.append(helperClassGeneratorInfos.classes.joinToString("\n"))
+                //创建文件
+                getEntityHelperFile(
+                    project,
+                    "${File(packageName).nameWithoutExtension}.g.dart",
+                    generatedPath
+                ) { file ->
+                    file.commitContent(project, content.toString())
+                }
+            }
         }
 
     }

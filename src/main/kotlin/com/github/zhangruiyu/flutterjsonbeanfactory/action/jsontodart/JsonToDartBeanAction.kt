@@ -15,15 +15,13 @@ import com.jetbrains.lang.dart.psi.DartFile
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.FlutterBeanFactoryAction
 import com.github.zhangruiyu.flutterjsonbeanfactory.file.FileHelpers
 import com.github.zhangruiyu.flutterjsonbeanfactory.ui.JsonInputDialog
-import com.github.zhangruiyu.flutterjsonbeanfactory.utils.executeCouldRollBackAction
-import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showErrorMessage
-import com.github.zhangruiyu.flutterjsonbeanfactory.utils.showNotify
+import com.github.zhangruiyu.flutterjsonbeanfactory.utils.*
 
 class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
 
     override fun actionPerformed(event: AnActionEvent) {
         val project = event.getData(PlatformDataKeys.PROJECT) ?: return
-
+        val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
         val dataContext = event.dataContext
         val module = LangDataKeys.MODULE.getData(dataContext) ?: return
 
@@ -34,10 +32,10 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
             else -> {
                 val root = ModuleRootManager.getInstance(module)
                 root.sourceRoots
-                        .asSequence()
-                        .mapNotNull {
-                            PsiManager.getInstance(project).findDirectory(it)
-                        }.firstOrNull()
+                    .asSequence()
+                    .mapNotNull {
+                        PsiManager.getInstance(project).findDirectory(it)
+                    }.firstOrNull()
             }
         } ?: return
 //        val directoryFactory = PsiDirectoryFactory.getInstance(directory.project)
@@ -54,19 +52,25 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                         project.showErrorMessage("The $fileName.dart already exists")
                         false
                     }
+
                     FileHelpers.containsProjectFile(project, "$fileName.dart") -> {
                         project.showErrorMessage("$fileName.dart already exists in other package")
                         false
                     }
+
                     else -> {
                         //生成dart文件的内容
-                        val generatorClassContent = ModelGenerator(collectInfo, project).generateDartClassesToString(fileName)
-                        generateDartDataClassFile(
+                        val generatorClassContent =
+                            ModelGenerator(collectInfo, project).generateDartClassesToString(
                                 fileName,
-                                generatorClassContent,
-                                project,
-                                psiFileFactory,
-                                directory
+                                pubSpecConfig?.generatedPath ?: GENERATED_PATH_DEFAULT
+                            )
+                        generateDartDataClassFile(
+                            fileName,
+                            generatorClassContent,
+                            project,
+                            psiFileFactory,
+                            directory
                         )
                         val notifyMessage = "Dart Data Class file generated successful"
                         FlutterBeanFactoryAction.generateAllFile(project)
@@ -84,16 +88,17 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
 
 
     private fun generateDartDataClassFile(
-            fileName: String,
-            classCodeContent: String,
-            project: Project?,
-            psiFileFactory: PsiFileFactory,
-            directory: PsiDirectory
+        fileName: String,
+        classCodeContent: String,
+        project: Project?,
+        psiFileFactory: PsiFileFactory,
+        directory: PsiDirectory
     ) {
 
         project.executeCouldRollBackAction {
 
-            val file = psiFileFactory.createFileFromText("$fileName.dart", DartFileType.INSTANCE, classCodeContent) as DartFile
+            val file =
+                psiFileFactory.createFileFromText("$fileName.dart", DartFileType.INSTANCE, classCodeContent) as DartFile
             directory.add(file)
             //包名
 //            val packageName = (directory.virtualFile.path + "/$fileName.dart").substringAfter("${project!!.name}/lib/")

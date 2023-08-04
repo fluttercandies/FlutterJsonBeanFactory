@@ -74,7 +74,7 @@ class ModelGenerator(
         return allClasses
     }
 
-    fun generateDartClassesToString(fileName: String): String {
+    fun generateDartClassesToString(fileName: String,generatedPath:String): String {
         //用阿里的防止int变为double 已解决 还是用google的吧 https://www.codercto.com/a/73857.html
 //        val jsonRawData = JSON.parseObject(collectInfo.userInputJson)
         val originalStr = collectInfo.userInputJson.trim()
@@ -105,9 +105,9 @@ class ModelGenerator(
         }
         val stringBuilder = StringBuilder()
         //导包
-        stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/base/json_field.dart';")
+        stringBuilder.append("import 'package:${pubSpecConfig?.name}/${generatedPath}/base/json_field.dart';")
         stringBuilder.append("\n")
-        stringBuilder.append("import 'package:${pubSpecConfig?.name}/generated/json/${fileName}.g.dart';")
+        stringBuilder.append("import 'package:${pubSpecConfig?.name}/${generatedPath}/${fileName}.g.dart';")
         stringBuilder.append("\n")
         stringBuilder.append("import 'dart:convert';")
         stringBuilder.append("\n")

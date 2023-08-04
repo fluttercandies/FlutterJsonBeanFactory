@@ -17,8 +17,6 @@ import java.io.FileInputStream
 object YamlHelper {
 
 
-    @Suppress("DuplicatedCode")
-    @JvmStatic
     fun getPubSpecConfig(project: Project): PubSpecConfig? {
         PubRoot.forFile(FileHelpers.getProjectIdeaFile(project))?.let { pubRoot ->
             FileInputStream(pubRoot.pubspec.path).use { inputStream ->
@@ -59,35 +57,19 @@ private fun isOptionFalse(map: Map<*, *>?, name: String): Boolean {
 }
 
 
-/**
- *判断文件内容是否一致 不一致则覆盖
- */
-fun VirtualFile?.commitContent(project: Project, content: String) {
-    val documentManager = PsiDocumentManager.getInstance(project)
-    val psiManager = PsiManager.getInstance(project)
-    this?.let { file ->
-        psiManager.findFile(file)?.let { dartFile ->
-            documentManager.getDocument(dartFile)?.let { document ->
-                if (document.text != content) {
-                    document.setText(content)
-                    documentManager.commitDocument(document)
-                    ///格式化下代码
-                    CommandProcessor.getInstance().runUndoTransparentAction {
-                        CodeStyleManager.getInstance(project).reformat(dartFile)
-                    }
-                } else {
-                    LogUtil.i("${dartFile.name}内容一致,无需修改和格式化")
-                }
-            }
-        }
-    }
+private fun optionString(map: Map<*, *>?, name: String, default: String): String {
+    return map?.get(name)?.toString() ?: default
 }
 
 
-//private const val PUBSPEC_KEY = "flutter-json"
+private const val PUBSPEC_KEY = "flutter_json"
 private const val PROJECT_NAME = "name"
 private const val PUBSPEC_ENABLE_PLUGIN_KEY = "enable"
+private const val PUBSPEC_GENERATED_PATH_KEY = "generated_path"
 private const val PUBSPEC_DART_ENABLED_KEY = "enable-for-dart"
+
+///默认值
+const val GENERATED_PATH_DEFAULT = "generated/json"
 
 data class PubSpecConfig(
     val project: Project,
@@ -95,7 +77,8 @@ data class PubSpecConfig(
     val map: Map<String, Any>,
     //项目名称,导包需要
     val name: String = ((if (map[PROJECT_NAME] == "null") null else map[PROJECT_NAME]) ?: project.name).toString(),
-//    val flutterJsonMap: Map<*, *>? = map[PUBSPEC_KEY] as? Map<*, *>,
+    val flutterJsonMap: Map<*, *>? = map[PUBSPEC_KEY] as? Map<*, *>,
     val isFlutterModule: Boolean = FlutterModuleUtils.hasFlutterModule(project),
 //    val isEnabled: Boolean = isOptionTrue(flutterJsonMap, PUBSPEC_ENABLE_PLUGIN_KEY),
+    val generatedPath: String = optionString(flutterJsonMap, PUBSPEC_GENERATED_PATH_KEY, GENERATED_PATH_DEFAULT),
 )

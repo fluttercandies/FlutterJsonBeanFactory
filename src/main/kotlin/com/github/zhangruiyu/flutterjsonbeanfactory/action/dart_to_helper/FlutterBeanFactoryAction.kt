@@ -29,7 +29,7 @@ class FlutterBeanFactoryAction : AnAction() {
         fun generateAllFile(project: Project) {
             val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
             //判断是否是flutter项目
-            if (YamlHelper.shouldActivateFor(project)) {
+            if (pubSpecConfig != null && YamlHelper.shouldActivateFor(project)) {
                 try {
                     //如果没有可以生成的文件,那么就不会生成
                     val allClass = FileHelpers.getAllEntityFiles(project)
@@ -41,7 +41,7 @@ class FlutterBeanFactoryAction : AnAction() {
                             FileGenerator(project).generate()
                         }
                     }
-                    FileHelpers.getGeneratedFileRun(project) {
+                    FileHelpers.getGeneratedFileRun(project,pubSpecConfig.generatedPath) {
                         //1.上次生成的老旧老文件
                         val oldHelperChildren =
                             it.children.filterIsInstance<VirtualFileImpl>().toMutableList()
@@ -56,7 +56,7 @@ class FlutterBeanFactoryAction : AnAction() {
                             }
                         }
                         //3.重新生成所有helper类
-                        FileHelpers.generateAllDartEntityHelper(project, allClass)
+                        FileHelpers.generateAllDartEntityHelper(project,pubSpecConfig.generatedPath, allClass)
                         //4.重新生成jsonConvert类
                         val content = StringBuilder()
                         content.append("// ignore_for_file: non_constant_identifier_names\n// ignore_for_file: camel_case_types\n// ignore_for_file: prefer_single_quotes\n\n")
@@ -211,7 +211,7 @@ class FlutterBeanFactoryAction : AnAction() {
 
                         content.append("\n")
                         content.append("}")
-                        val generated = FileHelpers.getJsonConvertBaseFile(project)
+                        val generated = FileHelpers.getJsonConvertBaseFile(project,pubSpecConfig.generatedPath)
                         //获取json_convert_content目录,并写入
                         generated.findOrCreateChildData(this, "json_convert_content.dart")
                             .commitContent(project, content.toString())
