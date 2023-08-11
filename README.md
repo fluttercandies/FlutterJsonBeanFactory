@@ -11,7 +11,6 @@ Language: English | [中文(qq群963752388)](https://juejin.cn/post/703073900296
 
 ## Known issue
 - If "No classes that inherit JsonConvert were found" is displayed, delete the ". Idea "directory under the project and click" invalidate Caches"in your (Andorid Studio or IDEA) button to restart the IDE
-- Two (and more)-dimensional array is not supported
 
 ## Template ToDo list
 - [x] Support for instantiation through generics
