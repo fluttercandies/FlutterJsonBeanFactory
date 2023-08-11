@@ -88,7 +88,6 @@ object GeneratorDartClassNodeToHelperInfo {
                                         //itemFileNode text : int code
                                         if (itemFileNode.elementType == DartTokenTypes.VAR_DECLARATION_LIST) {
                                             var nameNode: String? = null
-                                            var typeNode: String? = null
                                             var typeNodeInfo: FieldClassTypeInfo? = null
                                             var isLate = false
                                             var isStatic = false
@@ -191,7 +190,6 @@ object GeneratorDartClassNodeToHelperInfo {
                                                         }
                                                         println("普通解析222 ${it.firstChildNode.text} ${it}")
                                                     }
-                                                    println("普通解析 $nameNode $typeNode")
                                                     //不是注解,普通解析
                                                     when {
                                                         fieldWholeNode.text == "late" || fieldWholeNode.text == "=" -> {
@@ -199,7 +197,8 @@ object GeneratorDartClassNodeToHelperInfo {
                                                         }
 
                                                         isVar -> {
-                                                            typeNode = fieldWholeNode.text
+                                                            typeNodeInfo =
+                                                                FieldClassTypeInfo(primaryType = "dynamic", nullable = true)
                                                         }
 
                                                         fieldWholeNode.elementType == DartTokenTypes.TYPE -> {
@@ -216,7 +215,6 @@ object GeneratorDartClassNodeToHelperInfo {
                                                                 println("没有泛型")
                                                             }
 
-                                                            typeNode = fieldWholeNode.text
                                                         }
 
                                                         fieldWholeNode.elementType == DartTokenTypes.COMPONENT_NAME -> {
@@ -240,9 +238,8 @@ object GeneratorDartClassNodeToHelperInfo {
                                             if (!isLate && itemFileNode.lastChildNode.text.contains("=")) {
                                                 isLate = true
                                             }
-                                            if (nameNode != null && typeNode != null) {
+                                            if (nameNode != null && typeNodeInfo != null) {
                                                 helperClassGeneratorInfo.addFiled(
-                                                    typeNode!!,
                                                     typeNodeInfo!!,
                                                     nameNode!!,
                                                     isLate,

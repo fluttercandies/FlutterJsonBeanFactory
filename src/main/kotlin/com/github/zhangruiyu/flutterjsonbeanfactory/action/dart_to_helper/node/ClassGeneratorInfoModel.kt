@@ -24,7 +24,6 @@ class HelperClassGeneratorInfo {
 
 
     fun addFiled(
-        type: String,
         typeNodeInfo: FieldClassTypeInfo,
         name: String,
         isLate: Boolean,
@@ -33,11 +32,9 @@ class HelperClassGeneratorInfo {
         //如果是?结尾是可空类型
         fields.add(
             Filed(
-                if (type.endsWith("?")) type.take(type.length - 1) else type,
                 typeNodeInfo,
                 name,
                 isLate,
-                type.endsWith("?")
             ).apply {
                 this.annotationValue = annotationValue
             })
@@ -103,7 +100,11 @@ class HelperClassGeneratorInfo {
         sb.append("\t$className copyWith({")
         sb.append("\n")
         fields.forEach {
-            sb.append("\t${it.type}? ${it.name},\n")
+            if(it.typeNodeInfo.primaryType == "dynamic"){
+                sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")} ${it.name},\n")
+            }else {
+                sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")}? ${it.name},\n")
+            }
         }
         sb.append("\t}) {\n")
         sb.append("\t\treturn $className()")
@@ -121,15 +122,11 @@ class HelperClassGeneratorInfo {
 }
 
 class Filed(
-    //字段类型
-    var type: String,
     var typeNodeInfo: FieldClassTypeInfo,
     //字段名字
     var name: String,
     //是否是late修饰
     var isLate: Boolean,
-    //是否是可空类型
-    var isCanNull: Boolean,
 ) {
 
     //待定
@@ -283,7 +280,7 @@ class Filed(
     }
 
     fun toJsonExpression(): String {
-        val type = type
+        val type = typeNodeInfo.primaryType + (typeNodeInfo.genericityString ?: "")
         val name = name
         //从json里取值的名称
         val getJsonName = getValueByName("name") ?: name
