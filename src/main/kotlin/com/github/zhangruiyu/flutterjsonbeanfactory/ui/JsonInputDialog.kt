@@ -264,16 +264,6 @@ open class JsonInputDialog(
                         }
                     listCheckBox[1] =
                         checkBox(
-                            "copyWith",
-                            ApplicationManager.getApplication().getService(Settings::class.java).copyWith == true
-                        ).apply {
-                            component.addItemListener {
-                                ApplicationManager.getApplication().getService(Settings::class.java).copyWith =
-                                    component.isSelected
-                            }
-                        }
-                    listCheckBox[2] =
-                        checkBox(
                             "default value",
                             ApplicationManager.getApplication().getService(Settings::class.java).setDefault == true
                         ).apply {

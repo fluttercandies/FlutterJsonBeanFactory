@@ -14,7 +14,7 @@ class SettingComponent : Configurable {
             return false
         }
         return getSettings() != Settings(
-            settingLayout!!.getModelSuffix(), isOpenNullAble = false, copyWith = false, setDefault = false
+            settingLayout!!.getModelSuffix(), isOpenNullAble = false,  setDefault = false
         )
     }
 

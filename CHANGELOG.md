@@ -2,6 +2,12 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## [5.0.1]
+
+### Added
+
+- copyWith move to .g.dart
+
 ## [5.0.0]
 
 ### Added

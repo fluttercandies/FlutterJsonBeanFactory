@@ -9,7 +9,6 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 data class Settings(
     var modelSuffix: String,
     var isOpenNullAble: Boolean?,
-    var copyWith: Boolean?,
     var setDefault: Boolean?,
     var boolDefaultValue: String = "false",
     var stringDefaultValue: String = "''",
@@ -17,7 +16,7 @@ data class Settings(
 ) : PersistentStateComponent<Settings> {
 
     constructor() : this(
-        "entity", null, null, null
+        "entity", null, null
     )
 
     override fun getState(): Settings {

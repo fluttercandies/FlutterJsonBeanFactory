@@ -2,7 +2,9 @@ package com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node
 
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.model.FieldClassTypeInfo
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
+import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toLowerCaseFirstOne
+import com.intellij.openapi.application.ApplicationManager
 
 
 /**
@@ -51,6 +53,7 @@ class HelperClassGeneratorInfo {
         sb.append("\n")
         sb.append("\n")
         sb.append(jsonGenFunc())
+        sb.append(copyWithFunc())
         return sb.toString()
     }
 
@@ -87,6 +90,29 @@ class HelperClassGeneratorInfo {
         }
         sb.append("\treturn data;\n");
         sb.append("}");
+        return sb.toString()
+    }
+
+
+    private fun copyWithFunc(): String {
+        val sb = StringBuffer()
+        sb.append("\n")
+        sb.append("\n")
+        sb.append("extension ${className}Ext on $className {")
+        sb.append("\n")
+        sb.append("\t$className copyWith({")
+        sb.append("\n")
+        fields.forEach {
+            sb.append("\t${it.type}? ${it.name},\n")
+        }
+        sb.append("\t}) {\n")
+        sb.append("\t\treturn $className()")
+        fields.forEach {
+            sb.append("\n\t\t\t..${it.name} = ${it.name} ?? this.${it.name}")
+        }
+        sb.append(";")
+        sb.append("}")
+        sb.append("}")
         return sb.toString()
 
     }

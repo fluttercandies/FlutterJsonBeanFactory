@@ -123,27 +123,6 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
             sb.append("\n\n")
             sb.append("\tMap<String, dynamic> toJson() => \$${name}ToJson(this);")
             sb.append("\n")
-            if (ApplicationManager.getApplication().getService(Settings::class.java).copyWith == true) {
-                sb.append("\n")
-                sb.append("\t$name copyWith({${
-                    fields.keys.joinToString { key ->
-                        val f = fields[key]
-                        val fieldName = fixFieldName(key, f, privateFields)
-                        val tempSb = StringBuffer();
-                        _addCopyWithTypeDef(f!!, tempSb, "?")
-                        tempSb.append(" $fieldName")
-                    }
-                }}) {")
-                sb.append("\n")
-                sb.append("\t\treturn $name()")
-                sb.append(fields.keys.joinToString("") { key ->
-                    val f = fields[key]
-                    val fieldName = fixFieldName(key, f, privateFields)
-                    "\n\t\t\t..$fieldName= $fieldName ?? this.$fieldName"
-                })
-                sb.append(";")
-                sb.append("\n\t}\n")
-            }
             sb.append("\n")
             sb.append("\t@override")
             sb.append("\n")
