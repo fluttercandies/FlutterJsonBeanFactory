@@ -111,6 +111,9 @@ class ModelGenerator(
         stringBuilder.append("\n")
         stringBuilder.append("import 'dart:convert';")
         stringBuilder.append("\n")
+        ///这个是方便copyWith调用
+        stringBuilder.append("export 'package:${pubSpecConfig?.name}/${generatedPath}/${fileName}.g.dart';")
+        stringBuilder.append("\n")
         stringBuilder.append("\n")
         stringBuilder.append(classContent)
         //生成helper类
