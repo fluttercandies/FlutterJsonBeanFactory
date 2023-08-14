@@ -178,6 +178,11 @@ open class JsonInputDialog(
         }, settings.boolDefaultValue).forEach {
             defaultContainer.add(it)
         }
+        buildDefaultItem("List", { newText ->
+            settings.listDefaultValue = newText
+        }, settings.listDefaultValue).forEach {
+            defaultContainer.add(it)
+        }
         defaultContainer.add(Box.createHorizontalGlue())
         return defaultContainer
     }

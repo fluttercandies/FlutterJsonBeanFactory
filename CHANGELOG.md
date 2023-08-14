@@ -2,12 +2,11 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## [5.0.4]
+- Support default value(list)
+
 ## [5.0.3]
 - copyWith move to .g.dart
-- 打扰:我想在北京找份flutter开发的工作,请问有没有大佬可以帮忙推荐一下,谢谢了,我的邮箱:157418979@qq.com
-<!-- Keep a Changelog guide -> https://keepachangelog.com -->
-
-# FlutterJsonBeanFactory Changelog
 
 ## [5.0.0]
 

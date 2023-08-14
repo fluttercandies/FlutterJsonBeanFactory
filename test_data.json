@@ -1,6 +1,7 @@
 {
   "glossary": {
     "title": "example glossary",
+    "intList": [1,2,3,4],
     "GlossDiv": {
       "title": "S",
       "age": 1,

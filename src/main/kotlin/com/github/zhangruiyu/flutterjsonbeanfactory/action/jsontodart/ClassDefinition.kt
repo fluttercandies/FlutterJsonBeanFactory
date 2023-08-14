@@ -89,7 +89,13 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
                 _addTypeDef(f, sb, prefix, suffix)
                 sb.append(" $fieldName")
                 if (settings.setDefault == true) {
-                    if (f.subtype == null) {
+                    if ((f.name.startsWith("List<") || f.name == "List")) {
+                        if (settings.listFieldDefaultValue()
+                                ?.isNotEmpty() == true
+                        ) {
+                            sb.append(" = ${settings.listFieldDefaultValue()}")
+                        }
+                    } else if (f.subtype == null) {
                         if (f.name == "String" && settings.stringFieldDefaultValue()?.isNotEmpty() == true) {
                             sb.append(" = ${settings.stringFieldDefaultValue()}")
                         } else if (f.name == "bool" && settings.stringFieldDefaultValue()?.isNotEmpty() == true) {
