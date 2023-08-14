@@ -56,42 +56,6 @@ fun isBaseType(typeName: String): Boolean {
     return BASE_TYPES[typeName] ?: false
 }
 
-/**
- * 是否是map类型
- */
-fun isMapType(type: String): Boolean {
-    return type.startsWith("Map<") || type == "Map"
-}
-
-/**
- * 是否是set类型
- */
-fun isSetType(type: String): Boolean {
-    return type.startsWith("Set<") || type == "Set"
-}
-
-
-fun getListSubType(typeName: String): String {
-    val newTypeName = typeName.replace("?", "")
-    return mapOf(
-        "List<num>" to "num",
-        "List<int>" to "int",
-        "List<double>" to "double",
-        "List<String>" to "String",
-        "List<DateTime>" to "DateTime",
-        "List<bool>" to "bool",
-        "List<dynamic>" to "dynamic",
-        "List" to "dynamic",
-        "List<Null>" to "dynamic"
-    )[newTypeName] ?: newTypeName.substringAfter("<").substringBefore(">")
-}
-
-fun getListSubTypeCanNull(typeName: String): String {
-    return mapOf(
-        "List" to "dynamic",
-    )[typeName] ?: typeName.substringAfter("<").substringBefore(">")
-}
-
 
 //是否是List类型
 fun isListType(typeName: String): Boolean {

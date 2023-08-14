@@ -89,7 +89,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
                 _addTypeDef(f, sb, prefix, suffix)
                 sb.append(" $fieldName")
                 if (settings.setDefault == true) {
-                    if ((f.name.startsWith("List<") || f.name == "List")) {
+                    if (isListType(f.name)) {
                         if (settings.listFieldDefaultValue()
                                 ?.isNotEmpty() == true
                         ) {

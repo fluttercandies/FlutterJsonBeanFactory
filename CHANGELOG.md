@@ -4,6 +4,7 @@
 
 ## [5.0.4]
 - Support default value(list)
+- Fixed an issue where hot reload would not refresh convertFuncMap after adding the model class 
 
 ## [5.0.3]
 - copyWith move to .g.dart

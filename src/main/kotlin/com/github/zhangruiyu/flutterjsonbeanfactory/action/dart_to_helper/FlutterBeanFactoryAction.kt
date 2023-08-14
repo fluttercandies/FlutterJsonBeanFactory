@@ -79,7 +79,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("\n\n")
                         content.append("class JsonConvert {")
                         content.append("\n")
-                        content.append("\tstatic final Map<String, JsonConvertFunction> convertFuncMap = {")
+                        content.append("\tstatic Map<String, JsonConvertFunction> get convertFuncMap => {")
                         content.append("\n")
                         allClass.forEach { itemClass ->
                             itemClass.first.classes.forEach { itemFile ->
