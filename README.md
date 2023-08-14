@@ -6,6 +6,8 @@ What I do is generate dart beans based on json, as well as generics parameters a
 
 Language: English | [中文(qq群963752388)](https://juejin.cn/post/7030739002969817118/)
 
+打扰:我想在北京找份flutter开发的工作,请问有没有大佬可以帮忙推荐一下,谢谢了,我的邮箱:157418979@qq.com
+
 ### Easy Use
 ![image](.github/beantojson_factory.gif)
 
