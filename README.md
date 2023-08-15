@@ -78,7 +78,7 @@ flutter_json:
 <!-- Plugin description end -->
 
 ### 开源不易，觉得有用的话可以请作者喝杯奶茶🧋
-<img src="https://github.com/fluttercandies/FlutterJsonBeanFactory/blob/master/wechat_pay.png" width = "200" height = "160" alt="打赏"/>
+<img src="https://github.com/fluttercandies/FlutterJsonBeanFactory/blob/master/wechat_pay.png" width = "300" height = "300" alt="打赏"/>
 
 ### Find me useful ? :heart:
 * Support me by clicking the :star: button on the upper right of this page. :v:
