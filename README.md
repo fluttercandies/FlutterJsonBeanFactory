@@ -96,27 +96,55 @@ flutter_json:
 
 <img src="https://github.com/fluttercandies/FlutterJsonBeanFactory/blob/master/wechat_pay.png" width = "300" height = "300" alt="打赏"/>
 
-### 赞助(非常非常的感谢,仅记录此插件收到的打赏,)
+### 赞助列表(非常非常的感谢,仅记录此插件收到的打赏,承诺将收到的所有赞助用于购买可乐和赞助其他开源作者)
 
 <table>
   <thead>
     <tr>
       <th align="center" style="width: 180px;">
+          <sub>名称</sub><br>
+      </th>
+      <th align="center" style="width: 180px;">
+          <sub>金额</sub><br>
+      </th>
+      <th align="center" style="width: 180px;">
+          <sub>时间</sub><br>
+      </th>
+    </tr>
+    <tr>
+      <th align="center" style="width: 180px;">
           <sub>QQ:初一</sub><br>
+      </th>
+      <th align="center" style="width: 180px;">
           <sub>100元</sub>
+      </th>
+      <th align="center" style="width: 180px;">
           <sub>2023年08月15日</sub>
       </th>
+    </tr>
+    <tr>
       <th align="center" style="width: 180px;">
           <sub>Github:cr1992</sub><br>
+      </th>
+       <th align="center" style="width: 180px;">
           <sub>6.66元</sub>
+      </th>
+       <th align="center" style="width: 180px;">
           <sub>2023年08月4日</sub>
       </th>
-      <th align="center" style="width: 180px;">
+    </tr>
+    <tr>
+     <th align="center" style="width: 180px;">
           <sub>QQ:余军</sub><br>
+      </th>
+     <th align="center" style="width: 180px;">
           <sub>200元</sub>
+      </th>
+     <th align="center" style="width: 180px;">
           <sub>2022年12月</sub>
       </th>
     </tr>
+
   </thead>
 </table>
 
