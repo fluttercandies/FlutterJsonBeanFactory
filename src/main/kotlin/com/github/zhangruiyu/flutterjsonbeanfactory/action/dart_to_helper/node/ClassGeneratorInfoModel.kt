@@ -100,9 +100,9 @@ class HelperClassGeneratorInfo {
         sb.append("\t$className copyWith({")
         sb.append("\n")
         fields.forEach {
-            if(it.typeNodeInfo.primaryType == "dynamic"){
+            if (it.typeNodeInfo.primaryType == "dynamic") {
                 sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")} ${it.name},\n")
-            }else {
+            } else {
                 sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")}? ${it.name},\n")
             }
         }
@@ -179,7 +179,7 @@ class Filed(
             println(a)
             a
         } else if (typeNodeInfo?.isList() == true || typeNodeInfo?.isSet() == true) {
-            generateFromJsonList(value, typeNodeInfo)
+            generateFromJsonList(value, isRoot, typeNodeInfo)
         } else {
             if (typeNodeInfo?.primaryType == null || typeNodeInfo.primaryType == "dynamic" || typeNodeInfo.primaryType == "var") {
                 value
@@ -241,9 +241,10 @@ class Filed(
         return sb.toString()
     }
 
-    fun generateFromJsonList(value: String, typeNodeInfo: FieldClassTypeInfo?): String {
+    private fun generateFromJsonList(value: String, isRoot: Boolean, typeNodeInfo: FieldClassTypeInfo?): String {
         val sb = StringBuffer()
-        val nullString = nullString(typeNodeInfo?.nullable == true)
+        ///如果是root,那么写成可null
+        val nullString = nullString(typeNodeInfo?.nullable == true || isRoot)
         sb.append("(${value} as ${typeNodeInfo?.primaryType}<dynamic>${nullString})${nullString}.map(")
         sb.append("\n")
         sb.append("\t")
