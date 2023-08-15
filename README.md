@@ -1,4 +1,3 @@
-
 # FlutterJsonBeanFactory
 
 Hi,Welcome to come to see me!
@@ -9,12 +8,16 @@ Language: English | [中文(qq群963752388)](https://juejin.cn/post/703073900296
 打扰:我想在北京找份flutter开发的工作,请问有没有大佬可以帮忙推荐一下,谢谢了,我的邮箱:157418979@qq.com
 
 ### Easy Use
+
 ![image](.github/beantojson_factory.gif)
 
 ## Known issue
-- If "No classes that inherit JsonConvert were found" is displayed, delete the ". Idea "directory under the project and click" invalidate Caches"in your (Andorid Studio or IDEA) button to restart the IDE
+
+- If "No classes that inherit JsonConvert were found" is displayed, delete the ". Idea "directory under the project and
+  click" invalidate Caches"in your (Andorid Studio or IDEA) button to restart the IDE
 
 ## Template ToDo list
+
 - [x] Support for instantiation through generics
 - [x] Support customized JSON parsing
 - [x] The supported types are: int double String datetime dynamic var, and List of the above types
@@ -22,28 +25,39 @@ Language: English | [中文(qq群963752388)](https://juejin.cn/post/703073900296
 - [x] Support custom generated path
 
 <!-- Plugin description -->
+
 ### Usage
+
 * 打扰:我想在北京找份flutter开发的工作,请问有没有大佬可以帮忙推荐一下,谢谢了,我的邮箱:157418979@qq.com
-* <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "FlutterJsonBeanFactory"</kbd> >
+* <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "
+  FlutterJsonBeanFactory"</kbd> >
   <kbd>Install Plugin</kbd>
 * Restart your Develop tools
 * Modify in the YAML file of the Flutter project
 
 before:
+
 ```
 environment:
   sdk: ">=2.12.0 <3.0.0"
 ```
+
 after modification:
+
 ```
 environment:
   sdk: ">=2.15.0 <3.0.0"
 ```
-* Press shortcut key `alt ` + `j` for mac  , right click on package -> `New`->`Dart bean clas file from JSON`　And Then you will know how to use
-* If you change the fields in the class, just press the shortcut alt + j to regenerate the tojson and fromjson methods. The generated method regenerates all helper classes and JsonConvert classes (the same as the shortcut alt + j) each time an entity file is created in the generated/json directory.
+
+* Press shortcut key `alt ` + `j` for mac , right click on package -> `New`->`Dart bean clas file from JSON`And Then you
+  will know how to use
+* If you change the fields in the class, just press the shortcut alt + j to regenerate the tojson and fromjson methods.
+  The generated method regenerates all helper classes and JsonConvert classes (the same as the shortcut alt + j) each
+  time an entity file is created in the generated/json directory.
 * If you need generic conversions in your network requests, use the JsonConvert.fromJsonAsT<T> method directly.
 * If no helper files are generated, you can delete the .idea directory and restart your idea
 * You can customize the JSON parsing scheme
+
 ```dart
 import 'generated/json/base/json_convert_content.dart';
 
@@ -53,7 +67,7 @@ class MyJsonConvert extends JsonConvert {
       String type = T.toString();
       if (type == "DateTime") {
         return DateFormat("dd.MM.yyyy").parse(value) as T;
-      }else{
+      } else {
         return super.asT<T>(value);
       }
     } catch (e, stackTrace) {
@@ -70,6 +84,7 @@ Future<void> main() async {
 ```
 
 custom generated path->(pubspec.yaml)
+
 ```yaml 
 flutter_json:
   generated_path: src/json/**
@@ -78,11 +93,44 @@ flutter_json:
 <!-- Plugin description end -->
 
 ### 开源不易，觉得有用的话可以请作者喝杯冰可乐🥤
+
 <img src="https://github.com/fluttercandies/FlutterJsonBeanFactory/blob/master/wechat_pay.png" width = "300" height = "300" alt="打赏"/>
 
+### 赞助(非常非常的感谢,仅记录此插件收到的打赏,)
+
+<table>
+  <thead>
+    <tr>
+      <th align="center" style="width: 180px;">
+        <a href="https://www.upyun.com/">
+          <sub>QQ:初一</sub><br>
+          <sub>100元</sub>
+          <sub>2023年08月15日</sub>
+        </a>
+      </th>
+      <th align="center" style="width: 180px;">
+        <a href="https://www.upyun.com/">
+          <sub>Github:cr1992</sub><br>
+          <sub>6.66元</sub>
+          <sub>2023年08月4日</sub>
+        </a>
+      </th>
+      <th align="center" style="width: 180px;">
+        <a href="https://www.upyun.com/">
+          <sub>QQ:余军</sub><br>
+          <sub>200元</sub>
+          <sub>2022年12月</sub>
+        </a>
+      </th>
+    </tr>
+  </thead>
+</table>
+
 ### Find me useful ? :heart:
+
 * Support me by clicking the :star: button on the upper right of this page. :v:
 * Spread to others to let more people have a better develope expierience :heart:
+
 ---
 Thanks to [JetBrains](https://www.jetbrains.com/?from=fluttercandies) for allocating free open-source licenses for IDEs
 such as [IntelliJ IDEA](https://www.jetbrains.com/idea/?from=fluttercandies).
