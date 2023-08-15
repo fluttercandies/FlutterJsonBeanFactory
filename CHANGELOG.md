@@ -1,8 +1,8 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# FlutterJsonBeanFactory Changelog
+# Changelog
 
-## [5.0.4]
+## [5.0.6]
 - Support default value(list)
 - Fixed an issue where hot reload would not refresh convertFuncMap after adding the model class 
 

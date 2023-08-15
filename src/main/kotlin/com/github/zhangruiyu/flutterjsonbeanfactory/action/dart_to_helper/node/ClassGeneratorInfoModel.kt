@@ -95,7 +95,7 @@ class HelperClassGeneratorInfo {
         val sb = StringBuffer()
         sb.append("\n")
         sb.append("\n")
-        sb.append("extension ${className}Ext on $className {")
+        sb.append("extension ${className}Extension on $className {")
         sb.append("\n")
         sb.append("\t$className copyWith({")
         sb.append("\n")
