@@ -102,25 +102,19 @@ flutter_json:
   <thead>
     <tr>
       <th align="center" style="width: 180px;">
-        <a href="https://www.upyun.com/">
           <sub>QQ:初一</sub><br>
           <sub>100元</sub>
           <sub>2023年08月15日</sub>
-        </a>
       </th>
       <th align="center" style="width: 180px;">
-        <a href="https://www.upyun.com/">
           <sub>Github:cr1992</sub><br>
           <sub>6.66元</sub>
           <sub>2023年08月4日</sub>
-        </a>
       </th>
       <th align="center" style="width: 180px;">
-        <a href="https://www.upyun.com/">
           <sub>QQ:余军</sub><br>
           <sub>200元</sub>
           <sub>2022年12月</sub>
-        </a>
       </th>
     </tr>
   </thead>
