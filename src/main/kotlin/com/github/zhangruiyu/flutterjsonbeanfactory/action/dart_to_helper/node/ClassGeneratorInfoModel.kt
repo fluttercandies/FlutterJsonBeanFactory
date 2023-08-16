@@ -100,10 +100,12 @@ class HelperClassGeneratorInfo {
         sb.append("\t$className copyWith({")
         sb.append("\n")
         fields.forEach {
-            if (it.typeNodeInfo.primaryType == "dynamic") {
-                sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")} ${it.name},\n")
-            } else {
-                sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")}? ${it.name},\n")
+            if (it.getValueByName<Boolean>("serialize") != false) {
+                if (it.typeNodeInfo.primaryType == "dynamic") {
+                    sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")} ${it.name},\n")
+                } else {
+                    sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")}? ${it.name},\n")
+                }
             }
         }
         sb.append("\t}) {\n")

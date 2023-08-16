@@ -95,13 +95,14 @@ object GeneratorDartClassNodeToHelperInfo {
                                             val allAnnotation = mutableListOf<AnnotationValue>()
                                             itemFileNode.firstChildNode.children().forEach lit@{ fieldWholeNode ->
                                                 //如果第一个是注解,解析注解里的内容
-                                                if (fieldWholeNode.text == "static") {
+                                                val fieldWholeNodeText = fieldWholeNode.text
+                                                if (fieldWholeNodeText == "static") {
                                                     //什么也不干
                                                     isStatic = true
-                                                } else if (fieldWholeNode.text == "final") {
+                                                } else if (fieldWholeNodeText == "final") {
                                                     //什么也不干
                                                     return@lit
-                                                } else if (fieldWholeNode.text.trim().isEmpty()) {
+                                                } else if (fieldWholeNodeText.trim().isEmpty()) {
                                                     //什么也不干
                                                     return@lit
                                                 } else if (isStatic) {
@@ -183,7 +184,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                                     }
                                                 } else {
                                                     val isVar =
-                                                        fieldWholeNode.text == "var"
+                                                        fieldWholeNodeText == "var"
                                                     fieldWholeNode.children().forEach {
                                                         it.children().forEach { it2 ->
                                                             println("普通解析22222 ${it2.text} ${it2::class.java.name}")
@@ -192,13 +193,16 @@ object GeneratorDartClassNodeToHelperInfo {
                                                     }
                                                     //不是注解,普通解析
                                                     when {
-                                                        fieldWholeNode.text == "late" || fieldWholeNode.text == "=" -> {
+                                                        fieldWholeNodeText == "late" || fieldWholeNodeText == "=" -> {
                                                             isLate = true
                                                         }
 
                                                         isVar -> {
                                                             typeNodeInfo =
-                                                                FieldClassTypeInfo(primaryType = "dynamic", nullable = true)
+                                                                FieldClassTypeInfo(
+                                                                    primaryType = "dynamic",
+                                                                    nullable = true
+                                                                )
                                                         }
 
                                                         fieldWholeNode.elementType == DartTokenTypes.TYPE -> {
@@ -210,7 +214,7 @@ object GeneratorDartClassNodeToHelperInfo {
                                                                             .toList()
                                                                     )
                                                                 println(typeNodeInfo)
-                                                                println("普通解析222 ${fieldWholeNode.text}")
+                                                                println("普通解析222 $fieldWholeNodeText")
                                                             } else {
                                                                 println("没有泛型")
                                                             }
@@ -218,19 +222,24 @@ object GeneratorDartClassNodeToHelperInfo {
                                                         }
 
                                                         fieldWholeNode.elementType == DartTokenTypes.COMPONENT_NAME -> {
-                                                            nameNode = fieldWholeNode.text
+                                                            ///私有属性不考虑
+                                                            if (fieldWholeNodeText.startsWith("_")) {
+                                                                return@lit
+                                                            } else {
+                                                                nameNode = fieldWholeNodeText
+                                                            }
                                                         }
                                                         //  println("普通解析类型 ${itemFieldNode.elementType}")
                                                         //  println("普通解析类型文本 ${itemFieldNode.text}")
                                                     }
                                                     if (fieldWholeNode.elementType is DartElementType) {
-                                                        if (notSupportType.contains(fieldWholeNode.text)) {
+                                                        if (notSupportType.contains(fieldWholeNodeText)) {
                                                             val errorMessage =
                                                                 "This file contains code that cannot be parsed: ${file.name}. content: ${nodeName}. type not supported ,such as ${notSupportType.joinToString()}"
                                                             throw RuntimeException(errorMessage)
                                                         }
                                                     }
-                                                    println("普通解析类型文本 ${fieldWholeNode.text} 普通解析类型 ${fieldWholeNode.elementType}")
+                                                    println("普通解析类型文本 $fieldWholeNodeText 普通解析类型 ${fieldWholeNode.elementType}")
                                                 }
 
                                             }
