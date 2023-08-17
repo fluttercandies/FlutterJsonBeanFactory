@@ -51,9 +51,7 @@ class HelperClassGeneratorInfo {
         sb.append("\n")
         sb.append("\n")
         sb.append(jsonGenFunc())
-        if (serializeFields.isNotEmpty()) {
-            sb.append(copyWithFunc())
-        }
+        sb.append(copyWithFunc())
         return sb.toString()
     }
 
@@ -93,22 +91,24 @@ class HelperClassGeneratorInfo {
         sb.append("\n")
         sb.append("extension ${className}Extension on $className {")
         sb.append("\n")
-        sb.append("\t$className copyWith({")
-        sb.append("\n")
-        serializeFields.forEach {
-            if (it.typeNodeInfo.primaryType == "dynamic") {
-                sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")} ${it.name},\n")
-            } else {
-                sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")}? ${it.name},\n")
+        if (serializeFields.isNotEmpty()) {
+            sb.append("\t$className copyWith({")
+            sb.append("\n")
+            serializeFields.forEach {
+                if (it.typeNodeInfo.primaryType == "dynamic") {
+                    sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")} ${it.name},\n")
+                } else {
+                    sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")}? ${it.name},\n")
+                }
             }
+            sb.append("\t}) {\n")
+            sb.append("\t\treturn $className()")
+            fields.forEach {
+                sb.append("\n\t\t\t..${it.name} = ${it.name} ?? this.${it.name}")
+            }
+            sb.append(";")
+            sb.append("}")
         }
-        sb.append("\t}) {\n")
-        sb.append("\t\treturn $className()")
-        fields.forEach {
-            sb.append("\n\t\t\t..${it.name} = ${it.name} ?? this.${it.name}")
-        }
-        sb.append(";")
-        sb.append("}")
         sb.append("}")
         return sb.toString()
 

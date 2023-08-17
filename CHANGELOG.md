@@ -2,6 +2,11 @@
 
 # Changelog
 
+## [5.0.9]
+
+### Bugfix
+- When there is no field in the class, the copyWith generation error occurs
+
 ## [5.0.8]
 
 ### Added
