@@ -20,8 +20,9 @@ class HelperFileGeneratorInfo(
 class HelperClassGeneratorInfo {
     //协助的类名
     lateinit var className: String
-    val fields: MutableList<Filed> = mutableListOf()
-
+    private val fields: MutableList<Filed> = mutableListOf()
+    private val serializeFields get() = fields.filter { it.getValueByName<Boolean>("serialize") != false }
+    private val deserializeFields get() = fields.filter { it.getValueByName<Boolean>("deserialize") != false }
 
     fun addFiled(
         typeNodeInfo: FieldClassTypeInfo,
@@ -50,7 +51,9 @@ class HelperClassGeneratorInfo {
         sb.append("\n")
         sb.append("\n")
         sb.append(jsonGenFunc())
-        sb.append(copyWithFunc())
+        if (serializeFields.isNotEmpty()) {
+            sb.append(copyWithFunc())
+        }
         return sb.toString()
     }
 
@@ -61,12 +64,8 @@ class HelperClassGeneratorInfo {
         sb.append("$className \$${className}FromJson(Map<String, dynamic> json) {\n")
         val classInstanceName = className.toLowerCaseFirstOne()
         sb.append("\tfinal $className $classInstanceName = ${className}();\n")
-        fields.forEach { k ->
-            //如果deserialize不是false,那么就解析,否则不解析
-            if (k.getValueByName<Boolean>("deserialize") != false) {
-//                sb.append("\t${jsonParseExpression(k, classInstanceName)}\n")
-                sb.append(k.generateFromJsonField(classInstanceName))
-            }
+        deserializeFields.forEach { k ->
+            sb.append(k.generateFromJsonField(classInstanceName))
         }
         sb.append("\treturn ${classInstanceName};\n")
         sb.append("}")
@@ -79,11 +78,8 @@ class HelperClassGeneratorInfo {
         val sb = StringBuffer();
         sb.append("Map<String, dynamic> \$${className}ToJson(${className} entity) {\n");
         sb.append("\tfinal Map<String, dynamic> data = <String, dynamic>{};\n");
-        fields.forEach { k ->
-            //如果serialize不是false,那么就解析,否则不解析
-            if (k.getValueByName<Boolean>("serialize") != false) {
-                sb.append("\t${k.toJsonExpression()}\n")
-            }
+        serializeFields.forEach { k ->
+            sb.append("\t${k.toJsonExpression()}\n")
         }
         sb.append("\treturn data;\n");
         sb.append("}");
@@ -99,13 +95,11 @@ class HelperClassGeneratorInfo {
         sb.append("\n")
         sb.append("\t$className copyWith({")
         sb.append("\n")
-        fields.forEach {
-            if (it.getValueByName<Boolean>("serialize") != false) {
-                if (it.typeNodeInfo.primaryType == "dynamic") {
-                    sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")} ${it.name},\n")
-                } else {
-                    sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")}? ${it.name},\n")
-                }
+        serializeFields.forEach {
+            if (it.typeNodeInfo.primaryType == "dynamic") {
+                sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")} ${it.name},\n")
+            } else {
+                sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")}? ${it.name},\n")
             }
         }
         sb.append("\t}) {\n")
