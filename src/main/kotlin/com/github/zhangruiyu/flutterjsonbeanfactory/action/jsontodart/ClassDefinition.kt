@@ -3,18 +3,20 @@ package com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart
 import com.intellij.openapi.application.ApplicationManager
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.utils.*
 import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings
+import com.github.zhangruiyu.flutterjsonbeanfactory.utils.FieldUtils
+import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toLowerCaseFirstOne
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.toUpperCaseFirstOne
-import org.apache.commons.lang.WordUtils
 
 class ClassDefinition(private val name: String, private val privateFields: Boolean = false) {
+    ///map的key是json的key,没有转成dart的命名方式
     val fields = mutableMapOf<String, TypeDefinition>()
     val dependencies: List<Dependency>
         get() {
             val dependenciesList = mutableListOf<Dependency>()
-            val keys = fields.keys
-            keys.forEach { k ->
-                if (fields[k]!!.isPrimitive.not()) {
-                    dependenciesList.add(Dependency(k, fields[k]!!))
+            fields.forEach {
+                ///如不不是主类型
+                if (it.value.isPrimitive.not()) {
+                    dependenciesList.add(Dependency(it.key, it.value))
                 }
             }
             return dependenciesList;
@@ -78,7 +80,8 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
             val suffix = if (isOpenNullAble) "?" else ""
             return fields.keys.map { key ->
                 val f = fields[key]!!
-                val fieldName = fixFieldName(key, f, privateFields)
+                ///给key转成dart写法
+                val fieldName =  FieldUtils.toFieldTypeName(key).toLowerCaseFirstOne()
                 val sb = StringBuffer();
                 //如果驼峰命名后不一致,才这样
                 if (fieldName != key) {
@@ -148,7 +151,7 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
 class Dependency(var name: String, var typeDef: TypeDefinition) {
     val className: String
         get() {
-            return camelCase(name)
+            return FieldUtils.toFieldTypeName(name)
         }
 
     override fun toString(): String {
