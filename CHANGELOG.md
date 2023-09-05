@@ -2,6 +2,11 @@
 
 # Changelog
 
+## [5.1.0]
+
+### Added
+- pr: https://github.com/fluttercandies/FlutterJsonBeanFactory/pull/151
+
 ## [5.0.9]
 
 ### Bugfix

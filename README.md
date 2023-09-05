@@ -7,7 +7,7 @@ Language: English | [中文(qq群963752388)](https://juejin.cn/post/703073900296
 
 打扰:我想在北京找份flutter开发的工作,请问有没有大佬可以帮忙推荐一下,谢谢了,我的邮箱:157418979@qq.com
 
-### Easy Use
+### Easy Use 插件交流群qq(963752388)
 
 ![image](.github/beantojson_factory.gif)
 
