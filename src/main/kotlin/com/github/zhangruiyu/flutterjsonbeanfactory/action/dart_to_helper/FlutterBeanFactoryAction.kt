@@ -76,8 +76,12 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("typedef JsonConvertFunction<T> = T Function(Map<String, dynamic> json);")
                         content.append("\n")
                         content.append("typedef EnumConvertFunction<T> = T Function(String value);")
+                        content.append("\n")
+                        content.append("typedef ConvertExceptionHandler = void Function(Object error, StackTrace stackTrace);")
                         content.append("\n\n")
                         content.append("class JsonConvert {")
+                        content.append("\n")
+                        content.append("\tstatic ConvertExceptionHandler? onError;")
                         content.append("\n")
                         content.append("\tstatic Map<String, JsonConvertFunction> get convertFuncMap => {")
                         content.append("\n")
@@ -100,6 +104,9 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "      return _asT<T>(value, enumConvert: enumConvert);\n" +
                                     "    } catch (e, stackTrace) {\n" +
                                     "      debugPrint('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
+                                    "      if (onError != null) {" +
+                                    "         onError!(e, stackTrace);" +
+                                    "      }"+
                                     "      return null;\n" +
                                     "    }\n" +
                                     "  }"
@@ -114,6 +121,9 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "      return value.map((dynamic e) => _asT<T>(e,enumConvert: enumConvert)).toList();\n" +
                                     "    } catch (e, stackTrace) {\n" +
                                     "      debugPrint('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
+                                    "      if (onError != null) {" +
+                                    "         onError!(e, stackTrace);" +
+                                    "      }"+
                                     "      return <T>[];\n" +
                                     "    }\n" +
                                     "  }"
@@ -128,6 +138,9 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "      return (value as List<dynamic>).map((dynamic e) => _asT<T>(e,enumConvert: enumConvert)!).toList();\n" +
                                     "    } catch (e, stackTrace) {\n" +
                                     "      debugPrint('asT<${"\$T"}> ${"\$e"} ${"\$stackTrace"}');\n" +
+                                    "      if (onError != null) {" +
+                                    "         onError!(e, stackTrace);" +
+                                    "      }"+
                                     "      return <T>[];\n" +
                                     "    }\n" +
                                     "  }"
