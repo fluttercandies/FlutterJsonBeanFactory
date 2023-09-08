@@ -50,8 +50,6 @@
         <projectConfigurable groupId="tools" displayName="FlutterJsonBeanFactory"
                              id="preferences.SingleFileExecutionConfigurable"
                              instance="com.github.zhangruiyu.flutterjsonbeanfactory.setting.SettingComponent"/>
-        <applicationService serviceImplementation="com.github.zhangruiyu.flutterjsonbeanfactory.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.zhangruiyu.flutterjsonbeanfactory.services.MyProjectService"/>
     </extensions>
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup id="flutterJsonNotification" displayType="BALLOON"/>
