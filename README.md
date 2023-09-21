@@ -101,57 +101,57 @@ flutter_json:
 <table>
   <thead>
     <tr>
-      <th align="center" style="width: 180px;">
+      <th style="width: 180px;">
           <sub>名称</sub><br>
       </th>
-      <th align="center" style="width: 180px;">
+      <th style="width: 180px;">
           <sub>金额</sub><br>
       </th>
-      <th align="center" style="width: 180px;">
+      <th  style="width: 180px;">
           <sub>时间</sub><br>
       </th>
     </tr>
     <tr>
-      <th align="center" style="width: 180px;">
+      <th style="width: 180px;">
           <sub>QQ:郭嘉</sub><br>
       </th>
-      <th align="center" style="width: 180px;">
+      <th style="width: 180px;">
           <sub>10元</sub>
       </th>
-      <th align="center" style="width: 180px;">
+      <th style="width: 180px;">
           <sub>2023年09月12日</sub>
       </th>
     </tr>
     <tr>
-      <th align="center" style="width: 180px;">
+      <th style="width: 180px;">
           <sub>QQ:初一</sub><br>
       </th>
-      <th align="center" style="width: 180px;">
+      <th style="width: 180px;">
           <sub>100元</sub>
       </th>
-      <th align="center" style="width: 180px;">
+      <th style="width: 180px;">
           <sub>2023年08月15日</sub>
       </th>
     </tr>
     <tr>
-      <th align="center" style="width: 180px;">
+      <th style="width: 180px;">
           <sub>Github:cr1992</sub><br>
       </th>
-       <th align="center" style="width: 180px;">
+       <th style="width: 180px;">
           <sub>6.66元</sub>
       </th>
-       <th align="center" style="width: 180px;">
+       <th style="width: 180px;">
           <sub>2023年08月4日</sub>
       </th>
     </tr>
     <tr>
-     <th align="center" style="width: 180px;">
+     <th style="width: 180px;">
           <sub>QQ:余军</sub><br>
       </th>
-     <th align="center" style="width: 180px;">
+     <th style="width: 180px;">
           <sub>200元</sub>
       </th>
-     <th align="center" style="width: 180px;">
+     <th style="width: 180px;">
           <sub>2022年12月</sub>
       </th>
     </tr>
