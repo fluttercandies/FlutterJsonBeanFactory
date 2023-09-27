@@ -83,7 +83,7 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("\n")
                         content.append("\tstatic ConvertExceptionHandler? onError;")
                         content.append("\n")
-                        content.append("\tstatic Map<String, JsonConvertFunction> get convertFuncMap => {")
+                        content.append("\tstatic final Map<String, JsonConvertFunction> convertFuncMap = {")
                         content.append("\n")
                         allClass.forEach { itemClass ->
                             itemClass.first.classes.forEach { itemFile ->
@@ -180,7 +180,7 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "        }\n" +
                                     "        return convertFuncMap[type]!(Map<String, dynamic>.from(value)) as T;\n" +
                                     "      } else {\n" +
-                                    "        throw UnimplementedError('${"\$type"} unimplemented');\n" +
+                                    "        throw UnimplementedError('${"\$type"} unimplemented,you can try running the app again');\n" +
                                     "      }\n" +
                                     "    }\n" +
                                     "  }"
