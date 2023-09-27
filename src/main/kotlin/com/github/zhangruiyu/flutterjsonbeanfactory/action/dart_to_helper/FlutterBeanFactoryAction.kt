@@ -83,15 +83,26 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("\n")
                         content.append("\tstatic ConvertExceptionHandler? onError;")
                         content.append("\n")
-                        content.append("\tstatic final Map<String, JsonConvertFunction> convertFuncMap = {")
-                        content.append("\n")
-                        allClass.forEach { itemClass ->
-                            itemClass.first.classes.forEach { itemFile ->
-                                content.append("\t\t(${itemFile.className}).toString(): ${itemFile.className}.fromJson,\n")
-                            }
-                        }
-                        content.append("\t};")
-                        content.append("\n\n")
+                        ///这里本来写成get方法的,虽然解决了hotreload无法更新的问题,但是会导致效率低下,对jsonarray有很多值的情况下,遍历会导致重复get效率低下
+                        content.append("\tJsonConvertClassCollection convertFuncMap = JsonConvertClassCollection();")
+                        content.append("\t/// When you are in the development, to generate a new model class, hot-reload doesn't find new generation model class, you can build on MaterialApp method called jsonConvert. ReassembleConvertFuncMap (); This method only works in a development environment\n")
+                        content.append("\t/// https://flutter.cn/docs/development/tools/hot-reload\n")
+                        content.append("\t/// class MyApp extends StatelessWidget {\n")
+                        content.append("\t///    const MyApp({Key? key})\n")
+                        content.append("\t///        : super(key: key);\n")
+                        content.append("\t///\n")
+                        content.append("\t///    @override\n")
+                        content.append("\t///    Widget build(BuildContext context) {\n")
+                        content.append("\t///      jsonConvert.reassembleConvertFuncMap();\n")
+                        content.append("\t///      return MaterialApp();\n")
+                        content.append("\t///    }\n")
+                        content.append("\t/// }\n")
+                        content.append("\tvoid reassembleConvertFuncMap(){\n")
+                        content.append("\tbool isReleaseMode = const bool.fromEnvironment('dart.vm.product');\n")
+                        content.append("\tif(!isReleaseMode) {\n")
+                        content.append("\tconvertFuncMap = JsonConvertClassCollection();\n")
+                        content.append("\t}\n")
+                        content.append("\t}\n")
                         content.append(
                             "  T? convert<T>(dynamic value, {EnumConvertFunction? enumConvert}) {\n" +
                                     "    if (value == null) {\n" +
@@ -223,7 +234,23 @@ class FlutterBeanFactoryAction : AnAction() {
                         )
 
                         content.append("\n")
-                        content.append("}")
+                        content.append("}\n\n")
+                        content.append("\tclass JsonConvertClassCollection {")
+                        content.append("\tMap<String, JsonConvertFunction> convertFuncMap = {")
+                        content.append("\n")
+                        allClass.forEach { itemClass ->
+                            itemClass.first.classes.forEach { itemFile ->
+                                content.append("\t\t(${itemFile.className}).toString(): ${itemFile.className}.fromJson,\n")
+                            }
+                        }
+                        content.append("\t};\n")
+                        content.append("bool containsKey(String type) {\n")
+                        content.append("return convertFuncMap.containsKey(type);\n")
+                        content.append("}\n")
+                        content.append("JsonConvertFunction? operator [](String key) {\n")
+                        content.append("return convertFuncMap[key];\n")
+                        content.append("}\n")
+                        content.append("\t}")
                         val generated = FileHelpers.getJsonConvertBaseFile(project,pubSpecConfig.generatedPath)
                         //获取json_convert_content目录,并写入
                         generated.findOrCreateChildData(this, "json_convert_content.dart")
