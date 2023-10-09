@@ -5,7 +5,7 @@ What I do is generate dart beans based on json, as well as generics parameters a
 
 Language: English | [中文(qq群963752388)](https://juejin.cn/post/7030739002969817118/)
 
-打扰:我想在北京找份flutter开发的工作,请问有没有大佬可以帮忙推荐一下,谢谢了,我的邮箱:157418979@qq.com,安卓ios都会撸,不接受做马甲包的工作
+打扰:我想找份flutter开发的工作,请问有没有大佬可以帮忙推荐一下,谢谢了,我的邮箱:157418979@qq.com,安卓ios都会撸,不接受做马甲包的工作
 打扰:顺便接flutter外包
 
 
@@ -30,7 +30,7 @@ Language: English | [中文(qq群963752388)](https://juejin.cn/post/703073900296
 
 ### Usage
 
-* 打扰:我想在北京找份flutter开发的工作,请问有没有大佬可以帮忙推荐一下,谢谢了,我的邮箱:157418979@qq.com
+* 打扰:我想找份flutter开发的工作,请问有没有大佬可以帮忙推荐一下,谢谢了,我的邮箱:157418979@qq.com
 * <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "
   FlutterJsonBeanFactory"</kbd> >
   <kbd>Install Plugin</kbd>
