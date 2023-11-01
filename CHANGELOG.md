@@ -2,6 +2,11 @@
 
 # Changelog
 
+## [5.1.2]
+
+### Bugfix
+- After adding analysis, the type error problem is resolved
+
 ## [5.1.0]
 
 ### Added

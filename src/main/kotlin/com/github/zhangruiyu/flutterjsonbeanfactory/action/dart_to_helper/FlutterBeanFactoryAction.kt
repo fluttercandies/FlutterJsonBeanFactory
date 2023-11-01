@@ -189,7 +189,7 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "        if (value == null) {\n" +
                                     "          return null;\n" +
                                     "        }\n" +
-                                    "        return convertFuncMap[type]!(Map<String, dynamic>.from(value)) as T;\n" +
+                                    "        return convertFuncMap[type]!(value as Map<String, dynamic>) as T;\n" +
                                     "      } else {\n" +
                                     "        throw UnimplementedError('${"\$type"} unimplemented,you can try running the app again');\n" +
                                     "      }\n" +
@@ -210,7 +210,7 @@ class FlutterBeanFactoryAction : AnAction() {
                             }
                         }
                         content.append(
-                            "\n\t\tdebugPrint(\"\${M.toString()} not found\");\n\t"
+                            "\n\t\tdebugPrint(\"\$M not found\");\n\t"
                         )
                         content.append(
                             "\n\t\treturn null;\n"
@@ -226,7 +226,7 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "\t\t\treturn json;\n" +
                                     "\t\t}\n" +
                                     "\t\tif (json is List) {\n" +
-                                    "\t\t\treturn _getListChildType<M>(json.map((e) => e as Map<String, dynamic>).toList());\n" +
+                                    "\t\t\treturn _getListChildType<M>(json.map((dynamic e) => e as Map<String, dynamic>).toList());\n" +
                                     "\t\t} else {\n" +
                                     "\t\t\treturn jsonConvert.convert<M>(json);\n" +
                                     "\t\t}\n" +
