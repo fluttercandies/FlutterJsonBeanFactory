@@ -59,10 +59,14 @@ class FileGenerator(private val project: Project) {
 
         fun getJSONFieldContent(): String {
             return """
-class JsonSerializable{
-    const JsonSerializable();
+import 'package:meta/meta_meta.dart';
+
+@Target({TargetKind.classType})
+class JsonSerializable {
+  const JsonSerializable();
 }
 
+@Target({TargetKind.field})
 class JSONField {
   //Specify the parse field name
   final String? name;
@@ -73,10 +77,13 @@ class JSONField {
   //Whether to participate in fromMap
   final bool? deserialize;
   
+  //Whether to participate in copyWith
+  final bool? copyWith;
+  
   //Enumeration or not
   final bool? isEnum;
   
-  const JSONField({this.name, this.serialize, this.deserialize, this.isEnum});
+  const JSONField({this.name, this.serialize, this.deserialize, this.isEnum, this.copyWith});
 }
 """
         }

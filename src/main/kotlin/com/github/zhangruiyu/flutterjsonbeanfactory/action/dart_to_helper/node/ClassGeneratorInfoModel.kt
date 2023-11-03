@@ -23,6 +23,7 @@ class HelperClassGeneratorInfo {
     private val fields: MutableList<Filed> = mutableListOf()
     private val serializeFields get() = fields.filter { it.getValueByName<Boolean>("serialize") != false }
     private val deserializeFields get() = fields.filter { it.getValueByName<Boolean>("deserialize") != false }
+    private val copyWithFields get() = fields.filter { it.getValueByName<Boolean>("copyWith") != false }
 
     fun addFiled(
         typeNodeInfo: FieldClassTypeInfo,
@@ -91,10 +92,10 @@ class HelperClassGeneratorInfo {
         sb.append("\n")
         sb.append("extension ${className}Extension on $className {")
         sb.append("\n")
-        if (serializeFields.isNotEmpty()) {
+        if (copyWithFields.isNotEmpty()) {
             sb.append("\t$className copyWith({")
             sb.append("\n")
-            serializeFields.forEach {
+            copyWithFields.forEach {
                 if (it.typeNodeInfo.primaryType == "dynamic") {
                     sb.append("\t${it.typeNodeInfo.primaryType + (it.typeNodeInfo.genericityString ?: "")} ${it.name},\n")
                 } else {
@@ -103,7 +104,7 @@ class HelperClassGeneratorInfo {
             }
             sb.append("\t}) {\n")
             sb.append("\t\treturn $className()")
-            fields.forEach {
+            copyWithFields.forEach {
                 sb.append("\n\t\t\t..${it.name} = ${it.name} ?? this.${it.name}")
             }
             sb.append(";")
