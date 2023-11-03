@@ -7,6 +7,9 @@
 ### Bugfix
 - After adding analysis, the type error problem is resolved
 
+### Added
+- add copyWith annotation
+
 ## [5.1.0]
 
 ### Added
