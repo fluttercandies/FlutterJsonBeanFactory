@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [5.1.3]
+
+### Bugfix
+- fix idea 2023.3.2 checkbox not fond exception
+
+# Changelog
+
 ## [5.1.2]
 
 ### Bugfix

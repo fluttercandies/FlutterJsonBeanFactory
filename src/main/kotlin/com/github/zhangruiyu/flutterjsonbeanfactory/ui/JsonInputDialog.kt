@@ -256,29 +256,27 @@ open class JsonInputDialog(
         val listCheckBox = mutableListOf<CellBuilder<JBCheckBox>?>(null, null, null)
         return panel {
             row {
-                checkBoxGroup(null) {
-                    listCheckBox[0] =
-                        checkBox(
-                            "null-able",
-                            ApplicationManager.getApplication().getService(Settings::class.java).isOpenNullAble == true
-                        ).apply {
-                            component.addItemListener {
-                                ApplicationManager.getApplication().getService(Settings::class.java).isOpenNullAble =
-                                    component.isSelected
-                            }
+                listCheckBox[0] =
+                    checkBox(
+                        "null-able",
+                        ApplicationManager.getApplication().getService(Settings::class.java).isOpenNullAble == true
+                    ).apply {
+                        component.addItemListener {
+                            ApplicationManager.getApplication().getService(Settings::class.java).isOpenNullAble =
+                                component.isSelected
                         }
-                    listCheckBox[1] =
-                        checkBox(
-                            "default value",
-                            ApplicationManager.getApplication().getService(Settings::class.java).setDefault == true
-                        ).apply {
-                            component.addItemListener {
-                                defaultValueContainer?.isVisible = component.isSelected
-                                ApplicationManager.getApplication().getService(Settings::class.java).setDefault =
-                                    component.isSelected
-                            }
+                    }
+                listCheckBox[1] =
+                    checkBox(
+                        "default value",
+                        ApplicationManager.getApplication().getService(Settings::class.java).setDefault == true
+                    ).apply {
+                        component.addItemListener {
+                            defaultValueContainer?.isVisible = component.isSelected
+                            ApplicationManager.getApplication().getService(Settings::class.java).setDefault =
+                                component.isSelected
                         }
-                }
+                    }
             }
         }
     }
