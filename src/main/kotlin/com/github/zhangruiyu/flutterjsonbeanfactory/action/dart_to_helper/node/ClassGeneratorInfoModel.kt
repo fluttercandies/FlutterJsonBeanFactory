@@ -287,14 +287,14 @@ class Filed(
         val name = name
         //从json里取值的名称
         val getJsonName = getValueByName("name") ?: name
-        var getJsonKey = "data['${getJsonName}']";
+        var getJsonKey = "data['${getJsonName}']"
         if(getJsonName.contains('.')){
             val split = getJsonName.split(".");
             var temp = "data";
             for (i in 0 until split.size - 1) {
-                temp += ".putIfAbsent('${split[i]}', () => {})";
+                temp += ".putIfAbsent('${split[i]}', () => {})"
             }
-            getJsonKey = temp + "['${split[split.size - 1]}']";
+            getJsonKey = temp + "['${split[split.size - 1]}']"
         }
         val thisKey = "entity.$name"
         val isEnum = getValueByName<Boolean>("isEnum") == true
