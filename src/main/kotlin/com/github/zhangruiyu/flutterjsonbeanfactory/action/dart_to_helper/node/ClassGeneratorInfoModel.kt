@@ -281,27 +281,24 @@ class Filed(
         }
     }
 
+
     fun toJsonExpression(): String {
         val type = typeNodeInfo.primaryType + (typeNodeInfo.genericityString ?: "")
         val name = name
         //从json里取值的名称
         val getJsonName = getValueByName("name") ?: name
-        var getJsonKey = ""
-        var nestedKey = false
-        var nestedKeyCount = 0
-        if (getJsonName.contains('.')) {
-            nestedKey = true
-            val split = getJsonName.split(".")
-            nestedKeyCount = split.size
-            for (element in split) {
-                getJsonKey += "{'${element}': "
+        var getJsonKey = "data['${getJsonName}']";
+        if(getJsonName.contains('.')){
+            val split = getJsonName.split(".");
+            var temp = "data";
+            for (i in 0 until split.size - 1) {
+                temp += ".putIfAbsent('${split[i]}', () => {})";
             }
-        } else {
-            getJsonKey = "data['${getJsonName}']"
+            getJsonKey = temp + "['${split[split.size - 1]}']";
         }
         val thisKey = "entity.$name"
         val isEnum = getValueByName<Boolean>("isEnum") == true
-        val mapValue = when {
+        when {
             typeNodeInfo.isList() || typeNodeInfo.isSet() -> {
                 //1判断是否是基础数据类型
                 //1.1拿到List的泛型
@@ -322,35 +319,30 @@ class Filed(
                 }
 
                 // class list
-                value
+                return "$getJsonKey =  $value;"
             }
             //是否是枚举
             isEnum -> {
-                "$thisKey${nullString(typeNodeInfo.nullable)}.name"
+                return "$getJsonKey = $thisKey${nullString(typeNodeInfo.nullable)}.name;"
             }
             //是否是基础数据类型
             isBaseType(type) -> {
-                when (type) {
+                return when (type) {
                     "DateTime" -> {
-                        "${thisKey}${nullString(typeNodeInfo.nullable)}.toIso8601String()"
+                        "$getJsonKey = ${thisKey}${nullString(typeNodeInfo.nullable)}.toIso8601String();"
                     }
 
-                    else -> thisKey
+                    else -> "$getJsonKey = $thisKey;"
                 }
             }
             //是map或者set
             typeNodeInfo.isMap() || typeNodeInfo.isSet() -> {
-                thisKey
+                return "$getJsonKey = $thisKey;"
             }
             // class
             else -> {
-                "${thisKey}${nullString(typeNodeInfo.nullable)}.toJson()"
+                return "$getJsonKey = ${thisKey}${nullString(typeNodeInfo.nullable)}.toJson();"
             }
-        }
-        return if (nestedKey) {
-            "data.addAll($getJsonKey $mapValue${"}".repeat(nestedKeyCount)});"
-        } else {
-            "$getJsonKey = $mapValue;"
         }
     }
 
