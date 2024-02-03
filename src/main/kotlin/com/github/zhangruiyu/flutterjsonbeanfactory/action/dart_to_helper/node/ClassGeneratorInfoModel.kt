@@ -144,9 +144,9 @@ class Filed(
         //class里的字段名
         //从json里取值的名称
         val jsonName = getValueByName("name") ?: name
-        var jsonVal = "json['${jsonName}']";
+        var jsonVal = "json['${jsonName}']"
         if (jsonName.contains('.')) {
-            jsonVal = "json" + jsonName.split(".").joinToString("") { "['$it']" }
+            jsonVal += " ?? json" + jsonName.split(".").joinToString("") { "['$it']" }
         }
         ///如果是dynamic那么不写?
         val typeNullString = if (typeNodeInfo.primaryType == "dynamic" || typeNodeInfo.primaryType == "var") "" else "?"
@@ -213,7 +213,8 @@ class Filed(
         sb.append("\n")
         sb.append("\t")
         sb.append("(k, e) => MapEntry(k,")
-        if (typeNodeInfo?.nullable == true) {
+        ///泛型带问号的时候
+        if (typeNodeInfo?.genericityChildType?.genericityChildType?.nullable == true) {
             sb.append("\te == null ? null : ")
         }
         val genericityChildType = typeNodeInfo?.genericityChildType?.genericityChildType
@@ -288,14 +289,15 @@ class Filed(
         //从json里取值的名称
         val getJsonName = getValueByName("name") ?: name
         var getJsonKey = "data['${getJsonName}']"
-        if(getJsonName.contains('.')){
-            val split = getJsonName.split(".");
-            var temp = "data";
-            for (i in 0 until split.size - 1) {
-                temp += ".putIfAbsent('${split[i]}', () => {})"
-            }
-            getJsonKey = temp + "['${split[split.size - 1]}']"
-        }
+        ///这里tojson无法判断原值是map还是带点的字符串
+//        if (getJsonName.contains('.')) {
+//            val split = getJsonName.split(".");
+//            var temp = "data";
+//            for (i in 0 until split.size - 1) {
+//                temp += ".putIfAbsent('${split[i]}', () => {})"
+//            }
+//            getJsonKey = temp + "['${split[split.size - 1]}']"
+//        }
         val thisKey = "entity.$name"
         val isEnum = getValueByName<Boolean>("isEnum") == true
         when {
