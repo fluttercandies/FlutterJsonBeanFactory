@@ -146,7 +146,24 @@ class Filed(
         val jsonName = getValueByName("name") ?: name
         var jsonVal = "json['${jsonName}']"
         if (jsonName.contains('.')) {
-            jsonVal += " ?? json" + jsonName.split(".").joinToString("") { "['$it']" }
+            val split = jsonName.split(".")
+            if (split.size > 1) {
+                val result = StringBuilder()
+                split.forEachIndexed { index, element ->
+                    val isLast = index == split.size - 1
+                    if (isLast) {
+                        result.append("?.getOrNull<dynamic>('$element')")
+                    } else {
+                        if (index > 0) {
+                            result.append("?")
+                        }
+                        result.append(".getOrNull<Map<String,dynamic>>('$element')")
+                    }
+
+                }
+                jsonVal += " ?? json$result"
+            }
+
         }
         ///如果是dynamic那么不写?
         val typeNullString = if (typeNodeInfo.primaryType == "dynamic" || typeNodeInfo.primaryType == "var") "" else "?"

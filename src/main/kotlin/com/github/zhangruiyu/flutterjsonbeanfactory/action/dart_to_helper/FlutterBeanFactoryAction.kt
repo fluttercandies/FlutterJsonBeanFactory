@@ -78,7 +78,17 @@ class FlutterBeanFactoryAction : AnAction() {
                         content.append("typedef EnumConvertFunction<T> = T Function(String value);")
                         content.append("\n")
                         content.append("typedef ConvertExceptionHandler = void Function(Object error, StackTrace stackTrace);")
-                        content.append("\n\n")
+                        content.append("\n")
+                        content.append("extension MapSafeExt<K, V> on Map<K, V> {\n" +
+                                "  T? getOrNull<T>(K? key) {\n" +
+                                "    if (!containsKey(key) || key == null) {\n" +
+                                "      return null;\n" +
+                                "    } else {\n" +
+                                "      return this[key] as T?;\n" +
+                                "    }\n" +
+                                "  }\n" +
+                                "}")
+                        content.append("\n")
                         content.append("class JsonConvert {")
                         content.append("\n")
                         content.append("\tstatic ConvertExceptionHandler? onError;")
