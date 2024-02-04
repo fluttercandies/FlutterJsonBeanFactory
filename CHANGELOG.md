@@ -2,7 +2,7 @@
 
 # Changelog
 
-## [5.1.4]
+## [5.1.5]
 
 ### Added
 - support nested key,such as: @JSONField(name:"login.user.name")
