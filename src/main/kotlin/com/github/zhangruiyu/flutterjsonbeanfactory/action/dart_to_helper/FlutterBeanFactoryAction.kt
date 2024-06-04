@@ -199,7 +199,12 @@ class FlutterBeanFactoryAction : AnAction() {
                                     "        if (value == null) {\n" +
                                     "          return null;\n" +
                                     "        }\n" +
-                                    "        return convertFuncMap[type]!(value as Map<String, dynamic>) as T;\n" +
+                                    "        var covertFunc = convertFuncMap[type]!;\n" +
+                                    "        if(covertFunc is Map<String, dynamic>) {\n" +
+                                    "          return covertFunc(value as Map<String, dynamic>) as T;\n" +
+                                    "        }else{\n" +
+                                    "          return covertFunc(Map<String, dynamic>.from(value)) as T;\n" +
+                                    "        }\n" +
                                     "      } else {\n" +
                                     "        throw UnimplementedError('${"\$type"} unimplemented,you can try running the app again');\n" +
                                     "      }\n" +

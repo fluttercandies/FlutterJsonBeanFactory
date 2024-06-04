@@ -9,7 +9,6 @@ import com.intellij.openapi.startup.StartupActivity
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.github.zhangruiyu.flutterjsonbeanfactory.App
-import com.github.zhangruiyu.flutterjsonbeanfactory.Log
 import java.util.regex.Pattern
 
 
@@ -302,7 +301,6 @@ class Initializer : StartupActivity, DocumentListener {
 
 
     companion object {
-        val log = Log()
         private val PLURAL_MATCHER =
                 Pattern.compile("(.*)(zero|one|two|few|many|other)", Pattern.CASE_INSENSITIVE).matcher("")
 

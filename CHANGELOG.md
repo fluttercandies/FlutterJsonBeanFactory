@@ -2,6 +2,14 @@
 
 # Changelog
 
+## [5.1.6]
+
+### Bugfix
+- Fix issues-161, map type conversion issue
+- 这个bug修复了我在职的问题,目前已离职,希望大家能帮我推荐下工作,157418979@qq.com,感谢各位
+
+# Changelog
+
 ## [5.1.5]
 
 ### Added
