@@ -163,8 +163,9 @@ object FileHelpers {
         val psiManager = PsiManager.getInstance(project)
         return FilenameIndex.getAllFilesByExt(project, "dart").filter {
             //不过滤entity结尾了
-            it.path.contains("${project.name}/lib/") || it.path.contains("${pubSpecConfig?.name}/lib/")
+            (it.path.contains("${project.name}/lib/") || it.path.contains("${pubSpecConfig?.name}/lib/"))  && !it.path.contains("freezed")
         }.sortedBy {
+            println(it.path)
             it.path
         }.mapNotNull {
             try {

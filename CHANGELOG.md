@@ -2,17 +2,27 @@
 
 # Changelog
 
+## [5.1.7]
+
+### Bugfix
+
+- fixed conflicts with freezed
+- 这个bug修复了我在职的问题,目前已离职,希望大家能帮我推荐下工作,157418979@qq.com,感谢各位
+
+# Changelog
+
 ## [5.1.6]
 
 ### Bugfix
+
 - Fix issues-161, map type conversion issue
-- 这个bug修复了我在职的问题,目前已离职,希望大家能帮我推荐下工作,157418979@qq.com,感谢各位
 
 # Changelog
 
 ## [5.1.5]
 
 ### Added
+
 - support nested key,such as: @JSONField(name:"login.user.name")
 
 # Changelog
@@ -20,6 +30,7 @@
 ## [5.1.3]
 
 ### Bugfix
+
 - fix idea 2023.3.2 checkbox not fond exception
 
 # Changelog
@@ -27,33 +38,40 @@
 ## [5.1.2]
 
 ### Bugfix
+
 - After adding analysis, the type error problem is resolved
 
 ### Added
+
 - add copyWith annotation
 
 ## [5.1.0]
 
 ### Added
+
 - pr: https://github.com/fluttercandies/FlutterJsonBeanFactory/pull/151
 
 ## [5.0.9]
 
 ### Bugfix
+
 - When there is no field in the class, the copyWith generation error occurs
 
 ## [5.0.8]
 
 ### Added
+
 - Support default value(list)
-- Fixed an issue where hot reload would not refresh convertFuncMap after adding the model class 
+- Fixed an issue where hot reload would not refresh convertFuncMap after adding the model class
 
 ### Bugfix
+
 - copyWith private field bugfix
 
 ## [5.0.3]
 
 ### Added
+
 - copyWith move to .g.dart
 
 ## [5.0.0]
