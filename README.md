@@ -81,6 +81,105 @@ flutter_json:
 <!-- Plugin description end -->
 
 
+### 开源不易，觉得有用的话可以请作者喝杯冰可乐🥤
+
+<img src="https://github.com/fluttercandies/FlutterJsonBeanFactory/blob/master/wechat_pay.png" width = "300" height = "300" alt="打赏"/>
+
+### 赞助列表(非常非常的感谢,仅记录此插件收到的打赏,承诺将收到的所有赞助用于购买可乐和赞助其他开源作者)
+
+<table>
+  <thead>
+    <tr>
+      <th style="width: 180px;">
+          <sub>名称</sub><br>
+      </th>
+      <th style="width: 180px;">
+          <sub>金额</sub><br>
+      </th>
+      <th  style="width: 180px;">
+          <sub>时间</sub><br>
+      </th>
+    </tr>
+    <tr>
+      <th style="width: 180px;">
+          <sub>微信:大熊猫🐱</sub><br>
+      </th>
+      <th style="width: 180px;">
+          <sub>20元</sub><br>
+      </th>
+      <th  style="width: 180px;">
+          <sub>2024年4月3日</sub><br>
+      </th>
+    <tr>
+    <tr>
+      <th style="width: 180px;">
+          <sub>qq:sunny</sub><br>
+      </th>
+      <th style="width: 180px;">
+          <sub>10元</sub><br>
+      </th>
+      <th  style="width: 180px;">
+          <sub>2023年12月21日</sub><br>
+      </th>
+    <tr>
+    <tr>
+      <th style="width: 180px;">
+          <sub>微信:未知</sub><br>
+      </th>
+      <th style="width: 180px;">
+          <sub>10元</sub><br>
+      </th>
+      <th  style="width: 180px;">
+          <sub>2023年11月17日</sub><br>
+      </th>
+    <tr>
+      <th style="width: 180px;">
+          <sub>QQ:郭嘉</sub><br>
+      </th>
+      <th style="width: 180px;">
+          <sub>10元</sub>
+      </th>
+      <th style="width: 180px;">
+          <sub>2023年09月12日</sub>
+      </th>
+    </tr>
+    <tr>
+      <th style="width: 180px;">
+          <sub>QQ:初一</sub><br>
+      </th>
+      <th style="width: 180px;">
+          <sub>100元</sub>
+      </th>
+      <th style="width: 180px;">
+          <sub>2023年08月15日</sub>
+      </th>
+    </tr>
+    <tr>
+      <th style="width: 180px;">
+          <sub>Github:cr1992</sub><br>
+      </th>
+       <th style="width: 180px;">
+          <sub>6.66元</sub>
+      </th>
+       <th style="width: 180px;">
+          <sub>2023年08月4日</sub>
+      </th>
+    </tr>
+    <tr>
+     <th style="width: 180px;">
+          <sub>QQ:余军</sub><br>
+      </th>
+     <th style="width: 180px;">
+          <sub>200元</sub>
+      </th>
+     <th style="width: 180px;">
+          <sub>2022年12月</sub>
+      </th>
+    </tr>
+
+  </thead>
+</table>
+
 ### Find me useful ? :heart:
 
 * Support me by clicking the :star: button on the upper right of this page. :v:
