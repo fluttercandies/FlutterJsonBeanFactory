@@ -2,7 +2,6 @@
 
 # FlutterJsonBeanFactory Changelog
 
-## Unreleased
 
 ## 5.2.1 2024年09月22日
 
@@ -11,7 +10,6 @@
 - fix [issues/167](https://github.com/fluttercandies/FlutterJsonBeanFactory/issues/167)
 - 这个bug修复了我在职的问题,目前已离职,希望大家能帮我推荐下工作,157418979@qq.com,感谢各位
 
-## Unreleased
 
 ## 5.2.0
 
