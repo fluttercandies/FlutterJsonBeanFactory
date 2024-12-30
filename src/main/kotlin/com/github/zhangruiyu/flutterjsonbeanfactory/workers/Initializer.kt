@@ -8,7 +8,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import com.github.zhangruiyu.flutterjsonbeanfactory.App
 import java.util.regex.Pattern
 
 

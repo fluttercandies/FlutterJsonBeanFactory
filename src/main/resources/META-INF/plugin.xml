@@ -54,8 +54,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup id="flutterJsonNotification" displayType="BALLOON"/>
     </extensions>
-    <applicationListeners>
-        <listener class="com.github.zhangruiyu.flutterjsonbeanfactory.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+<!--    <applicationListeners>-->
+<!--        <listener class="com.github.zhangruiyu.flutterjsonbeanfactory.listeners.MyProjectManagerListener"-->
+<!--                  topic="com.intellij.openapi.project.ProjectManagerListener"/>-->
+<!--    </applicationListeners>-->
 </idea-plugin>

@@ -2,15 +2,26 @@
 
 # FlutterJsonBeanFactory Changelog
 
-## Unreleased
 
-## 5.2.0 2024年08月12日
+## 5.2.2
+
+### Changed
+
+- double quotation marks are changed to single quotation marks
+
+## 5.2.1
+
+### Changed
+
+- fix [issues/167](https://github.com/fluttercandies/FlutterJsonBeanFactory/issues/167)
+
+
+## 5.2.0
 
 ### Changed
 
 - update gradle and kotlin
 - fix idea version low version problem
-- 这个bug修复了我在职的问题,目前已离职,希望大家能帮我推荐下工作,157418979@qq.com,感谢各位
 
 ## 5.1.7
 
