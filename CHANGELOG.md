@@ -3,6 +3,12 @@
 # FlutterJsonBeanFactory Changelog
 
 
+## 5.2.3
+
+### Changed
+
+- late field is more intelligent
+
 ## 5.2.2
 
 ### Changed

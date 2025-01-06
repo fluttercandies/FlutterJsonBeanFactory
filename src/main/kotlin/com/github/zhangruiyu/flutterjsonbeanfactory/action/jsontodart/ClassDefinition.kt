@@ -76,12 +76,29 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
         get() {
             val settings = ApplicationManager.getApplication().getService(Settings::class.java)
             val isOpenNullAble = settings.isOpenNullAble == true
-            val prefix = if (!isOpenNullAble) "late " else ""
+            val setDefault = settings.setDefault == true
+
             val suffix = if (isOpenNullAble) "?" else ""
             return fields.keys.map { key ->
                 val f = fields[key]!!
+                ///如果不是 主类型或着List类型,那就当类判断
+                val isClass = (f.isPrimitive || isListType(f.name)).not()
+                ///如果是类
+                val prefix = if (isClass) {
+                    ///如果没开可空
+                    if (!isOpenNullAble) {
+                        "late "
+                    } else {
+                        ""
+                    }
+                } else {
+                    ///这里是正常字段
+                    ///没有开启可空,没有设置默认值,并且不是Primitive
+                    if ((!isOpenNullAble && !setDefault)) "late " else ""
+                }
+
                 ///给key转成dart写法
-                val fieldName =  FieldUtils.toFieldTypeName(key).toLowerCaseFirstOne()
+                val fieldName = FieldUtils.toFieldTypeName(key).toLowerCaseFirstOne()
                 val sb = StringBuffer();
                 //如果驼峰命名后不一致,才这样
                 if (fieldName != key) {
