@@ -102,6 +102,17 @@ flutter_json:
     </tr>
     <tr>
       <th style="width: 180px;">
+          <sub>微信:BeADre</sub><br>
+      </th>
+      <th style="width: 180px;">
+          <sub>18.8元</sub><br>
+      </th>
+      <th  style="width: 180px;">
+          <sub>2025年3月4日</sub><br>
+      </th>
+    <tr>
+    <tr>
+      <th style="width: 180px;">
           <sub>微信:大熊猫🐱</sub><br>
       </th>
       <th style="width: 180px;">
