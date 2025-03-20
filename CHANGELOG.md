@@ -2,8 +2,9 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## Unreleased
 
-## 5.2.3
+## 5.2.4
 
 ### Changed
 
@@ -20,7 +21,6 @@
 ### Changed
 
 - fix [issues/167](https://github.com/fluttercandies/FlutterJsonBeanFactory/issues/167)
-
 
 ## 5.2.0
 
