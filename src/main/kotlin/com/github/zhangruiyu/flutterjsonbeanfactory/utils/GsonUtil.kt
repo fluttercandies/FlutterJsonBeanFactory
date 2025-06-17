@@ -101,6 +101,7 @@ object GsonUtil {
                     `in`.endArray()
                     list
                 }
+
                 JsonToken.BEGIN_OBJECT -> {
                     val map: MutableMap<String, Any?> =
                         LinkedTreeMap()
@@ -111,6 +112,7 @@ object GsonUtil {
                     `in`.endObject()
                     map
                 }
+
                 JsonToken.STRING -> `in`.nextString()
                 JsonToken.NUMBER -> {
                     /**
@@ -125,11 +127,13 @@ object GsonUtil {
                         0.0
                     }
                 }
+
                 JsonToken.BOOLEAN -> `in`.nextBoolean()
                 JsonToken.NULL -> {
                     `in`.nextNull()
                     null
                 }
+
                 else -> throw IllegalStateException()
             }
         }

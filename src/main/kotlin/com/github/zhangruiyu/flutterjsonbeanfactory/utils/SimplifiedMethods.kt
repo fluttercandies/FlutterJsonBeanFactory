@@ -13,7 +13,7 @@ import com.intellij.openapi.project.Project
 /**
  * do the action that could be roll-back
  */
-fun Project?.executeCouldRollBackAction( action: (Project?) -> Unit) {
+fun Project?.executeCouldRollBackAction(action: (Project?) -> Unit) {
     CommandProcessor.getInstance().executeCommand(this, {
         ApplicationManager.getApplication().runWriteAction {
             action.invoke(this)

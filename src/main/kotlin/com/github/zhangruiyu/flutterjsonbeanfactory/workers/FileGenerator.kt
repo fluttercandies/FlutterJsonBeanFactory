@@ -39,7 +39,7 @@ class FileGenerator(private val project: Project) {
 //                builder.append("\n")
                     builder.append(getJSONFieldContent())
                     val jsonConvertContent = builder.toString()
-                    FileHelpers.getJsonConvertJsonFiledFile(project,pubSpecConfig.generatedPath) { file ->
+                    FileHelpers.getJsonConvertJsonFiledFile(project, pubSpecConfig.generatedPath) { file ->
                         psiManager.findFile(file)?.let { dartFile ->
                             documentManager.getDocument(dartFile)?.let { document ->
                                 if (document.text != jsonConvertContent) {
