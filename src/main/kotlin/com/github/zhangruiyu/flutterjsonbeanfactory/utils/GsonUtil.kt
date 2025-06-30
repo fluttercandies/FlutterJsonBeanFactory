@@ -120,11 +120,19 @@ object GsonUtil {
                      */
                     val dbNum = `in`.nextString()
                     if (!dbNum.contains(".")) {
-                        //返回0是int
-                        0
+                        // 解析并返回实际的整数值
+                        try {
+                            dbNum.toLong()
+                        } catch (e: NumberFormatException) {
+                            0
+                        }
                     } else {
-                        //返回double类型代表是double类型
-                        0.0
+                        // 解析并返回实际的浮点数值
+                        try {
+                            dbNum.toDouble()
+                        } catch (e: NumberFormatException) {
+                            0.0
+                        }
                     }
                 }
 
