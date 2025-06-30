@@ -173,6 +173,11 @@ open class JsonInputDialog(
         }, settings.intDefaultValue).forEach {
             defaultContainer.add(it)
         }
+        buildDefaultItem("double", { newText ->
+            settings.doubleDefaultValue = newText
+        }, settings.doubleDefaultValue).forEach {
+            defaultContainer.add(it)
+        }
         buildDefaultItem("bool", { newText ->
             settings.boolDefaultValue = newText
         }, settings.boolDefaultValue).forEach {

@@ -13,6 +13,7 @@ data class Settings(
     var boolDefaultValue: String = "false",
     var stringDefaultValue: String = "''",
     var intDefaultValue: String = "0",
+    var doubleDefaultValue: String = "0.0",
     var listDefaultValue: String = "[]",
 ) : PersistentStateComponent<Settings> {
 
@@ -47,6 +48,14 @@ data class Settings(
     fun intFieldDefaultValue(): String? {
         return if (setDefault == true && intDefaultValue.isNotEmpty()) {
             intDefaultValue
+        } else {
+            null
+        }
+    }
+
+    fun doubleFieldDefaultValue(): String? {
+        return if (setDefault == true && doubleDefaultValue.isNotEmpty()) {
+            doubleDefaultValue
         } else {
             null
         }
