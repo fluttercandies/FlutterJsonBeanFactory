@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+## 5.2.6
+
+### Changed
+
+- Add support for double default values
+
 ## 5.2.4
 
 ### Changed
