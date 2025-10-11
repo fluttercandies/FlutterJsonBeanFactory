@@ -118,10 +118,12 @@ class ClassDefinition(private val name: String, private val privateFields: Boole
                     } else if (f.subtype == null) {
                         if (f.name == "String" && settings.stringFieldDefaultValue()?.isNotEmpty() == true) {
                             sb.append(" = ${settings.stringFieldDefaultValue()}")
-                        } else if (f.name == "bool" && settings.stringFieldDefaultValue()?.isNotEmpty() == true) {
+                        } else if (f.name == "bool" && settings.boolFieldDefaultValue()?.isNotEmpty() == true) {
                             sb.append(" = ${settings.boolFieldDefaultValue()}")
-                        } else if (f.name == "int" && settings.stringFieldDefaultValue()?.isNotEmpty() == true) {
+                        } else if (f.name == "int" && settings.intFieldDefaultValue()?.isNotEmpty() == true) {
                             sb.append(" = ${settings.intFieldDefaultValue()}")
+                        } else if (f.name == "double" && settings.doubleFieldDefaultValue()?.isNotEmpty() == true) {
+                            sb.append(" = ${settings.doubleFieldDefaultValue()}")
                         }
                     }
                 }
