@@ -4,6 +4,12 @@
 
 ## Unreleased
 
+## 5.2.7
+
+### Changed
+
+- fix idea 2025.3 checkbox not fond exception
+
 ## 5.2.6
 
 ### Changed

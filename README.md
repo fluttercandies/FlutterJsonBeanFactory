@@ -28,9 +28,9 @@ Language: English | [中文(qq群963752388)](https://juejin.cn/post/703073900296
 
 <!-- Plugin description -->
 
-### Usage
+FlutterJsonBeanFactory is a plugin for generating Dart bean classes from JSON.
 
-* 打扰:我想找份flutter开发的工作,请问有没有大佬可以帮忙推荐一下,谢谢了,我的邮箱:157418979@qq.com
+### Usage
 * <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "
   FlutterJsonBeanFactory"</kbd> >
   <kbd>Install Plugin</kbd>
@@ -77,6 +77,8 @@ custom generated path->(pubspec.yaml)
 flutter_json:
   generated_path: src/json/**
 ```
+
+* 打扰:我想找份flutter开发的工作,请问有没有大佬可以帮忙推荐一下,谢谢了,我的邮箱:157418979@qq.com
 
 <!-- Plugin description end -->
 
