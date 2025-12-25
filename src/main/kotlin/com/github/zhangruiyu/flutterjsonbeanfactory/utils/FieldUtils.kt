@@ -1,6 +1,8 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory.utils
 
 import io.flutter.FlutterUtils
+import java.util.Locale
+import java.util.Locale.getDefault
 
 object FieldUtils {
     /**
@@ -15,8 +17,8 @@ object FieldUtils {
         val ret = StringBuilder(newInit.length)
         for (word in newInit.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
             if (word.isNotEmpty()) {
-                ret.append(word.substring(0, 1).toUpperCase())
-                ret.append(word.substring(1).toLowerCase())
+                ret.append(word.substring(0, 1).uppercase(getDefault()))
+                ret.append(word.substring(1).lowercase(getDefault()))
             }
             if (ret.length != newInit.length)
                 ret.append(" ")

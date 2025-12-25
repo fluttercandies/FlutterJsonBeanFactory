@@ -1,7 +1,10 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory.ui
 
+import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.CollectInfo
+import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings
+import com.github.zhangruiyu.flutterjsonbeanfactory.utils.addComponentIntoVerticalBoxAlignmentLeft
 import com.google.gson.*
-import com.intellij.openapi.components.ServiceManager
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.InputValidator
@@ -10,19 +13,11 @@ import com.intellij.ui.DocumentAdapter
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.layout.CellBuilder
-import com.intellij.ui.layout.panel
+import com.intellij.ui.dsl.builder.Cell
 import com.intellij.util.ui.JBDimension
 import com.intellij.util.ui.JBEmptyBorder
-import com.github.zhangruiyu.flutterjsonbeanfactory.action.jsontodart.CollectInfo
-import com.github.zhangruiyu.flutterjsonbeanfactory.setting.Settings
-import com.github.zhangruiyu.flutterjsonbeanfactory.utils.addComponentIntoVerticalBoxAlignmentLeft
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
 import java.awt.Component
-import java.awt.FlowLayout
-import java.awt.Insets
 import java.awt.event.ActionEvent
 import javax.swing.*
 import javax.swing.event.DocumentEvent
@@ -258,30 +253,26 @@ open class JsonInputDialog(
     }
 
     private fun createCheckBox(): DialogPanel {
-        val listCheckBox = mutableListOf<CellBuilder<JBCheckBox>?>(null, null, null)
-        return panel {
+        val listCheckBox = mutableListOf<Cell<JBCheckBox>?>(null, null, null)
+        return com.intellij.ui.dsl.builder.panel {
             row {
-                listCheckBox[0] =
-                    checkBox(
-                        "null-able",
-                        ApplicationManager.getApplication().getService(Settings::class.java).isOpenNullAble == true
-                    ).apply {
-                        component.addItemListener {
-                            ApplicationManager.getApplication().getService(Settings::class.java).isOpenNullAble =
-                                component.isSelected
-                        }
+                val settings = ApplicationManager.getApplication().getService(Settings::class.java)
+                listCheckBox[0] = checkBox("null-able")
+                    .applyToComponent {
+                        isSelected = settings.isOpenNullAble == true
                     }
-                listCheckBox[1] =
-                    checkBox(
-                        "default value",
-                        ApplicationManager.getApplication().getService(Settings::class.java).setDefault == true
-                    ).apply {
-                        component.addItemListener {
-                            defaultValueContainer?.isVisible = component.isSelected
-                            ApplicationManager.getApplication().getService(Settings::class.java).setDefault =
-                                component.isSelected
-                        }
+                    .onChanged { component ->
+                        settings.isOpenNullAble = component.isSelected
                     }
+
+                listCheckBox[1] = checkBox("default value")
+                    .applyToComponent {
+                        isSelected = settings.setDefault == true
+                    }
+                    .onChanged { component ->
+                        settings.setDefault = component.isSelected
+                    }
+
             }
         }
     }

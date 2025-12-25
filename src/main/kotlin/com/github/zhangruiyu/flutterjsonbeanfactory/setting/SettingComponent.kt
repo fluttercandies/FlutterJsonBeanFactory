@@ -1,8 +1,8 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory.setting
 
-import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.service
 import com.intellij.openapi.options.Configurable
 import javax.swing.JComponent
 
@@ -14,7 +14,7 @@ class SettingComponent : Configurable {
             return false
         }
         return getSettings() != Settings(
-            settingLayout!!.getModelSuffix(), isOpenNullAble = false,  setDefault = false
+            settingLayout!!.getModelSuffix(), isOpenNullAble = false, setDefault = false
         )
     }
 
@@ -37,7 +37,7 @@ class SettingComponent : Configurable {
     }
 
     private fun getSettings(): Settings {
-        return ServiceManager.getService(Settings::class.java).state
+        return service<Settings>()
     }
 
 }
