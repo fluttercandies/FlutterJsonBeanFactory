@@ -1,15 +1,25 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory
 
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node.GeneratorDartClassNodeToHelperInfo
-import com.intellij.ide.highlighter.XmlFileType
-import com.intellij.psi.xml.XmlFile
+import com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.intellij.util.PsiErrorElementUtil
 import com.jetbrains.lang.dart.DartFileType
+import java.io.File
 
 @TestDataPath("\$CONTENT_ROOT/src/test/testData")
 class MyPluginTest : BasePlatformTestCase() {
+
+    override fun setUp() {
+        super.setUp()
+        // 获取测试数据目录的绝对路径
+        // 根据报错：file://C:/pro/FlutterJsonBeanFactory/src/test/testData/rename/foo_after.xml
+        val testDataDir = File("src/test/testData").absolutePath
+
+        // 显式授权访问该路径
+        // testRootDisposable 确保测试结束后自动撤销权限，防止污染其他测试
+        VfsRootAccess.allowRootAccess(testRootDisposable, testDataDir)
+    }
 
     fun testDartFile() {
         val psiFile = myFixture.configureByText(

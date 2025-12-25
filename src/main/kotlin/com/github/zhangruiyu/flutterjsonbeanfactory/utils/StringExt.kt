@@ -1,5 +1,7 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory.utils
 
+import java.util.Locale
+import java.util.Locale.getDefault
 import java.util.regex.Pattern
 
 //首字母转大写
@@ -29,7 +31,7 @@ fun String.upperCharToUnderLine(): String {
     val mc = p.matcher(this)
     var i = 0
     while (mc.find()) {
-        builder.replace(mc.start() + i, mc.end() + i, "_" + mc.group().toLowerCase())
+        builder.replace(mc.start() + i, mc.end() + i, "_" + mc.group().lowercase(getDefault()))
         i++
     }
     if ('_' == builder[0]) {
