@@ -5,30 +5,26 @@ import java.util.Locale
 import java.util.Locale.getDefault
 
 object FieldUtils {
+    private val NON_ALPHANUMERIC = Regex("[^a-zA-Z0-9_]")
+
     /**
      * 把所有符号换成下划线,再把下换线后一位转成大写
      */
     fun toFieldTypeName(name: String): String {
-        val init = name.replace(Regex("[^a-zA-Z0-9_]"), "_")
-        val newInit = init.replace("-", "_")
-        if (newInit.contains("_").not()) {
+        val newInit = name.replace(NON_ALPHANUMERIC, "_")
+        if (newInit.indexOf('_') == -1) {
             return newInit.toUpperCaseFirstOne()
         }
+        val words = newInit.split("_").filter { it.isNotEmpty() }
+        if (words.isEmpty()) return filedKeywordRename(newInit)
+        
         val ret = StringBuilder(newInit.length)
-        for (word in newInit.split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-            if (word.isNotEmpty()) {
-                ret.append(word.substring(0, 1).uppercase(getDefault()))
-                ret.append(word.substring(1).lowercase(getDefault()))
-            }
-            if (ret.length != newInit.length)
-                ret.append(" ")
+        for (word in words) {
+            ret.append(word.substring(0, 1).uppercase(getDefault()))
+            ret.append(word.substring(1).lowercase(getDefault()))
         }
 
-        /* if (PRIMITIVE_TYPES[result] != null || dartKeyword.contains(result)) {
-     //        throw MessageException("Please do not use the keyword $result as the key")
-             result +="X"
-         }*/
-        return filedKeywordRename(ret.toString().replace(" ", ""))
+        return filedKeywordRename(ret.toString())
     }
 
 

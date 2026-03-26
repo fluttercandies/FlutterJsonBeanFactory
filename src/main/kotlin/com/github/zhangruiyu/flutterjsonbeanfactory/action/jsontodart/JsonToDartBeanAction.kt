@@ -4,6 +4,10 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.psi.PsiDirectory
@@ -59,22 +63,32 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                     }
 
                     else -> {
-                        //生成dart文件的内容
-                        val generatorClassContent =
-                            ModelGenerator(collectInfo, project).generateDartClassesToString(
-                                fileName,
-                                pubSpecConfig?.generatedPath ?: GENERATED_PATH_DEFAULT
-                            )
-                        generateDartDataClassFile(
-                            fileName,
-                            generatorClassContent,
-                            project,
-                            psiFileFactory,
-                            directory
-                        )
-                        val notifyMessage = "Dart Data Class file generated successful"
-                        FlutterBeanFactoryAction.generateAllFile(project)
-                        project.showNotify(notifyMessage)
+                        ProgressManager.getInstance().run(object : Task.Backgroundable(project, "Generating model...", false) {
+                            override fun run(indicator: ProgressIndicator) {
+                                try {
+                                    //生成dart文件的内容
+                                    val generatorClassContent =
+                                        ModelGenerator(collectInfo, project).generateDartClassesToString(
+                                            fileName,
+                                            pubSpecConfig?.generatedPath ?: GENERATED_PATH_DEFAULT
+                                        )
+                                    generateDartDataClassFile(
+                                        fileName,
+                                        generatorClassContent,
+                                        project,
+                                        psiFileFactory,
+                                        directory
+                                    )
+                                    val notifyMessage = "Dart Data Class file generated successful"
+                                    ApplicationManager.getApplication().invokeLater {
+                                        FlutterBeanFactoryAction.generateAllFile(project)
+                                    }
+                                    project.showNotify(notifyMessage)
+                                } catch (e: Exception) {
+                                    project.showNotify(e.message ?: "An error occurred during generation")
+                                }
+                            }
+                        })
                         true
                     }
                 }

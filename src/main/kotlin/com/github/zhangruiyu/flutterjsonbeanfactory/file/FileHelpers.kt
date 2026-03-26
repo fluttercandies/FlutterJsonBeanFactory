@@ -163,24 +163,31 @@ object FileHelpers {
         val psiManager = PsiManager.getInstance(project)
         return FilenameIndex.getAllFilesByExt(project, "dart").filter {
             //不过滤entity结尾了
-            (it.path.contains("${project.name}/lib/") || it.path.contains("${pubSpecConfig?.name}/lib/"))  && !it.path.contains("freezed")
+            (it.path.contains("${project.name}/lib/") || it.path.contains("${pubSpecConfig?.name}/lib/")) && !it.path.contains(
+                "freezed"
+            )
         }.sortedBy {
-            println(it.path)
             it.path
-        }.mapNotNull {
+        }.mapNotNull { virtualFile ->
             try {
+                // 先读取文件内容做初步判断，避免不必要的 PSI 解析
+                val content = String(virtualFile.contentsToByteArray())
+                if (!content.contains("@JsonSerializable") || virtualFile.name == "json_convert_content.dart") {
+                    return@mapNotNull null
+                }
+                val psiFile = psiManager.findFile(virtualFile) ?: return@mapNotNull null
                 val dartFileHelperClassGeneratorInfo =
-                    GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(psiManager.findFile(it)!!)
+                    GeneratorDartClassNodeToHelperInfo.getDartFileHelperClassGeneratorInfo(psiFile)
                 //导包
                 if (dartFileHelperClassGeneratorInfo == null) {
                     null
                 } else {
                     //包名
-                    val packageName = (it.path).substringAfter("/lib/")
+                    val packageName = (virtualFile.path).substringAfter("/lib/")
                     dartFileHelperClassGeneratorInfo to "import 'package:${pubSpecConfig?.name}/${packageName}';"
                 }
             } catch (e: Exception) {
-                val errorString = "error file: ${it},stackTrace: ${e.stackTraceToString()}"
+                val errorString = "error file: ${virtualFile},stackTrace: ${e.stackTraceToString()}"
                 println(errorString)
                 project.showNotify(errorString)
                 null
