@@ -2,7 +2,13 @@
 
 # FlutterJsonBeanFactory Changelog
 
-## Unreleased
+
+## 5.2.9
+
+### Changed
+
+- support idea 2026.1
+
 
 ## 5.2.7
 
