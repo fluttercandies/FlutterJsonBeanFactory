@@ -72,18 +72,19 @@ class JsonToDartBeanAction : AnAction("JsonToDartBeanAction") {
                                             fileName,
                                             pubSpecConfig?.generatedPath ?: GENERATED_PATH_DEFAULT
                                         )
-                                    generateDartDataClassFile(
-                                        fileName,
-                                        generatorClassContent,
-                                        project,
-                                        psiFileFactory,
-                                        directory
-                                    )
-                                    val notifyMessage = "Dart Data Class file generated successful"
+
                                     ApplicationManager.getApplication().invokeLater {
+                                        generateDartDataClassFile(
+                                            fileName,
+                                            generatorClassContent,
+                                            project,
+                                            psiFileFactory,
+                                            directory
+                                        )
                                         FlutterBeanFactoryAction.generateAllFile(project)
+                                        val notifyMessage = "Dart Data Class file generated successful"
+                                        project.showNotify(notifyMessage)
                                     }
-                                    project.showNotify(notifyMessage)
                                 } catch (e: Exception) {
                                     project.showNotify(e.message ?: "An error occurred during generation")
                                 }

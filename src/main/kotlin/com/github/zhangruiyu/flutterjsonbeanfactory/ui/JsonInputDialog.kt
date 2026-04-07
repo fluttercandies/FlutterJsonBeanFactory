@@ -95,7 +95,6 @@ open class JsonInputDialog(
         classNameTitle.border = JBEmptyBorder(5, 0, 5, 0)
         classNameInputContainer.addComponentIntoVerticalBoxAlignmentLeft(classNameTitle)
         classNameInput = JTextField()
-        classNameInput.preferredSize = JBDimension(400, 40)
         myInputValidator.classNameField = classNameInput
 
         classNameInput.document.addDocumentListener(object : DocumentAdapter() {
@@ -105,7 +104,7 @@ open class JsonInputDialog(
         })
 
         classNameInputContainer.addComponentIntoVerticalBoxAlignmentLeft(classNameInput)
-        classNameInputContainer.preferredSize = JBDimension(500, 56)
+        classNameInputContainer.preferredSize = JBDimension(500, 70)
 
 
         val createScrollableTextComponent = createMyScrollableTextComponent()
