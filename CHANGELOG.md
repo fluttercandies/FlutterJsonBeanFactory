@@ -2,8 +2,6 @@
 
 # FlutterJsonBeanFactory Changelog
 
-## Unreleased
-
 ## 5.2.10
 
 ### Changed
