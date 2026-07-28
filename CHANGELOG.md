@@ -2,6 +2,18 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## Unreleased
+
+## 5.3.1
+
+### Fixed
+
+- Restore the JSON-to-Dart dialog on IntelliJ IDEA 2026.2 by replacing the removed legacy UI DSL ABI with stable Swing components
+
+### Changed
+
+- Declare compatibility through IntelliJ Platform build 262
+
 ## 5.2.10
 
 ### Changed
