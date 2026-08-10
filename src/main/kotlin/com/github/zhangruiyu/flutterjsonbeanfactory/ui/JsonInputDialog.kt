@@ -6,18 +6,17 @@ import com.github.zhangruiyu.flutterjsonbeanfactory.utils.addComponentIntoVertic
 import com.google.gson.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.InputValidator
 import com.intellij.openapi.ui.Messages
 import com.intellij.ui.DocumentAdapter
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.dsl.builder.Cell
 import com.intellij.util.ui.JBDimension
 import com.intellij.util.ui.JBEmptyBorder
 import java.awt.BorderLayout
 import java.awt.Component
+import java.awt.FlowLayout
 import java.awt.event.ActionEvent
 import javax.swing.*
 import javax.swing.event.DocumentEvent
@@ -146,8 +145,8 @@ open class JsonInputDialog(
         settingContainer.border = JBEmptyBorder(0, 5, 5, 7)
         val boxLayout = BoxLayout(settingContainer, BoxLayout.LINE_AXIS)
         settingContainer.layout = boxLayout
-        settingContainer.add(Box.createHorizontalGlue())
         settingContainer.add(createCheckBox())
+        settingContainer.add(Box.createHorizontalGlue())
         settingContainer.add(formatButton)
         return settingContainer
     }
@@ -251,28 +250,24 @@ open class JsonInputDialog(
 //        Thread { sendActionInfo(prettyGson.toJson(FormatJSONAction())) }.start()
     }
 
-    private fun createCheckBox(): DialogPanel {
-        val listCheckBox = mutableListOf<Cell<JBCheckBox>?>(null, null, null)
-        return com.intellij.ui.dsl.builder.panel {
-            row {
-                val settings = ApplicationManager.getApplication().getService(Settings::class.java)
-                listCheckBox[0] = checkBox("null-able")
-                    .applyToComponent {
-                        isSelected = settings.isOpenNullAble == true
-                    }
-                    .onChanged { component ->
-                        settings.isOpenNullAble = component.isSelected
-                    }
-
-                listCheckBox[1] = checkBox("default value")
-                    .applyToComponent {
-                        isSelected = settings.setDefault == true
-                    }
-                    .onChanged { component ->
-                        settings.setDefault = component.isSelected
-                    }
-
+    private fun createCheckBox(): JPanel {
+        val settings = ApplicationManager.getApplication().getService(Settings::class.java)
+        val nullAbleCheckBox = JBCheckBox("null-able").apply {
+            isSelected = settings.isOpenNullAble == true
+            addActionListener {
+                settings.isOpenNullAble = isSelected
             }
+        }
+        val defaultValueCheckBox = JBCheckBox("default value").apply {
+            isSelected = settings.setDefault == true
+            addActionListener {
+                settings.setDefault = isSelected
+            }
+        }
+        return JPanel(FlowLayout(FlowLayout.LEFT, 8, 0)).apply {
+            isOpaque = false
+            add(nullAbleCheckBox)
+            add(defaultValueCheckBox)
         }
     }
 

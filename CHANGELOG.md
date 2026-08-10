@@ -2,13 +2,31 @@
 
 # FlutterJsonBeanFactory Changelog
 
+## Unreleased
+
+## 5.3.1
+
+### Fixed
+
+- Restore the JSON-to-Dart dialog on IntelliJ IDEA 2026.2 by replacing the removed legacy UI DSL ABI with stable Swing components
+
+### Changed
+
+- Declare compatibility through IntelliJ Platform build 262
+
+## 5.2.10
+
+### Changed
+
+- Replace internal IntelliJ Platform API usage (`VirtualFileImpl`) with stable `VirtualFile` API to comply with JetBrains Marketplace rules
+- Adjust file deletion logic to operate only on non-directory children in the generated folder, reducing risk of unintended deletions
+- No functional behavior change expected; generation and cleanup remain the same
 
 ## 5.2.9
 
 ### Changed
 
 - support idea 2026.1
-
 
 ## 5.2.7
 

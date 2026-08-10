@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.newvfs.impl.VirtualFileImpl
+// Avoid using internal API: VirtualFileImpl was internal; rely on stable VirtualFile API instead
 import com.github.zhangruiyu.flutterjsonbeanfactory.file.FileHelpers
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.YamlHelper
 import com.github.zhangruiyu.flutterjsonbeanfactory.utils.commitContent
@@ -44,7 +44,7 @@ class FlutterBeanFactoryAction : AnAction() {
                     FileHelpers.getGeneratedFileRun(project,pubSpecConfig.generatedPath) {
                         //1.上次生成的老旧老文件
                         val oldHelperChildren =
-                            it.children.filterIsInstance<VirtualFileImpl>().toMutableList()
+                            it.children.filter { child -> !child.isDirectory }.toMutableList()
                         //2.删除多余helper文件
                         oldHelperChildren.forEach { oldPath ->
                             //新生成的文件名
