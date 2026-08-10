@@ -12,6 +12,7 @@ import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
+import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager
@@ -159,11 +160,12 @@ object FileHelpers {
      * 获取所有符合生成的file
      */
     fun getAllEntityFiles(project: Project): List<Pair<HelperFileGeneratorInfo, String>> {
-        val pubSpecConfig = YamlHelper.getPubSpecConfig(project)
+        val pubSpecConfig = YamlHelper.getPubSpecConfig(project) ?: return emptyList()
+        val libRoot = pubSpecConfig.pubRoot.lib ?: return emptyList()
         val psiManager = PsiManager.getInstance(project)
         return FilenameIndex.getAllFilesByExt(project, "dart").filter {
             //不过滤entity结尾了
-            (it.path.contains("${project.name}/lib/") || it.path.contains("${pubSpecConfig?.name}/lib/"))  && !it.path.contains("freezed")
+            isUnderLibRoot(it, libRoot) && !it.path.contains("freezed")
         }.sortedBy {
             println(it.path)
             it.path
@@ -177,7 +179,7 @@ object FileHelpers {
                 } else {
                     //包名
                     val packageName = (it.path).substringAfter("/lib/")
-                    dartFileHelperClassGeneratorInfo to "import 'package:${pubSpecConfig?.name}/${packageName}';"
+                    dartFileHelperClassGeneratorInfo to "import 'package:${pubSpecConfig.name}/${packageName}';"
                 }
             } catch (e: Exception) {
                 val errorString = "error file: ${it},stackTrace: ${e.stackTraceToString()}"
@@ -186,6 +188,10 @@ object FileHelpers {
                 null
             }
         }
+    }
+
+    internal fun isUnderLibRoot(file: VirtualFile, libRoot: VirtualFile): Boolean {
+        return VfsUtilCore.isAncestor(libRoot, file, false)
     }
 
     /**
