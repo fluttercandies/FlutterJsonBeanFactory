@@ -1,6 +1,7 @@
 package com.github.zhangruiyu.flutterjsonbeanfactory
 
 import com.github.zhangruiyu.flutterjsonbeanfactory.action.dart_to_helper.node.GeneratorDartClassNodeToHelperInfo
+import com.github.zhangruiyu.flutterjsonbeanfactory.file.FileHelpers
 import com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -57,5 +58,20 @@ class MapEntity {
 
     fun testRename() {
         myFixture.testRename("foo.xml", "foo_after.xml", "a2")
+    }
+
+    fun testEntityFileScopeUsesPhysicalLibRoot() {
+        val entityFile = myFixture.addFileToProject(
+            "physical-directory/lib/model/user_entity.dart",
+            "class UserEntity {}",
+        ).virtualFile
+        val outsideFile = myFixture.addFileToProject(
+            "physical-directory/test/user_entity_test.dart",
+            "class UserEntityTest {}",
+        ).virtualFile
+        val libRoot = entityFile.parent.parent
+
+        assertTrue(FileHelpers.isUnderLibRoot(entityFile, libRoot))
+        assertFalse(FileHelpers.isUnderLibRoot(outsideFile, libRoot))
     }
 }
